@@ -2,18 +2,15 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>KANCCI - @yield('title')</title>
-    <!-- Custom fonts for this template-->
     <link href="css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="css/jkanban.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.css" rel="stylesheet">
 </head>
 
@@ -26,7 +23,7 @@
         <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('index') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fab fa-trello"></i>
                 </div>
@@ -38,7 +35,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="{{ route('index') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -47,11 +44,11 @@
             <hr class="sidebar-divider">
 
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="#">
                     <i class="fab fa-trello"></i>
                     <span>KANCCI</span></a>
             </li>
-            
+
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -177,7 +174,7 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Content Row -->
-                    <div class="row">
+                    <div class="row text-dark">
                         @yield('content')
                     </div>
                     <!--<div class="text-center">
@@ -232,12 +229,11 @@
         </div>
     </div>
     <script src="{{ asset('js/app.js') }}"></script>
-    <!-- Bootstrap core JavaScript-->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <!-- Core plugin JavaScript-->
-    <script src="js/jquery.easing.min.js"></script>
-    <!-- Custom scripts for all pages-->
+    <script src="js/bootstrap.min.js"></script>
     <script src="js/sb-admin-2.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src='js/jkanban.min.js'></script>
+    @yield('scripts')
 </body>
 </html>

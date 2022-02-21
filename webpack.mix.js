@@ -11,13 +11,16 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+mix.js('resources/js/app.js', 'public/js').sourceMaps()
     .js('resources/theme/js/jquery.min.js', 'public/js')
+    .js('resources/js/jkanban.min.js', 'public/js')
     .js('resources/theme/jquery-easing/jquery.easing.min.js', 'public/js')
-    .js('resources/theme/bootstrap/js/bootstrap.bundle.min.js', 'public/js')
+    .js('resources/js/bootstrap.min.js', 'public/js')
     .js('resources/theme/js/sb-admin-2.min.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
+    .sass('resources/sass/jkanban.min.scss', 'public/css')
     .sass('resources/theme/sass/sb-admin-2.scss', 'public/css')
-    .sass('resources/theme/fontawesome-free/css/all.min.scss', 'public/css');
+    .sass('resources/theme/fontawesome-free/css/all.min.scss', 'public/css')
+    .version();
 
 

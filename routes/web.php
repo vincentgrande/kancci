@@ -14,7 +14,9 @@
 Route::get('/', function () {
     return view('index');
 })->name("index");
-
+Route::get('/kanban', function () {
+    return view('kanban');
+})->name("kanban");
 Route::get('/register', function () {
     return view('auth.register');
 })->name("register");

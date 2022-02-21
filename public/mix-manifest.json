@@ -1,10 +1,12 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/js/jquery.min.js": "/js/jquery.min.js",
-    "/js/jquery.easing.min.js": "/js/jquery.easing.min.js",
-    "/js/bootstrap.bundle.min.js": "/js/bootstrap.bundle.min.js",
-    "/js/sb-admin-2.min.js": "/js/sb-admin-2.min.js",
-    "/css/all.min.css": "/css/all.min.css",
-    "/css/sb-admin-2.css": "/css/sb-admin-2.css",
-    "/css/app.css": "/css/app.css"
+    "/js/app.js": "/js/app.js?id=8747f9800f5ec0f43ff9",
+    "/js/jquery.min.js": "/js/jquery.min.js?id=d354c00c903ee4a54c49",
+    "/js/jkanban.min.js": "/js/jkanban.min.js?id=699b363f9a7267bf868a",
+    "/js/jquery.easing.min.js": "/js/jquery.easing.min.js?id=a41c6495df049908c9bd",
+    "/js/bootstrap.min.js": "/js/bootstrap.min.js?id=3fc79635340de5d64668",
+    "/js/sb-admin-2.min.js": "/js/sb-admin-2.min.js?id=924673c125db75993e2c",
+    "/css/all.min.css": "/css/all.min.css?id=a798707e69c07751e86c",
+    "/css/sb-admin-2.css": "/css/sb-admin-2.css?id=6717b96eb10a3bee236d",
+    "/css/jkanban.min.css": "/css/jkanban.min.css?id=5a61cc98aeef9f58f9f8",
+    "/css/app.css": "/css/app.css?id=68b329da9893e34099c7"
 }
