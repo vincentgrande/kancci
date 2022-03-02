@@ -228,12 +228,13 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('js/app.js') }}"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/bootstrap.min.js"></script>    
+    <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/sb-admin-2.min.js"></script>
     <script src="js/jquery.min.js"></script>
-    <script src="js/jquery.easing.min.js"></script>
     <script src='js/jkanban.min.js'></script>
+    
     @yield('scripts')
 </body>
 </html>
