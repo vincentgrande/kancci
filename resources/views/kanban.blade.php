@@ -3,9 +3,6 @@
 @section('title', 'Kanban')
 
 @section('content')
-    <button class="btn btn-success m-2" id="addDefault">Add "Default" board</button>
-    <button class="btn btn-success m-2" id="addToDo">Add element in "To Do" Board</button>
-    <button class="btn btn-danger m-2" id="removeBoard">Remove "Done" Board</button>
 <br>
     <div id="myKanban" style="overflow: auto;" class="mb-3"></div>
     @foreach($tables as $table)
@@ -41,11 +38,13 @@
     $count = 0;
 @endphp
     <script>
+        
         myBoards = [
                 @foreach($tables as $table)
                 {
                     id: "{{$table->id}}",
                     title: "{{$table->title}}",
+                    class: 'info',
                     item: [
                         @foreach($cards as $card)
                             @if($card->isActive == true && $table->id == $card->table_id)
@@ -73,10 +72,10 @@
             boards           : myBoards,                                           // json of boards
             dragBoards       : true,                                         // the boards are draggable, if false only item can be dragged
             itemAddOptions: {
-                enabled: false,                                              // add a button to board for easy item creation
+                enabled: true,                                              // add a button to board for easy item creation
                 content: '+',                                                // text or html content of the board button   
-                class: 'kanban-title-button btn btn-default btn-xs',         // default class of the button
-                footer: false                                                // position the button on footer
+                class: 'kanban-title-button btn btn-primary',         // default class of the button
+                footer: true                                                // position the button on footer
             },    
             itemHandleOptions: {
                 enabled             : false,                                 // if board item handle is enabled or not
@@ -93,22 +92,33 @@
             dropEl           : function (el, target, source, sibling) {},    // callback when any board's item drop in a board
             dragBoard        : function (el, source) {},                     // callback when any board stop drag
             dragendBoard     : function (el) {saveKanban()},                             // callback when any board stop drag
-            buttonClick      : function(el, boardId) {},                     // callback when the board's button is clicked
+            buttonClick      : function(el, boardId) { addCard(boardId); saveKanban()},                     // callback when the board's button is clicked
             propagationHandlers: [],   
     
 
         })
-        let toDoButton = document.getElementById('addToDo');
-        toDoButton.addEventListener('click',function(){
+        $(document).ready(function() {
+            /** To Do:
+            - récupérer myBoards en BDD avec AJAX
+             */
+        });
+        let addCard = function(tableid){
+            /** To Do :
+            -Générer UID
+            -Vérifier qu'il n'existe pas déjà en BDD (avec AJAX)
+            -Si Ok création de la nouvelle carte
+             */ 
             KanbanTest.addElement(
-                '_todo',
+                tableid,
                 {
-                    'title':'Test Add',
+                    id:Math.random().toString(36).substr(2, 9),
+                    title:'New card',
                 }
             );
-        });
-        let addBoardDefault = document.getElementById('addDefault');
-        addBoardDefault.addEventListener('click', function () {
+        }
+            
+        
+        /*
             KanbanTest.addBoards(
                 [{
                     id: "_default",
@@ -138,13 +148,14 @@
                     ]
                 }]
             )
-        });
-        let removeBoard = document.getElementById('removeBoard');
-        removeBoard.addEventListener('click',function(){
             KanbanTest.removeBoard('_done');
-        });
+        */
 
-        function saveKanban(){
+        let saveKanban = function(){
+            /** To Do:
+            - Sauvegarde de kanbanBoard en BDD avec AJAX
+            - Rechargement de myBoards
+             */
             var kanbanBoard = $('.kanban-board').map(function(_, x) {
                 let kanbanids = [];
                 Array.prototype.slice.call(x.children[1].children).forEach( (x)=>{
