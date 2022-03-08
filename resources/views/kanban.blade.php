@@ -38,40 +38,50 @@
     $count = 0;
 @endphp
     <script>
-        let saveKanban = function(){
+        /**
+         * function to save all boards and card in database
+         */
+        let saveKanban = function(){ 
+            let board = [];
             var kanbanBoard = $('.kanban-board').map(function(_, x) {
                 let kanbanids = [];
                 Array.prototype.slice.call(x.children[1].children).forEach( (x)=>{
                     kanbanids.push(x.dataset.eid)
                 })
-                return "{'"+x.dataset.id+"':'"+kanbanids+"'}";
-            }).get();
-            //console.log(kanbanBoard);
-            $.ajax({
+                return { id:x.dataset.id, items: kanbanids }; // Create an array with boards ID's and cards ID's
+            }).get(); 
+            board.push(kanbanBoard);
+            console.log( kanbanBoard)
+            $.ajax({ // Ajax to save kanban in DB.
                   url: "{{ route('saveToDB') }}",
                   method: 'post',
                   data: {
                     "_token": "{{ csrf_token() }}",
-                     boards: kanbanBoard
+                     boards: kanbanBoard,
+                     kanbanId: 1
                   },
                   success: function(result){
                       console.log(result)
                   }});
         }
-        let addCard = function(tableid){
+        /**
+         * function to add a new card in a board
+         */
+        let addCard = function(tableid){ 
             let uidVerif = function(){
-                newuid = Math.random().toString(36).substr(2, 9)
+                newuid = Math.random().toString(36).substr(2, 9) // Create uid for the new card
                 console.log(newuid)
                 $.ajax({
                   url: "{{ route('verifyCardId') }}",
                   method: 'post',
                   data: {
                     "_token": "{{ csrf_token() }}",
-                     uid: newuid
+                     uid: newuid,
+                     table: tableid
                   },
                   success: function(result){
-                      if(result == 'true'){
-                        KanbanTest.addElement(
+                      if(result == 'true'){ // Verify if the new uid is not already used.
+                        Kanban.addElement(
                             tableid,
                             {
                                 id: newuid,
@@ -86,8 +96,10 @@
             }
             uidVerif()
         }
-
-        let KanbanTest = new jKanban({
+        /**
+         * Create the kanban 
+         */
+        let Kanban = new jKanban({
                         element          : '#myKanban',                                           // selector of the kanban container
                         gutter           : '15px',                                       // gutter of the board
                         widthBoard       : '250px',                                      // width of the board
@@ -119,54 +131,18 @@
                         buttonClick      : function(el, boardId) { addCard(boardId)},                     // callback when the board's button is clicked
                         propagationHandlers: [],   
                     })
+
         $(document).ready(function() {
-            /** To Do:
-            - récupérer myBoards en BDD avec AJAX
-             */
-             getBoards();
-        });
-
-        let getBoards = function(){
-           
-            jQuery.ajax({
-                url: "{{ route('getBoards') }}",
-                method: 'get',
-                success: function(result){
-                    $('.kanban-container').html('');
-                    result = JSON.parse(result)
-                    var boardsList = [];
-                    $.each(result, function (board) {
-                        console.log(result[board])
-                        var taskList = [];
-                        $.each(result[board].item, function (task) {
-                            taskList.push({
-                                'id': result[board].item[task].id,
-                                'title': result[board].item[task].title,
-                            
-                            })
-                        });
-                        boardsList.push({
-                            'id': result[board].id,
-                            'title': result[board].title,
-                            'item': taskList
-                        });
-                    });
-                    console.log(boardsList)
-                    KanbanTest.addBoards(boardsList);
-                    
-            }});
-        }
-
-        /*
-            KanbanTest.addBoards(
+             getBoards(); // fetch boards from database after page load
+             /*Kanban.addBoards(
                 [{
-                    id: "_default",
+                    id: "1",
                     title: "Kanban Default",
                     class: "default",
                     //dragTo: ["_working"],
                     item: [
                         {
-                            id: "_default-1",
+                            id: "1",
                             title: "Default item 1",
                             dragend: function(el) { console.log("END DRAG: " + el.dataset.eid); saveKanban();},
                             //drag: function(el) { console.log("START DRAG: " + el.dataset.eid); },
@@ -175,21 +151,53 @@
                             //class: ["peppe", "bello"]
                         },
                         {
-                            id: "_default-2",
+                            id: "2",
                             title: "Default item 2",
                             dragend: function(el) { console.log("END DRAG: " + el.dataset.eid); saveKanban();},
                         },
                         {
-                            id: "_default-3",
+                            id: "3",
                             title: "Default item 3",
                             dragend: function(el) { console.log("END DRAG: " + el.dataset.eid); saveKanban();},
                         },
                     ]
                 }]
-            )
-            KanbanTest.removeBoard('_done');
-        */
+            )*/
+        });
 
+        /**
+         * Fetch boards from DB and add them
+         */
+        let getBoards = function(){
+            $.ajax({
+                url: "{{ route('getBoards') }}",
+                method: 'get',
+                data: {
+                    id:1
+                },
+                success: function(result){
+                    $('.kanban-container').html('');
+                    result = JSON.parse(result)
+                    var boardsList = [];
+                    $.each(result, function (board) {
+                        console.log(result[board])
+                        var taskList = [];
+                        $.each(result[board].item, function (task) { // build cards array
+                            taskList.push({ 
+                                id: result[board].item[task].id,
+                                title: result[board].item[task].title,
+                            
+                            })
+                        });
+                        boardsList.push({ // build boards array
+                            id: result[board].id,
+                            title: result[board].title,
+                            item: taskList
+                        });
+                    });
+                    Kanban.addBoards(boardsList); // Add boards to kanban
+            }});
+        }    
         
     </script>
 @stop

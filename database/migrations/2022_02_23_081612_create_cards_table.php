@@ -13,14 +13,23 @@ class CreateCardsTable extends Migration
      */
     public function up()
     {
+        Schema::create('kanbans', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('title');
+            $table->string('order')->nullable();
+            $table->timestamps();
+        });
         Schema::create('tables', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
+            $table->unsignedBigInteger('kanban_id');
+            $table->foreign('kanban_id')->references('id')->on('kanbans');
             $table->timestamps();
         });
         Schema::create('cards', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
+            $table->string('uid')->unique();
             $table->string('description')->nullable();
             $table->date('startDate')->nullable();
             $table->date('endDate')->nullable();
