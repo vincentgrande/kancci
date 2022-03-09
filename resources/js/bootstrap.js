@@ -25,3 +25,11 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+import Echo from "laravel-echo";
+ 
+window.Pusher = require('pusher-js');
+ 
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: '90e5f1ea65a770229e0b'
+});

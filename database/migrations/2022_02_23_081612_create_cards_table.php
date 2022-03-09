@@ -16,7 +16,7 @@ class CreateCardsTable extends Migration
         Schema::create('kanbans', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->string('order')->nullable();
+            $table->longText('order')->nullable();
             $table->timestamps();
         });
         Schema::create('tables', function (Blueprint $table) {

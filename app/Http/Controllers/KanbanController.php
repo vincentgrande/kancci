@@ -20,7 +20,7 @@ class KanbanController extends Controller
 
     public function getBoards(Request $request) 
     {
-        $kanban = Kanban::where('id', 1)->get();
+        $kanban = Kanban::where('id', $request->id)->get();
         $tables = Table::where('kanban_id', $kanban[0]->id)->get();
         $myBoards = [];
         foreach(json_decode($kanban[0]->order) as $order)
@@ -95,5 +95,19 @@ class KanbanController extends Controller
             return 'Ok';
         } 
         return 'nok';
+    }
+    public function tablemaxid(Request $request)
+    {
+       return Table::max('id');
+    }
+    public function saveTable(Request $request)
+    {
+        $test = $request->board;
+        $table = new Table;
+        $table->id = $request->board[0]['id'];
+        $table->title = $request->board[0]['title'];
+        $table->kanban_id = $request->kanbanId;
+        $table->save();
+        return 'true';
     }
 }

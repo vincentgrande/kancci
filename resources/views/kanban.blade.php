@@ -3,18 +3,33 @@
 @section('title', 'Kanban')
 
 @section('content')
+<style>
+    .custom-button {
+        border: none;
+        color: white;
+        background-color:transparent;
+        padding: left;
+        margin: 10px;
+        text-align: right;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        right: 0px;
+      }      
+</style>
+<div id="actions" class="mb-4 w-100"><button class="btn btn-success" id="addBoard">Add board</button></div>
 <br>
     <div id="myKanban" style="overflow: auto;" class="mb-3"></div>
     @foreach($tables as $table)
     @foreach($cards as $card)
         @if($card->isActive == true && $table->id == $card->table_id)
             <!-- Modal -->
-            <div class="modal" id="card{{$card->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal" id="card{{$card->uid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">{{$card->title}}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#card{{$card->id}}').modal('hide');">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#card{{$card->uid}}').modal('hide');">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -22,7 +37,7 @@
                             ...
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#card{{$card->id}}').modal('hide');">Close</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#card{{$card->uid}}').modal('hide');">Close</button>
                             <button type="button" class="btn btn-success">Save changes</button>
                         </div>
                     </div>
@@ -38,6 +53,31 @@
     $count = 0;
 @endphp
     <script>
+        const slider = document.querySelector('#myKanban');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        slider.classList.add('active');
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => {
+        isDown = false;
+        slider.classList.remove('active');
+        });
+        slider.addEventListener('mouseup', () => {
+        isDown = false;
+        slider.classList.remove('active');
+        });
+        slider.addEventListener('mousemove', (e) => {
+        if(!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 3; //scroll-fast
+        slider.scrollLeft = scrollLeft - walk;
+        });
         /**
          * function to save all boards and card in database
          */
@@ -64,6 +104,51 @@
                       console.log(result)
                   }});
         }
+        /**
+         * function to add a new board
+         */
+        var addBoard = document.getElementById("addBoard");
+        addBoard.addEventListener("click", function() {
+            $.ajax({ // Ajax : fetch id max from tables
+                  url: "{{ route('tablemaxid') }}",
+                  method: 'get',
+                  data: {
+                    "_token": "{{ csrf_token() }}"
+                  },
+                  success: function(result){
+                      console.log(result)
+                      board = [
+                        {
+                            id: parseInt(result)+1,
+                            title: "Kanban Default",
+                            item: [
+                            ]
+                        }
+                      ];
+                      Kanban.addBoards(board);
+                      console.log(board);
+                      $.ajax({ // Ajax to save kanban in DB.
+                        url: "{{ route('saveTable') }}",
+                        method: 'post',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            board: board,
+                            kanbanId: 1
+                        },
+                        success: function(result){
+                            if(result =='true'){
+                                saveKanban()
+                            }
+                        }});
+                  }});
+            // Save new board in tables 
+            
+        });
+        let removeBoard = function(eid) {
+            // To Do Ajax : remove board from bdd
+            Kanban.removeBoard(eid.toString());
+            saveKanban()
+        };
         /**
          * function to add a new card in a board
          */
@@ -109,62 +194,26 @@
                         dragBoards       : true,                                         // the boards are draggable, if false only item can be dragged
                         itemAddOptions: {
                             enabled: true,                                              // add a button to board for easy item creation
-                            content: "+",                                                // text or html content of the board button   
-                            class: 'kanban-title-button btn btn-primary rounded-circle',         // default class of the button
-                            footer: true                                                // position the button on footer
+                            content: "...",                                                // text or html content of the board button   
+                            class: 'custom-button',         // default class of the button
+                            footer: false                                                // position the button on footer
                         },    
-                        itemHandleOptions: {
-                            enabled             : false,                                 // if board item handle is enabled or not
-                            handleClass         : "item_handle",                         // css class for your custom item handle
-                            customCssHandler    : "drag_handler",                        // when customHandler is undefined, jKanban will use this property to set main handler class
-                            customCssIconHandler: "drag_handler_icon",                   // when customHandler is undefined, jKanban will use this property to set main icon handler class. If you want, you can use font icon libraries here
-                            customHandler       : "<span class='item_handle'>+</span> %title% "  // your entirely customized handler. Use %title% to position item title 
-                                                                                                // any key's value included in item collection can be replaced with %key%
-                        },
-                        click            : function (el) { $('#card'+el.dataset.eid).modal('show'); },                             // callback when any board's item are clicked
+                        
+                        click            : function (el) { console.log('#card'+el.dataset.eid); $('#card'+el.dataset.eid).modal('show'); },                             // callback when any board's item are clicked
                         context          : function (el, event) {},                      // callback when any board's item are right clicked
                         dragEl           : function (el, source) {},                     // callback when any board's item are dragged
                         dragendEl        : function (el) { saveKanban() },                             // callback when any board's item stop drag
                         dropEl           : function (el, target, source, sibling) {},    // callback when any board's item drop in a board
                         dragBoard        : function (el, source) {},                     // callback when any board stop drag
                         dragendBoard     : function (el) {saveKanban()},                             // callback when any board stop drag
-                        buttonClick      : function(el, boardId) { addCard(boardId)},                     // callback when the board's button is clicked
+                        buttonClick      : function(el, boardId) {  removeBoard(boardId); /*addCard(boardId)*/},                     // callback when the board's button is clicked
                         propagationHandlers: [],   
                     })
 
         $(document).ready(function() {
-             getBoards(); // fetch boards from database after page load
-             /*Kanban.addBoards(
-                [{
-                    id: "1",
-                    title: "Kanban Default",
-                    class: "default",
-                    //dragTo: ["_working"],
-                    item: [
-                        {
-                            id: "1",
-                            title: "Default item 1",
-                            dragend: function(el) { console.log("END DRAG: " + el.dataset.eid); saveKanban();},
-                            //drag: function(el) { console.log("START DRAG: " + el.dataset.eid); },
-                            //drop: function(el) { console.log("DROPPED: " + el.dataset.eid); }
-                            //click: function() { alert("click"); },
-                            //class: ["peppe", "bello"]
-                        },
-                        {
-                            id: "2",
-                            title: "Default item 2",
-                            dragend: function(el) { console.log("END DRAG: " + el.dataset.eid); saveKanban();},
-                        },
-                        {
-                            id: "3",
-                            title: "Default item 3",
-                            dragend: function(el) { console.log("END DRAG: " + el.dataset.eid); saveKanban();},
-                        },
-                    ]
-                }]
-            )*/
+            getBoards(); // fetch boards from database after page load
         });
-
+        
         /**
          * Fetch boards from DB and add them
          */
@@ -195,9 +244,10 @@
                             item: taskList
                         });
                     });
+                    
                     Kanban.addBoards(boardsList); // Add boards to kanban
             }});
         }    
-        
+       
     </script>
 @stop
