@@ -15,7 +15,7 @@
         display: inline-block;
         font-size: 16px;
         right: 0px;
-      }      
+      }
 </style>
 <div id="actions" class="mb-4 w-100"><button class="btn btn-success" id="addBoard">Add board</button></div>
 <br>
@@ -42,11 +42,11 @@
                         </div>
                     </div>
                 </div>
-            </div> 
+            </div>
         @endif
-    @endforeach 
-    @endforeach 
-   
+    @endforeach
+    @endforeach
+
 @stop
 @section('scripts')
 @php
@@ -81,7 +81,7 @@
         /**
          * function to save all boards and card in database
          */
-        let saveKanban = function(){ 
+        let saveKanban = function(){
             let board = [];
             var kanbanBoard = $('.kanban-board').map(function(_, x) {
                 let kanbanids = [];
@@ -89,7 +89,7 @@
                     kanbanids.push(x.dataset.eid)
                 })
                 return { id:x.dataset.id, items: kanbanids }; // Create an array with boards ID's and cards ID's
-            }).get(); 
+            }).get();
             board.push(kanbanBoard);
             console.log( kanbanBoard)
             $.ajax({ // Ajax to save kanban in DB.
@@ -141,8 +141,8 @@
                             }
                         }});
                   }});
-            // Save new board in tables 
-            
+            // Save new board in tables
+
         });
         let removeBoard = function(eid) {
             // To Do Ajax : remove board from bdd
@@ -152,7 +152,7 @@
         /**
          * function to add a new card in a board
          */
-        let addCard = function(tableid){ 
+        let addCard = function(tableid){
             let uidVerif = function(){
                 newuid = Math.random().toString(36).substr(2, 9) // Create uid for the new card
                 console.log(newuid)
@@ -182,7 +182,7 @@
             uidVerif()
         }
         /**
-         * Create the kanban 
+         * Create the kanban
          */
         let Kanban = new jKanban({
                         element          : '#myKanban',                                           // selector of the kanban container
@@ -194,11 +194,11 @@
                         dragBoards       : true,                                         // the boards are draggable, if false only item can be dragged
                         itemAddOptions: {
                             enabled: true,                                              // add a button to board for easy item creation
-                            content: "...",                                                // text or html content of the board button   
-                            class: 'custom-button',         // default class of the button
+                            content: "+",                                                // text or html content of the board button
+                            class: 'kanban-title-button btn',         // default class of the button
                             footer: false                                                // position the button on footer
-                        },    
-                        
+                        },
+
                         click            : function (el) { console.log('#card'+el.dataset.eid); $('#card'+el.dataset.eid).modal('show'); },                             // callback when any board's item are clicked
                         context          : function (el, event) {},                      // callback when any board's item are right clicked
                         dragEl           : function (el, source) {},                     // callback when any board's item are dragged
@@ -206,14 +206,14 @@
                         dropEl           : function (el, target, source, sibling) {},    // callback when any board's item drop in a board
                         dragBoard        : function (el, source) {},                     // callback when any board stop drag
                         dragendBoard     : function (el) {saveKanban()},                             // callback when any board stop drag
-                        buttonClick      : function(el, boardId) {  removeBoard(boardId); /*addCard(boardId)*/},                     // callback when the board's button is clicked
-                        propagationHandlers: [],   
+                        buttonClick      : function(el, boardId) {  /*removeBoard(boardId); */ addCard(boardId)},                     // callback when the board's button is clicked
+                        propagationHandlers: [],
                     })
 
         $(document).ready(function() {
             getBoards(); // fetch boards from database after page load
         });
-        
+
         /**
          * Fetch boards from DB and add them
          */
@@ -232,10 +232,10 @@
                         console.log(result[board])
                         var taskList = [];
                         $.each(result[board].item, function (task) { // build cards array
-                            taskList.push({ 
+                            taskList.push({
                                 id: result[board].item[task].id,
                                 title: result[board].item[task].title,
-                            
+
                             })
                         });
                         boardsList.push({ // build boards array
@@ -244,10 +244,10 @@
                             item: taskList
                         });
                     });
-                    
+
                     Kanban.addBoards(boardsList); // Add boards to kanban
             }});
-        }    
-       
+        }
+
     </script>
 @stop

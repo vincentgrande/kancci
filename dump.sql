@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.7.37, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.25, for macos10.15 (x86_64)
 --
 -- Host: localhost    Database: laravel
 -- ------------------------------------------------------
--- Server version	5.7.37-0ubuntu0.18.04.1
+-- Server version	8.0.25
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -19,6 +19,26 @@
 -- Table structure for table `cards`
 --
 
+DROP TABLE IF EXISTS `cards`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cards` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `startDate` date DEFAULT NULL,
+  `endDate` date DEFAULT NULL,
+  `isActive` tinyint(1) NOT NULL,
+  `table_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cards_uid_unique` (`uid`),
+  KEY `cards_table_id_foreign` (`table_id`),
+  CONSTRAINT `cards_table_id_foreign` FOREIGN KEY (`table_id`) REFERENCES `tables` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `cards`
@@ -26,7 +46,7 @@
 
 LOCK TABLES `cards` WRITE;
 /*!40000 ALTER TABLE `cards` DISABLE KEYS */;
-INSERT INTO `cards` VALUES (3,'New card','5tu5fre34',NULL,NULL,NULL,1,2,'2022-03-08 13:54:19','2022-03-08 14:58:09'),(4,'New card','p4r0b0s6n',NULL,NULL,NULL,1,2,'2022-03-08 13:55:16','2022-03-08 13:55:16'),(5,'New card','mlfqrg7ge',NULL,NULL,NULL,1,3,'2022-03-08 13:55:27','2022-03-08 13:55:27'),(6,'New card','2tdcr3rze',NULL,NULL,NULL,1,3,'2022-03-08 13:55:28','2022-03-08 13:55:28'),(7,'New card','4ci1q106j',NULL,NULL,NULL,1,1,'2022-03-08 14:56:05','2022-03-08 14:58:09'),(8,'New card','v3rozbp8p',NULL,NULL,NULL,1,1,'2022-03-08 15:04:48','2022-03-08 15:04:53'),(9,'New card','8h6p7vq3y',NULL,NULL,NULL,1,1,'2022-03-08 15:18:46','2022-03-08 15:18:48'),(10,'New card','ipmrvitho',NULL,NULL,NULL,1,3,'2022-03-08 15:19:45','2022-03-09 10:59:10'),(11,'New card','mk1yjo76a',NULL,NULL,NULL,1,2,'2022-03-08 15:21:33','2022-03-09 10:59:10'),(12,'New card','k7j14ejxi',NULL,NULL,NULL,1,3,'2022-03-08 15:22:23','2022-03-09 10:59:10'),(13,'New card','5ttihwu3i',NULL,NULL,NULL,1,3,'2022-03-08 15:22:26','2022-03-09 10:59:10'),(14,'New card','wj5hn26x1',NULL,NULL,NULL,1,2,'2022-03-08 15:27:03','2022-03-08 15:27:03'),(15,'New card','9x3xkarfi',NULL,NULL,NULL,1,2,'2022-03-08 15:27:03','2022-03-08 15:27:03'),(16,'New card','cd78jzplv',NULL,NULL,NULL,1,2,'2022-03-08 15:27:04','2022-03-08 15:27:04'),(17,'New card','v0euni2r7',NULL,NULL,NULL,1,2,'2022-03-08 15:27:04','2022-03-08 15:27:04'),(18,'New card','g1vv3t6r9',NULL,NULL,NULL,1,2,'2022-03-08 15:27:04','2022-03-08 15:27:04'),(19,'New card','t03mv8bcm',NULL,NULL,NULL,1,3,'2022-03-08 15:27:04','2022-03-09 10:59:10'),(20,'New card','ma2vg6wgz',NULL,NULL,NULL,1,3,'2022-03-08 15:27:15','2022-03-09 10:59:10'),(22,'New card','tsqtkphsl',NULL,NULL,NULL,1,7,'2022-03-09 10:04:12','2022-03-09 10:59:10'),(23,'New card','jx87f6ibg',NULL,NULL,NULL,1,1,'2022-03-09 10:12:19','2022-03-09 10:59:10'),(24,'New card','379da3e9j',NULL,NULL,NULL,1,2,'2022-03-09 10:42:20','2022-03-09 10:42:22'),(25,'New card','b2qyhs2mc',NULL,NULL,NULL,1,2,'2022-03-09 10:42:29','2022-03-09 10:59:10');
+INSERT INTO `cards` VALUES (1,'New card','qlzb7uimi',NULL,NULL,NULL,1,1,'2022-03-08 15:41:56','2022-03-08 15:42:22'),(2,'New card','ep2tx5bls',NULL,NULL,NULL,1,1,'2022-03-08 15:42:01','2022-03-08 15:42:22'),(3,'New card','og033nomp',NULL,NULL,NULL,1,1,'2022-03-08 15:46:40','2022-03-12 12:46:11'),(4,'New card','ffkbj01a9',NULL,NULL,NULL,1,1,'2022-03-08 15:47:03','2022-03-12 12:46:11');
 /*!40000 ALTER TABLE `cards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -34,7 +54,21 @@ UNLOCK TABLES;
 -- Table structure for table `failed_jobs`
 --
 
+DROP TABLE IF EXISTS `failed_jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `failed_jobs` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
 -- Dumping data for table `failed_jobs`
 --
 
@@ -47,13 +81,26 @@ UNLOCK TABLES;
 -- Table structure for table `kanbans`
 --
 
+DROP TABLE IF EXISTS `kanbans`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `kanbans` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
 -- Dumping data for table `kanbans`
 --
 
 LOCK TABLES `kanbans` WRITE;
 /*!40000 ALTER TABLE `kanbans` DISABLE KEYS */;
-INSERT INTO `kanbans` VALUES (1,'First kanban','[{\"id\":\"6\"},{\"id\":\"1\",\"items\":[\"jx87f6ibg\"]},{\"id\":\"3\",\"items\":[\"t03mv8bcm\",\"t03mv8bcm\",\"t03mv8bcm\",\"t03mv8bcm\",\"t03mv8bcm\",\"t03mv8bcm\",\"ipmrvitho\",\"k7j14ejxi\",\"5ttihwu3i\",\"ma2vg6wgz\"]},{\"id\":\"7\",\"items\":[\"tsqtkphsl\"]},{\"id\":\"2\",\"items\":[\"mk1yjo76a\"]}]',NULL,'2022-03-09 10:42:05');
+INSERT INTO `kanbans` VALUES (1,'First Kanban','[{\"id\":\"1\",\"items\":[\"ffkbj01a9\",\"og033nomp\"]}]',NULL,'2022-03-12 12:46:11');
 /*!40000 ALTER TABLE `kanbans` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,6 +108,20 @@ UNLOCK TABLES;
 -- Table structure for table `migrations`
 --
 
+DROP TABLE IF EXISTS `migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `migrations` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `migrations`
+--
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
@@ -72,6 +133,16 @@ UNLOCK TABLES;
 -- Table structure for table `password_resets`
 --
 
+DROP TABLE IF EXISTS `password_resets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `password_resets` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `password_resets`
@@ -86,6 +157,20 @@ UNLOCK TABLES;
 -- Table structure for table `tables`
 --
 
+DROP TABLE IF EXISTS `tables`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tables` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `kanban_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tables_kanban_id_foreign` (`kanban_id`),
+  CONSTRAINT `tables_kanban_id_foreign` FOREIGN KEY (`kanban_id`) REFERENCES `kanbans` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tables`
@@ -93,7 +178,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `tables` WRITE;
 /*!40000 ALTER TABLE `tables` DISABLE KEYS */;
-INSERT INTO `tables` VALUES (1,'First table',1,NULL,NULL),(2,'Second table',1,NULL,NULL),(3,'Third table',1,NULL,NULL),(4,'Kanban Default',1,'2022-03-09 10:01:13','2022-03-09 10:01:13'),(5,'Kanban Default',1,'2022-03-09 10:02:06','2022-03-09 10:02:06'),(6,'Kanban Default',1,'2022-03-09 10:02:23','2022-03-09 10:02:23'),(7,'Kanban Default',1,'2022-03-09 10:04:01','2022-03-09 10:04:01');
+INSERT INTO `tables` VALUES (1,'First table',1,NULL,NULL),(2,'Second table',1,NULL,NULL);
 /*!40000 ALTER TABLE `tables` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,7 +186,21 @@ UNLOCK TABLES;
 -- Table structure for table `users`
 --
 
-
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_unique` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,4 +221,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-09 12:08:48
+-- Dump completed on 2022-03-12 15:03:39

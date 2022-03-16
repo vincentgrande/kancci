@@ -112,7 +112,7 @@
                         <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="$('#alertsDropdown').dropdown('toggle');">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
                                 <span class="badge badge-danger badge-counter">3+</span>
@@ -142,7 +142,7 @@
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="$('#userDropdown').dropdown('toggle');">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Vincent Grande</span>
                                 <img class="img-profile rounded-circle"
                                     src="img/undraw_profile.svg">
@@ -159,7 +159,7 @@
                                     Settings
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" onclick="$('#logoutModal').modal('show');">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -216,25 +216,25 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-dark" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick="$('#logoutModal').modal('hide');">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body text-dark">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="$('#logoutModal').modal('hide');">Cancel</button>
                     <a class="btn btn-danger" href="{{route("login")}}">Logout</a>
                 </div>
             </div>
         </div>
     </div>
     <script src="js/app.js"></script>
-    <script src="js/bootstrap.min.js"></script>    
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/sb-admin-2.min.js"></script>
     <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
     <script src='js/jkanban.min.js'></script>
-    
+    <script src="js/sb-admin-2.min.js"></script>
+
     @yield('scripts')
 </body>
 </html>
