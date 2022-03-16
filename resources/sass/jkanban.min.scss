@@ -6,7 +6,6 @@
 
 .kanban-container * {
     box-sizing: border-box;
-
 }
 
 .kanban-container:after {
@@ -20,8 +19,7 @@
     float: left;
     background: #e2e4e6;
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    border-radius: 20px;
-
+    border-radius: 10px;
 }
 
 .kanban-board.disabled-board {
@@ -40,10 +38,10 @@
 .kanban-board header {
     font-size: 16px;
     padding: 15px;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    background-color: #4a617d !important;
-    color:whitesmoke;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #4a617d;
+    color: whitesmoke;
 }
 
 .kanban-board header .kanban-title-board {
@@ -75,7 +73,7 @@
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     -webkit-animation: append-animate 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     animation: append-animate 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 @-webkit-keyframes append-animate {
@@ -86,7 +84,6 @@
         transform: translateY(0);
     }
 }
-
 @keyframes append-animate {
     from {
         transform: translateY(-20px);

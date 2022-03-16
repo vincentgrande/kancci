@@ -18,7 +18,7 @@ class KanbanController extends Controller
         ]);
     }
 
-    public function getBoards(Request $request) 
+    public function getBoards(Request $request)
     {
         $kanban = Kanban::where('id', $request->id)->get();
         $tables = Table::where('kanban_id', $kanban[0]->id)->get();
@@ -32,7 +32,7 @@ class KanbanController extends Controller
                         foreach($order->{'items'} as $ord){
                             $uid = $ord;
                             $card = Card::where('table_id', $table->id)->where('uid', $uid)->first();
-                            array_push($cards, $card);   
+                            array_push($cards, $card);
                         }
                     }
                         if($table->id == $order->{'id'}){
@@ -42,7 +42,7 @@ class KanbanController extends Controller
                             $board['item'] = [];
                             foreach($cards as $card)
                             {
-                                
+
                                 if($card != null && $card->isActive == true && $table->id == $card->table_id)
                                 {
                                     $item['id'] = $card->uid;
@@ -50,13 +50,13 @@ class KanbanController extends Controller
                                     $item['class'] = $card->uid;
                                     array_push( $board['item'], $item);
                                 }
-                                
+
                             }
                             array_push( $myBoards, $board);
                         }
                     }
                 }
-            
+
         return json_encode($myBoards);
     }
 
@@ -66,12 +66,12 @@ class KanbanController extends Controller
        {
            return 'false';
        }
-       $card = new Card;
-       $card->uid = $request->uid;
-       $card->title = "New card";
-       $card->isActive = true;
-       $card->table_id = $request->table;
-       $card->save();
+       Card::create([
+           'uid' => $request->uid,
+           'title' => $request->title,
+           'isActive' => true,
+           'table_id' => $request->table,
+       ]);
        return 'true';
     }
 
@@ -93,21 +93,21 @@ class KanbanController extends Controller
         if(Kanban::where('id', $request->kanbanId)->update(['order' => $boards]))
         {
             return 'Ok';
-        } 
+        }
         return 'nok';
     }
-    public function tablemaxid(Request $request)
+    public function tablemaxid(Request $request): int
     {
-       return Table::max('id');
+       return Table::max('id') ?? 0;
     }
     public function saveTable(Request $request)
     {
-        $test = $request->board;
-        $table = new Table;
-        $table->id = $request->board[0]['id'];
-        $table->title = $request->board[0]['title'];
-        $table->kanban_id = $request->kanbanId;
-        $table->save();
+        Table::create([
+            'id' => $request->board[0]['id'],
+            'title' => $request->board[0]['title'],
+            'kanban_id' => $request->kanbanId
+        ]);
+
         return 'true';
     }
 }

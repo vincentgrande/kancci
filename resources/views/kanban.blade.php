@@ -20,32 +20,7 @@
 <div id="actions" class="mb-4 w-100"><button class="btn btn-success" id="addBoard">Add board</button></div>
 <br>
     <div id="myKanban" style="overflow: auto;" class="mb-3"></div>
-    @foreach($tables as $table)
-    @foreach($cards as $card)
-        @if($card->isActive == true && $table->id == $card->table_id)
-            <!-- Modal -->
-            <div class="modal" id="card{{$card->uid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">{{$card->title}}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#card{{$card->uid}}').modal('hide');">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            ...
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#card{{$card->uid}}').modal('hide');">Close</button>
-                            <button type="button" class="btn btn-success">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-    @endforeach
-    @endforeach
+    <div id="modal-container"></div>
 
 @stop
 @section('scripts')
@@ -53,6 +28,7 @@
     $count = 0;
 @endphp
     <script>
+
         const slider = document.querySelector('#myKanban');
         let isDown = false;
         let startX;
@@ -81,7 +57,7 @@
         /**
          * function to save all boards and card in database
          */
-        let saveKanban = function(){
+        let saveKanban = async function(){
             let board = [];
             var kanbanBoard = $('.kanban-board').map(function(_, x) {
                 let kanbanids = [];
@@ -102,7 +78,9 @@
                   },
                   success: function(result){
                       console.log(result)
+                      getBoards()
                   }});
+            return 1;
         }
         /**
          * function to add a new board
@@ -116,7 +94,6 @@
                     "_token": "{{ csrf_token() }}"
                   },
                   success: function(result){
-                      console.log(result)
                       board = [
                         {
                             id: parseInt(result)+1,
@@ -125,8 +102,7 @@
                             ]
                         }
                       ];
-                      Kanban.addBoards(board);
-                      console.log(board);
+                      //console.log(board);
                       $.ajax({ // Ajax to save kanban in DB.
                         url: "{{ route('saveTable') }}",
                         method: 'post',
@@ -137,7 +113,8 @@
                         },
                         success: function(result){
                             if(result =='true'){
-                                saveKanban()
+                                Kanban.addBoards(board);
+                                getBoards()
                             }
                         }});
                   }});
@@ -162,7 +139,8 @@
                   data: {
                     "_token": "{{ csrf_token() }}",
                      uid: newuid,
-                     table: tableid
+                     table: tableid,
+                      title:'New card toto'
                   },
                   success: function(result){
                       if(result == 'true'){ // Verify if the new uid is not already used.
@@ -170,10 +148,11 @@
                             tableid,
                             {
                                 id: newuid,
-                                title:'New card',
+                                title:'New card toto',
                             }
                         );
                         saveKanban()
+
                       }else{
                           uidVerif()
                       }
@@ -194,9 +173,9 @@
                         dragBoards       : true,                                         // the boards are draggable, if false only item can be dragged
                         itemAddOptions: {
                             enabled: true,                                              // add a button to board for easy item creation
-                            content: "+",                                                // text or html content of the board button
-                            class: 'kanban-title-button btn',         // default class of the button
-                            footer: false                                                // position the button on footer
+                            content: "Add card +",                                                // text or html content of the board button
+                            class: 'kanban-title-button btn btn-primary w-100',         // default class of the button
+                            footer: true,                                                // position the button on footer
                         },
 
                         click            : function (el) { console.log('#card'+el.dataset.eid); $('#card'+el.dataset.eid).modal('show'); },                             // callback when any board's item are clicked
@@ -212,6 +191,7 @@
 
         $(document).ready(function() {
             getBoards(); // fetch boards from database after page load
+
         });
 
         /**
@@ -232,6 +212,27 @@
                         console.log(result[board])
                         var taskList = [];
                         $.each(result[board].item, function (task) { // build cards array
+                            $('#modal-container').append (`
+                            <div class="modal" id="card`+result[board].item[task].id+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">`+result[board].item[task].title+`</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#card`+result[board].item[task].id+`').modal('hide');">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        ...
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#card`+result[board].item[task].id+`').modal('hide');">Close</button>
+                                        <button type="button" class="btn btn-success">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            `);
                             taskList.push({
                                 id: result[board].item[task].id,
                                 title: result[board].item[task].title,
@@ -246,6 +247,20 @@
                     });
 
                     Kanban.addBoards(boardsList); // Add boards to kanban
+
+                    let id=0;
+                    let header = $('.kanban-board-header');
+                    header.each(function(index){
+                        console.log(this)
+                        let settingsBtn = document.createElement("button")
+                        settingsBtn.innerHTML = "📝";
+                        settingsBtn.setAttribute('onclick',"alert('yo "+id+"')")
+                        settingsBtn.classList = "btn float-right align-top";
+                        $(this).append(settingsBtn)
+                        id++
+                    });
+
+
             }});
         }
 
