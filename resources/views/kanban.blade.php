@@ -28,31 +28,6 @@
         $count = 0;
     @endphp
     <script>
-        const slider = document.querySelector('#myKanban');
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-        slider.addEventListener('mousedown', (e) => {
-            isDown = true;
-            slider.classList.add('active');
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        });
-        slider.addEventListener('mouseleave', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-        slider.addEventListener('mouseup', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-        slider.addEventListener('mousemove', (e) => {
-            if(!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 3; //scroll-fast
-            slider.scrollLeft = scrollLeft - walk;
-        });
         /**
          * function to save all boards and card in database
          */
@@ -85,6 +60,8 @@
          */
         var addBoard = document.getElementById("addBoard");
         addBoard.addEventListener("click", function() {
+            newuid = Math.random().toString(36).substr(2, 9) // Create uid for the new board
+
             $.ajax({ // Ajax : fetch id max from tables
                 url: "{{ route('tablemaxid') }}",
                 method: 'get',
@@ -96,6 +73,7 @@
                     board = [
                         {
                             id: parseInt(result)+1,
+                            uid: newuid,
                             title: "Kanban Default",
                             item: [
                             ]
@@ -122,9 +100,32 @@
 
         });
         let removeBoard = function(eid) {
-            // To Do Ajax : remove board from bdd
+            // To Do Ajax : remove board from bdd && add uid to boards ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
             Kanban.removeBoard(eid.toString());
             saveKanban()
+        };
+        let showEdit = function(eid) {
+            $('#modal-container').append (`
+                            <div class="modal" id="board`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit board `+eid+`</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#board`+eid+`').modal('hide');">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <button class="btn btn-danger" onclick="removeBoard(`+eid+`); $('#board`+eid+`').modal('hide');">Remove board</button>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#board`+eid+`').modal('hide');">Close</button>
+                                        <button type="button" class="btn btn-success">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`);
+            $('#board'+eid+'').modal('show');
         };
         /**
          * function to add a new card in a board
@@ -237,45 +238,26 @@
                                 title: result[board].item[task].title,
                             })
                         });
-                        $('#modal-container').append (`
-                            <div class="modal" id="board`+result[board].id+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit board</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#board`+result[board].id+`').modal('hide');">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        ...
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#board`+result[board].id+`').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success">Save changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                            `);
+
                         boardsList.push({ // build boards array
                             id: result[board].id,
                             title: result[board].title,
+                            uid:result[board].uid,
                             item: taskList
                         });
                     });
                     Kanban.addBoards(boardsList); // Add boards to kanban
-                    let id=0;
-                    let header = $('.kanban-board-header');
-                    header.each(function(index){
-                        console.log(this)
-                        let settingsBtn = document.createElement("button")
-                        settingsBtn.innerHTML = "📝";
-                        settingsBtn.setAttribute('onclick',"alert('yo "+id+"')")
-                        settingsBtn.classList = "btn float-right align-top";
-                        $(this).append(settingsBtn)
-                        id++
-                    });
+                    let elements = $('.kanban-board');
+                    elements = Array.from(elements); //convert to array
+                    elements.map(element => // map on kanban-boards to add edit button
+                        {
+                            let settingsBtn = document.createElement("button")
+                            settingsBtn.innerHTML = "📝";
+                            settingsBtn.setAttribute('onclick',"showEdit("+element.dataset.id+"); /*removeBoard("+element.dataset.id+")*/")
+                            settingsBtn.classList = "btn float-right align-top";
+                            element.children[0].append(settingsBtn)
+                        }
+                    );
                 }});
         }
 
