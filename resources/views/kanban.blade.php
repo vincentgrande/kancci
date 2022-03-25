@@ -101,27 +101,40 @@
          * function to show modal to edit board
          */
         let showEdit = function(eid) {
-            $('#modal-container').append (`
-                            <div class="modal edit-modal" id="board`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            $.ajax({
+                url: "{{ route('getboard') }}",
+                method: 'get',
+                data: {
+                    id:eid
+                },
+                success: function(result){
+                    console.log(result[0].title)
+                    $('#modal-container').append (`
+                            <div class="modal edit-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">Edit board `+eid+`</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#board`+eid+`').modal('hide'); ">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit`+eid+`').modal('hide'); ">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <button class="btn btn-danger" onclick="removeBoard(`+eid+`); $('#board`+eid+`').modal('hide');">Remove board</button>
+                                        <button class="btn btn-danger mb-2" onclick="removeBoard(`+eid+`); $('#edit`+eid+`').modal('hide');">Remove board</button><br>
+                                        <input type="hidden" id="uid" name="uid" value="`+eid+`">
+                                        <label for="title">Title:</label>
+                                        <input type="text" id="title" name="title" value="`+result[0].title+`">
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#board`+eid+`').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success">Save changes</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
+                                        <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`','/editboard')">Save changes</button>
                                     </div>
                                 </div>
                             </div>
                         </div>`);
-            $('#board'+eid+'').modal('show');
+                    $('#edit'+eid+'').modal('show');
+                }});
+
         };
         /**
          * function to show modal to edit card
@@ -136,43 +149,44 @@
                 success: function(result){
                     console.log(result[0].title)
                     $('#modal-container').append (`
-                    <div class="modal edit-card-modal" id="card`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result[0].title+`</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#card`+eid+`').modal('hide');">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit`+eid+`').modal('hide');">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
                                                 <input type="hidden" id="uid" name="uid" value="`+result[0].uid+`">
-                                                <label for="cardtitle">Title:</label>
-                                                <input type="text" id="cardtitle" name="cardtitle" value="`+result[0].title+`">
+                                                <label for="title">Title:</label>
+                                                <input type="text" id="title" name="title" value="`+result[0].title+`">
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#card`+eid+`').modal('hide');">Close</button>
-                                                <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`')">Save changes</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
+                                                <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`','/editcard')">Save changes</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                     `);
-                    $('#card'+eid+'').modal('show');
+                    $('#edit'+eid+'').modal('show');
                 }});
         }
-        let saveChanges = function(eid) {
-            let title = $("#cardtitle").val()
+
+        let saveChanges = function(eid, route) {
+            let title = $("#title").val()
             console.log(title)
             $.ajax({
-                url: "{{ route('editCard') }}",
+                url:  route,
                 method: 'post',
                 data: {
                     id:eid,
-                    cardtitle:title
+                    title:title
                 },
                 success: function(result){
-                    $('#card'+eid).modal('hide');
+                    $('#edit'+eid).modal('hide');
                     getBoards()
                 }});
         }
@@ -228,7 +242,7 @@
             },
 
 
-            click            : function (el) { console.log('#card'+el.dataset.eid); showEditCard(el.dataset.eid);/*$('#card'+el.dataset.eid).modal('show');*/ },                             // callback when any board's item are clicked
+            click            : function (el) { console.log('#edit'+el.dataset.eid); showEditCard(el.dataset.eid);/*$('#card'+el.dataset.eid).modal('show');*/ },                             // callback when any board's item are clicked
             context          : function (el, event) {},                      // callback when any board's item are right clicked
             dragEl           : function (el, source) {},                     // callback when any board's item are dragged
             dragendEl        : function (el) { saveKanban() },                             // callback when any board's item stop drag

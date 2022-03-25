@@ -34,5 +34,7 @@ Route::post('savetodb', 'KanbanController@saveToDB')->name("saveToDB");
 Route::get('tablemaxid', 'KanbanController@tablemaxid')->name("tablemaxid");
 Route::post('savetable', 'KanbanController@saveTable')->name("saveTable");
 Route::get('getcard', 'KanbanController@getCard')->name("getcard");
+Route::get('getboard', 'KanbanController@getBoard')->name("getboard");
 Route::post('editcard', 'KanbanController@editCard')->name("editCard");
+Route::post('editboard', 'KanbanController@editBoard')->name("editBoard");
 

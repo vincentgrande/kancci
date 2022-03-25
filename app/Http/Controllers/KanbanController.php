@@ -128,9 +128,24 @@ class KanbanController extends Controller
         return Card::select('uid','title','description','startDate','endDate')->where('uid',$request->id)->get();
     }
 
+    public function getBoard(Request $request)
+    {
+        // TO DO : Check if user is allowed to access to this board
+        return Table::select('title')->where('id',$request->id)->get();
+    }
+
     public function editCard(Request $request)
     {
-        if(Card::where('uid', $request->id)->update(['title' => $request->cardtitle]))
+        if(Card::where('uid', $request->id)->update(['title' => $request->title]))
+        {
+            return 'Ok';
+        }
+        return 'nok';
+    }
+
+    public function editBoard(Request $request)
+    {
+        if(Table::where('id', $request->id)->update(['title' => $request->title]))
         {
             return 'Ok';
         }
