@@ -4,18 +4,9 @@
 
 @section('content')
     <style>
-        .custom-button {
-            border: none;
-            color: white;
-            background-color:transparent;
-            padding: left;
-            margin: 10px;
-            text-align: right;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            right: 0px;
-        }
+    .kanban-container {
+        width: auto;
+    }
     </style>
     <div id="actions" class="mb-4 w-100"><button class="btn btn-success" id="addBoard">Add board</button></div>
     <br>
@@ -99,19 +90,24 @@
             // Save new board in tables
 
         });
+        /**
+         * function to remove board from kanban
+         */
         let removeBoard = function(eid) {
-            // To Do Ajax : remove board from bdd && add uid to boards ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
             Kanban.removeBoard(eid.toString());
             saveKanban()
         };
+        /**
+         * function to show modal to edit board
+         */
         let showEdit = function(eid) {
             $('#modal-container').append (`
-                            <div class="modal" id="board`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal edit-modal" id="board`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">Edit board `+eid+`</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#board`+eid+`').modal('hide');">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#board`+eid+`').modal('hide'); ">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
@@ -127,6 +123,59 @@
                         </div>`);
             $('#board'+eid+'').modal('show');
         };
+        /**
+         * function to show modal to edit card
+         */
+        let showEditCard = function(eid){
+            $.ajax({
+                url: "{{ route('getcard') }}",
+                method: 'get',
+                data: {
+                    id:eid
+                },
+                success: function(result){
+                    console.log(result[0].title)
+                    $('#modal-container').append (`
+                    <div class="modal edit-card-modal" id="card`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result[0].title+`</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#card`+eid+`').modal('hide');">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" id="uid" name="uid" value="`+result[0].uid+`">
+                                                <label for="cardtitle">Title:</label>
+                                                <input type="text" id="cardtitle" name="cardtitle" value="`+result[0].title+`">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#card`+eid+`').modal('hide');">Close</button>
+                                                <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`')">Save changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    `);
+                    $('#card'+eid+'').modal('show');
+                }});
+        }
+        let saveChanges = function(eid) {
+            let title = $("#cardtitle").val()
+            console.log(title)
+            $.ajax({
+                url: "{{ route('editCard') }}",
+                method: 'post',
+                data: {
+                    id:eid,
+                    cardtitle:title
+                },
+                success: function(result){
+                    $('#card'+eid).modal('hide');
+                    getBoards()
+                }});
+        }
         /**
          * function to add a new card in a board
          */
@@ -179,7 +228,7 @@
             },
 
 
-            click            : function (el) { console.log('#card'+el.dataset.eid); $('#card'+el.dataset.eid).modal('show'); },                             // callback when any board's item are clicked
+            click            : function (el) { console.log('#card'+el.dataset.eid); showEditCard(el.dataset.eid);/*$('#card'+el.dataset.eid).modal('show');*/ },                             // callback when any board's item are clicked
             context          : function (el, event) {},                      // callback when any board's item are right clicked
             dragEl           : function (el, source) {},                     // callback when any board's item are dragged
             dragendEl        : function (el) { saveKanban() },                             // callback when any board's item stop drag
@@ -192,6 +241,12 @@
 
         $(document).ready(function() {
             getBoards(); // fetch boards from database after page load
+            $(document).on('hide.bs.modal','.edit-modal', function () {
+                $('.edit-modal').remove(); // Remove edit board modal on close event
+            });
+            $(document).on('hide.bs.modal','.edit-card-modal', function () {
+                $('.edit-card-modal').remove(); // Remove edit card modal on close event
+            });
         });
 
         /**
@@ -212,27 +267,6 @@
                         console.log(result[board])
                         var taskList = [];
                         $.each(result[board].item, function (task) { // build cards array
-                            $('#modal-container').append (`
-                            <div class="modal" id="card`+result[board].item[task].id+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">`+result[board].item[task].title+`</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#card`+result[board].item[task].id+`').modal('hide');">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        ...
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#card`+result[board].item[task].id+`').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success">Save changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                            `);
                             taskList.push({
                                 id: result[board].item[task].id,
                                 title: result[board].item[task].title,
@@ -242,7 +276,6 @@
                         boardsList.push({ // build boards array
                             id: result[board].id,
                             title: result[board].title,
-                            uid:result[board].uid,
                             item: taskList
                         });
                     });
@@ -254,12 +287,13 @@
                             let settingsBtn = document.createElement("button")
                             settingsBtn.innerHTML = "📝";
                             settingsBtn.setAttribute('onclick',"showEdit("+element.dataset.id+"); /*removeBoard("+element.dataset.id+")*/")
-                            settingsBtn.classList = "btn float-right align-top";
+                            settingsBtn.classList = "btn float-right";
                             element.children[0].append(settingsBtn)
                         }
                     );
                 }});
         }
+
 
     </script>
 @stop

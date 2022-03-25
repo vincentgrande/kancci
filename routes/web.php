@@ -33,3 +33,6 @@ Route::post('verifycardid', 'KanbanController@verifyCardId')->name("verifyCardId
 Route::post('savetodb', 'KanbanController@saveToDB')->name("saveToDB");
 Route::get('tablemaxid', 'KanbanController@tablemaxid')->name("tablemaxid");
 Route::post('savetable', 'KanbanController@saveTable')->name("saveTable");
+Route::get('getcard', 'KanbanController@getCard')->name("getcard");
+Route::post('editcard', 'KanbanController@editCard')->name("editCard");
+

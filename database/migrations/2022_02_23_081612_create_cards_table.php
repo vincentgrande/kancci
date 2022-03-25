@@ -22,7 +22,6 @@ class CreateCardsTable extends Migration
         Schema::create('tables', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->string('uid')->unique();
             $table->unsignedBigInteger('kanban_id');
             $table->foreign('kanban_id')->references('id')->on('kanbans');
             $table->timestamps();

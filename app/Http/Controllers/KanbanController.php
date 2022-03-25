@@ -16,6 +16,7 @@ class KanbanController extends Controller
 
     public function getBoards(Request $request)
     {
+        // TO DO : check if user is allowed to get the requested boards
         $kanban = Kanban::where('id', $request->id)->get();
         $tables = Table::where('kanban_id', $kanban[0]->id)->get();
         $myBoards = [];
@@ -116,9 +117,23 @@ class KanbanController extends Controller
         Table::create([
             'id' => $request->board[0]['id'],
             'title' => $request->board[0]['title'],
-            'uid' => $request->board[0]['uid'],
             'kanban_id' => $request->kanbanId
         ]);
         return 'true';
+    }
+
+    public function getCard(Request $request)
+    {
+        // TO DO : Check if user is allowed to access to this card
+        return Card::select('uid','title','description','startDate','endDate')->where('uid',$request->id)->get();
+    }
+
+    public function editCard(Request $request)
+    {
+        if(Card::where('uid', $request->id)->update(['title' => $request->cardtitle]))
+        {
+            return 'Ok';
+        }
+        return 'nok';
     }
 }
