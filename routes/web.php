@@ -31,8 +31,8 @@ Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");
 
 Route::post('verifycardid', 'KanbanController@verifyCardId')->name("verifyCardId");
 Route::post('savetodb', 'KanbanController@saveToDB')->name("saveToDB");
-Route::get('tablemaxid', 'KanbanController@tablemaxid')->name("tablemaxid");
-Route::post('savetable', 'KanbanController@saveTable')->name("saveTable");
+Route::get('boardmaxid', 'KanbanController@boardMaxId')->name("boardMaxId");
+Route::post('saveboard', 'KanbanController@saveBoard')->name("saveBoard");
 Route::get('getcard', 'KanbanController@getCard')->name("getcard");
 Route::get('getboard', 'KanbanController@getBoard')->name("getboard");
 Route::post('editcard', 'KanbanController@editCard')->name("editCard");

@@ -19,11 +19,17 @@ class CreateCardsTable extends Migration
             $table->longText('order')->nullable();
             $table->timestamps();
         });
-        Schema::create('tables', function (Blueprint $table) {
+        Schema::create('boards', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
             $table->unsignedBigInteger('kanban_id');
             $table->foreign('kanban_id')->references('id')->on('kanbans');
+            $table->timestamps();
+        });
+        Schema::create('labels', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('label');
+            $table->string('color');
             $table->timestamps();
         });
         Schema::create('cards', function (Blueprint $table) {
@@ -34,8 +40,10 @@ class CreateCardsTable extends Migration
             $table->date('startDate')->nullable();
             $table->date('endDate')->nullable();
             $table->boolean('isActive');
-            $table->unsignedBigInteger('table_id');
-            $table->foreign('table_id')->references('id')->on('tables');
+            $table->unsignedBigInteger('board_id');
+            $table->unsignedBigInteger('label_id')->nullable();;
+            $table->foreign('board_id')->references('id')->on('boards');
+            $table->foreign('label_id')->references('id')->on('labels');
             $table->timestamps();
         });
     }

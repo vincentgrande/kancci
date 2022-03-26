@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Table extends Model
+class Board extends Model
 {
     protected $fillable = ['id', 'title', 'kanban_id'];
 
