@@ -27,6 +27,10 @@ Route::get('/forgot-password', function () {
     return view('auth.forgot-password');
 })->name("forgot-password");
 
+Route::get('/welcome', function () {
+    return view('welcome');
+})->name("welcome");
+
 Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");
 
 Route::post('verifycardid', 'KanbanController@verifyCardId')->name("verifyCardId");

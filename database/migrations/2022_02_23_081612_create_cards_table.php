@@ -37,14 +37,6 @@ class CreateCardsTable extends Migration
             $table->string('title');
             $table->timestamps();
         });
-        Schema::create('checklist_items', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('label');
-            $table->boolean('isChecked');
-            $table->unsignedBigInteger('checklist_id')->nullable();;
-            $table->foreign('checklist_id')->references('id')->on('checklists');
-            $table->timestamps();
-        });
         Schema::create('cards', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
@@ -59,6 +51,16 @@ class CreateCardsTable extends Migration
             $table->foreign('board_id')->references('id')->on('boards');
             $table->foreign('label_id')->references('id')->on('labels');
             $table->foreign('checklist_id')->references('id')->on('checklists');
+            $table->timestamps();
+        });
+        Schema::create('checklist_items', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('label');
+            $table->boolean('isChecked');
+            $table->unsignedBigInteger('checklist_id')->nullable();
+            $table->unsignedBigInteger('card_id')->nullable();
+            $table->foreign('checklist_id')->references('id')->on('checklists');
+            $table->foreign('card_id')->references('id')->on('cards');
             $table->timestamps();
         });
         Schema::create('attachments', function (Blueprint $table) {

@@ -150,7 +150,7 @@ class KanbanController extends Controller
     public function getCard(Request $request)
     {
         // TO DO : Check if user is allowed to access to this card
-        return Card::select('uid','title','description','startDate','endDate')->where('uid',$request->id)->get();
+        return Card::where('uid',$request->id)->first();
     }
 
     /**

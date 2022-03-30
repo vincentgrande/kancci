@@ -153,21 +153,24 @@
                     id:eid
                 },
                 success: function(result){
-                    console.log(result[0].title)
+                    console.log("============Debug result=============")
+                    console.log(result.checklistitems)
+                    console.log("============END debug result=============")
+
                     $('#modal-container').append (`
                     <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result[0].title+`</h5><br>
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result.title+`</h5><br>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit`+eid+`').modal('hide');">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <input type="hidden" id="uid" name="uid" value="`+result[0].uid+`">
+                                                <input type="hidden" id="uid" name="uid" value="`+result.uid+`">
                                                 <label for="title">Title:</label>
-                                                <input type="text" id="title" name="title" value="`+result[0].title+`"><br>
+                                                <input type="text" id="title" name="title" value="`+result.title+`"><br>
                                                 <button class="btn btn-danger mt-5" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
 
                                             </div>
@@ -299,6 +302,7 @@
                             item: taskList
                         });
                     });
+                    console.log(boardsList)
                     Kanban.addBoards(boardsList); // Add boards to kanban
                     let elements = $('.kanban-board');
                     elements = Array.from(elements); //convert to array

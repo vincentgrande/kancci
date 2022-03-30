@@ -18,10 +18,14 @@ class Card extends Model
     }
     public function checklist()
     {
-        return $this->hasOne('App\Checklist', 'checklist_id', 'id');
+        return $this->hasOne('App\Checklist', 'id', 'checklist_id');
+    }
+    public function checklistitems()
+    {
+        return $this->belongsToMany(ChecklistItem::class);
     }
     public function attachments()
     {
-        return $this->hasMany(Attachment::class);
+        return $this->belongsToMany(Attachment::class);
     }
 }
