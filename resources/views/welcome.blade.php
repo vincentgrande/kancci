@@ -51,7 +51,25 @@
                     </div>
 
                     <div id="myKanban" style="overflow: auto;" class="mb-3 "></div>
-
+                    <div class="modal edit-card-modal" id="welcome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Woops !</h5><br>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#welcome').modal('hide');">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>You seem's to be not connected 😓</p>
+                                    <p>You need to be registered and connected to use all the kanban's functionnalities ! 👌</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#welcome').modal('hide');">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -102,14 +120,14 @@
             class: 'kanban-title-button btn btn-primary w-100',         // default class of the button
             footer: true,                                                // position the button on footer
         },
-        click            : function (el) { console.log('#edit'+el.dataset.eid); showEditCard(el.dataset.eid);/*$('#card'+el.dataset.eid).modal('show');*/ },                             // callback when any board's item are clicked
+        click            : function (el) { $('#welcome').modal('show');},                             // callback when any board's item are clicked
         context          : function (el, event) {},                      // callback when any board's item are right clicked
         dragEl           : function (el, source) {},                     // callback when any board's item are dragged
         dragendEl        : function (el) {  },                             // callback when any board's item stop drag
         dropEl           : function (el, target, source, sibling) {},    // callback when any board's item drop in a board
         dragBoard        : function (el, source) {},                     // callback when any board stop drag
         dragendBoard     : function (el) {},                             // callback when any board stop drag
-        buttonClick      : function(el, boardId) {},                     // callback when the board's button is clicked
+        buttonClick      : function(el, boardId) {$('#welcome').modal('show');},                     // callback when the board's button is clicked
         propagationHandlers: [],
     })
     let boardsList = [
@@ -163,6 +181,7 @@
         {
             let settingsBtn = document.createElement("button")
             settingsBtn.innerHTML = "📝";
+            settingsBtn.setAttribute('onclick',"$('#welcome').modal('show');")
             settingsBtn.classList = "btn float-right";
             element.children[0].append(settingsBtn)
         }
