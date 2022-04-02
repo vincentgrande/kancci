@@ -13,7 +13,7 @@ class Card extends Model
     ];
     public function board()
     {
-        return $this->hasOne(Boards::class);
+        return $this->hasOne(Board::class);
     }
     public function creator()
     {
@@ -21,15 +21,15 @@ class Card extends Model
     }
     public function labels()
     {
-        return $this->hasMany(Labels::class);
+        return $this->hasMany(Label::class);
     }
     public function comments()
     {
-        return $this->hasMany(Comments::class);
+        return $this->hasMany(Comment::class);
     }
     public function attachment()
     {
-        return $this->hasOne(Attachements::class);
+        return $this->hasOne(Attachement::class);
     }
     public function checklist()
     {

@@ -14,7 +14,7 @@ class Checklist extends Model
 
     public function CheckListItems()
     {
-        return $this->hasMany(ChecklistItems::class);
+        return $this->hasMany(ChecklistItem::class);
     }
     public function Card()
     {

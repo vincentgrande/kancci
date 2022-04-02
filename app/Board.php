@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Board extends Model
 {
-    protected $fillable = ['id', 'title', 'kanban_id'];
+    protected $fillable = ['id', 'title', 'orderNo', 'updated_at', 'kanban_id', 'labels', 'cards', 'created_by'];
+    protected $casts = [
+        'updated_at' => 'datetime',
+        'created_at' => 'datetime'
+    ];
 
     public function cards()
     {
@@ -14,6 +18,14 @@ class Board extends Model
     }
     public function kanban()
     {
-        return $this->hasOne('App\Kanban', 'id', 'kanban_id');
+        return $this->hasOne(Kanban::class);
+    }
+    public function creator()
+    {
+        return $this->hasOne(User::class);
+    }
+    public function Labels()
+    {
+        return $this->hasMany(Label::class);
     }
 }

@@ -4,7 +4,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class WorkGroups extends Model
+class WorkGroup extends Model
 {
     protected $fillable = ['title', 'updated_at', 'created_by', 'users', 'kanban_id'];
     protected $casts = [
