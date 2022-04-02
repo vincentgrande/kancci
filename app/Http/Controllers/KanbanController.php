@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Boards;
 use Illuminate\Http\Request;
 use App\Card;
-use App\Table;
 use App\Kanban;
 
 class KanbanController extends Controller
@@ -13,15 +13,15 @@ class KanbanController extends Controller
     {
 
         return view('kanban',[
-            'tables' => Table::all(),
-            'cards' => Card::with('tables')->get(),
+            'tables' => Boards::all(),
+            'cards' => Card::with('boards')->get(),
         ]);
     }
 
     public function getBoards(Request $request)
     {
         $kanban = Kanban::where('id', $request->id)->get();
-        $tables = Table::where('kanban_id', $kanban[0]->id)->get();
+        $tables = Boards::where('kanban_id', $kanban[0]->id)->get();
         $myBoards = [];
         foreach(json_decode($kanban[0]->order) as $order)
         {
@@ -96,13 +96,13 @@ class KanbanController extends Controller
         }
         return 'nok';
     }
-    public function tablemaxid(Request $request)
+    public function boardsmaxid(Request $request)
     {
-        return Table::max('id') ?? 0;
+        return Boards::max('id') ?? 0;
     }
     public function saveTable(Request $request)
     {
-        Table::create([
+        Boards::create([
             'id' => $request->board[0]['id'],
             'title' => $request->board[0]['title'],
             'kanban_id' => $request->kanbanId
