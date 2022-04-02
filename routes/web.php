@@ -11,6 +11,9 @@
 |
 */
 
+
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return view('index');
 })->name("index");
@@ -42,3 +45,7 @@ Route::get('getboard', 'KanbanController@getBoard')->name("getboard");
 Route::post('editcard', 'KanbanController@editCard')->name("editCard");
 Route::post('editboard', 'KanbanController@editBoard')->name("editBoard");
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

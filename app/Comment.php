@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Comments extends Model
+class Comment extends Model
 {
     protected $fillable = ['message','updated_at', 'card_id', 'created_by'];
     protected $cast = [

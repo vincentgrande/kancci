@@ -20,6 +20,7 @@ class CreateCardsTable extends Migration
             $table->integer('orderNo');
             $table->dateTime('startDate');
             $table->dateTime('endDate');
+            $table->boolean('isActive');
             $table->unsignedBigInteger('board_id');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('labels');

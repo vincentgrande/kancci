@@ -13,7 +13,7 @@ class Kanban extends Model
     ];
     public function boards()
     {
-        return $this->hasMany(Boards::class);
+        return $this->hasMany(Board::class);
     }
     public function creator()
     {
@@ -21,7 +21,7 @@ class Kanban extends Model
     }
     public function workgroups()
     {
-        return $this->hasOne(WorkGroups::class);
+        return $this->hasOne(WorkGroup::class);
     }
     public function labels()
     {

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Attachements extends Model
+class Attachement extends Model
 {
     protected $fillable = ['extension', 'fileName', 'filePath','updated_at', 'uploaded_by', 'card_id'];
     protected $cast = [

@@ -14,7 +14,7 @@ class Labels extends Model
 
     public function Board()
     {
-        return $this->hasMany(Boards::class);
+        return $this->hasMany(Board::class);
     }
     public function Card()
     {

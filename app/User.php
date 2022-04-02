@@ -39,10 +39,10 @@ class User extends Authenticatable
     ];
     public function Boards()
     {
-        return $this->hasMany(Boards::class);
+        return $this->hasMany(Board::class);
     }
     public function WorkGroups()
     {
-        return $this->hasMany(WorkGroups::class);
+        return $this->hasMany(WorkGroup::class);
     }
 }

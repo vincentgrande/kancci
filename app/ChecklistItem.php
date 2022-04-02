@@ -8,10 +8,10 @@ class ChecklistItem extends Model
 {
     public function checklist()
     {
-        return $this->hasOne('App\Checklist', 'checklist_id', 'id');
+        return $this->hasOne(Checklist::class);
     }
     public function card()
     {
-        return $this->hasOne('App\Card', 'id', 'card_id');
+        return $this->hasOne(Checklist::class);
     }
 }

@@ -19,7 +19,6 @@
 
             $count = 0;
     @endphp
-    <script>var myInput = document.getElementById("thm-title"); myInput.InnerHTML = "I am a hacker";</script>
     <script>
         /**
          * function to save all boards and card in database
@@ -53,7 +52,7 @@
          */
         var addBoard = document.getElementById("addBoard");
         addBoard.addEventListener("click", function() {
-            newuid = Math.random().toString(36).substr(2, 9) // Create uid for the new board
+            newid = Math.random().toString(36).substr(2, 9) // Create uid for the new board
 
             $.ajax({ // Ajax : fetch id max from boards
                 url: "{{ route('boardMaxId') }}",
@@ -66,7 +65,6 @@
                     board = [
                         {
                             id: parseInt(result)+1,
-                            uid: newuid,
                             title: "Kanban Default",
                             item: [
                             ]
@@ -83,7 +81,7 @@
                             kanbanId: 1
                         },
                         success: function(result){
-                            if(result =='true'){
+                            if(result ==='true'){
                                 Kanban.addBoards(board);
                                 saveKanban()
                             }
@@ -127,7 +125,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <input type="hidden" id="uid" name="uid" value="`+eid+`">
+                                        <input type="hidden" id="id" name="id" value="`+eid+`">
                                         <label for="title">Title:</label>
                                         <input type="text" id="title" name="title" value="`+result[0].title+`"><br>
                                         <button class="btn btn-danger mt-5" onclick="removeBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove board</button>
@@ -170,7 +168,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <input type="hidden" id="uid" name="uid" value="`+result.uid+`">
+                                                <input type="hidden" id="id" name="id" value="`+result.id+`">
                                                 <label for="title">Title:</label>
                                                 <input type="text" id="title" name="title" value="`+result.title+`"><br>
                                                 <button class="btn btn-danger mt-5" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
@@ -215,7 +213,7 @@
                     method: 'post',
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        uid: newuid,
+                        id: newuid,
                         board: boardid,
                         title:'New card'
                     },
