@@ -4566,7 +4566,7 @@ comments:
 comments-dollar:
   changes:
     - 5.3.0
-  label: Comments Dollar
+  label: Comment Dollar
   search:
     terms:
       - bubble

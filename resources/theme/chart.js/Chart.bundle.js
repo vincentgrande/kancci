@@ -1532,7 +1532,7 @@ function getAlpha(string) {
 // generators
 function hexString(rgba, a) {
    var a = (a !== undefined && rgba.length === 3) ? a : rgba[3];
-   return "#" + hexDouble(rgba[0]) 
+   return "#" + hexDouble(rgba[0])
               + hexDouble(rgba[1])
               + hexDouble(rgba[2])
               + (
@@ -11822,7 +11822,7 @@ var Scale = core_element.extend({
 				me.paddingLeft = Math.max((paddingLeft - offsetLeft) * me.width / (me.width - offsetLeft), 0) + 3;
 				me.paddingRight = Math.max((paddingRight - offsetRight) * me.width / (me.width - offsetRight), 0) + 3;
 			} else {
-				// A vertical axis is more constrained by the width. Labels are the
+				// A vertical axis is more constrained by the width. Label are the
 				// dominant factor here, so get that length first and account for padding
 				var labelWidth = tickOpts.mirror ? 0 :
 					// use lineSpace for consistency with horizontal axis
@@ -14147,7 +14147,7 @@ function toTimestamp(scale, input) {
 		return +value;
 	}
 
-	// Labels are in an incompatible format and no `parser` has been provided.
+	// Label are in an incompatible format and no `parser` has been provided.
 	// The user might still use the deprecated `format` option for parsing.
 	if (!parser && typeof format === 'function') {
 		value = format(input);
@@ -19891,7 +19891,7 @@ var Legend = core_element.extend({
 		me.beforeSetDimensions();
 		me.setDimensions();
 		me.afterSetDimensions();
-		// Labels
+		// Label
 		me.beforeBuildLabels();
 		me.buildLabels();
 		me.afterBuildLabels();
@@ -19998,9 +19998,9 @@ var Legend = core_element.extend({
 		ctx.font = labelFont.string;
 
 		if (isHorizontal) {
-			// Labels
+			// Label
 
-			// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
+			// Width of each line of legend boxes. Label wrap onto multiple lines when there are too many to fit on one
 			var lineWidths = me.lineWidths = [0];
 			var totalHeight = 0;
 
@@ -20419,7 +20419,7 @@ var Title = core_element.extend({
 		me.beforeSetDimensions();
 		me.setDimensions();
 		me.afterSetDimensions();
-		// Labels
+		// Label
 		me.beforeBuildLabels();
 		me.buildLabels();
 		me.afterBuildLabels();

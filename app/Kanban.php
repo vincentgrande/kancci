@@ -25,6 +25,6 @@ class Kanban extends Model
     }
     public function labels()
     {
-        return $this->hasMany(Labels::class);
+        return $this->hasMany(Label::class);
     }
 }

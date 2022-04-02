@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Labels extends Model
+class Label extends Model
 {
     protected $fillable = ['id','label','color', 'updated_at', 'created_by','board_id', 'card_id'];
     protected $cast = [

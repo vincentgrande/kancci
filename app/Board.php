@@ -26,6 +26,6 @@ class Board extends Model
     }
     public function Labels()
     {
-        return $this->hasMany(Labels::class);
+        return $this->hasMany(Label::class);
     }
 }

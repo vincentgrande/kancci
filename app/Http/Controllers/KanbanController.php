@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use App\Card;
@@ -39,7 +38,7 @@ class KanbanController extends Controller
                     if(isset($order->{'items'})){
                         foreach($order->{'items'} as $ord){
                             $uid = $ord;
-                            $card = Card::where('board_id', $b->id)->where('id', $uid)->first();
+                            $card = Card::where('board_id', $b->id)->where('uid', $uid)->first();
                             array_push($cards, $card);
                         }
                     }
@@ -53,9 +52,9 @@ class KanbanController extends Controller
                         {
                             if($card != null && $card->isActive == true && $b->id == $card->board_id)
                             {
-                                $item['id'] = $card->id;
+                                $item['id'] = $card->uid;
                                 $item['title'] = $card->title;
-                                $item['class'] = $card->id;
+                                $item['class'] = $card->uid;
                                 array_push( $board['item'], $item);
                             }
                         }
@@ -76,12 +75,12 @@ class KanbanController extends Controller
      */
     public function verifyCardId(Request $request)
     {
-        if(Card::where('id', $request->id)->count() != 0) // Check if unique id already exists
+        if(Card::where('uid', $request->uid)->count() != 0) // Check if unique id already exists
         {
             return 'False';
         }
         $card = Card::create([
-            'id' => $request->id,
+            'uid' => $request->uid,
             'title' => $request->title,
             'isActive' => true,
             'board_id' => $request->board,
@@ -103,7 +102,7 @@ class KanbanController extends Controller
                 if(isset($b['items'])){
                     foreach($b['items'] as $item)
                     {
-                        Card::where('id',$item)->update(['board_id' => $b['id']]); // Change card's board_id value
+                        Card::where('uid',$item)->update(['board_id' => $b['id']]); // Change card's board_id value
                     }
                 }
             }
@@ -136,18 +135,12 @@ class KanbanController extends Controller
      */
     public function saveBoard(Request $request)
     {
-        try {
-            Board::create([
-                'id' => $request->board[0]['id'],
-                'title' => $request->board[0]['title'],
-                'kanban_id' => $request->kanbanId
-            ]);
-            return 'true';
-        }
-        catch (Exception $ex)
-        {
-            print ($ex->getMessage());
-        }
+        Board::create([
+            'id' => $request->board[0]['id'],
+            'title' => $request->board[0]['title'],
+            'kanban_id' => $request->kanbanId
+        ]);
+        return 'true';
     }
 
     /**
@@ -157,7 +150,7 @@ class KanbanController extends Controller
     public function getCard(Request $request)
     {
         // TO DO : Check if user is allowed to access to this card
-        return Card::where('id',$request->id)->first();
+        return Card::where('uid',$request->id)->first();
     }
 
     /**
@@ -176,7 +169,7 @@ class KanbanController extends Controller
      */
     public function editCard(Request $request)
     {
-        if(Card::where('id', $request->id)->update(['title' => $request->title]))
+        if(Card::where('uid', $request->id)->update(['title' => $request->title]))
         {
             return 'Ok';
         }
