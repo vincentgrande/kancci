@@ -16,8 +16,10 @@
 @stop
 @section('scripts')
     @php
-        $count = 0;
+
+            $count = 0;
     @endphp
+    <script>var myInput = document.getElementById("thm-title"); myInput.InnerHTML = "I am a hacker";</script>
     <script>
         /**
          * function to save all boards and card in database

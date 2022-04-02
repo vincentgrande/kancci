@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCardsTable extends Migration
+class Boards extends Migration
 {
     /**
      * Run the migrations.
@@ -13,25 +13,18 @@ class CreateCardsTable extends Migration
      */
     public function up()
     {
-      Schema::create('cards', function (Blueprint $table) {
+        Schema::create('boards', function (Blueprint $table) {
             $table->bigIncrements('id')->unique()->autoIncrement();
             $table->string('title');
-            $table->string('description');
             $table->integer('orderNo');
-            $table->dateTime('startDate');
-            $table->dateTime('endDate');
-            $table->unsignedBigInteger('board_id');
+            $table->unsignedBigInteger('kanban_id');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('labels');
-            $table->unsignedBigInteger('comments');
-            $table->unsignedBigInteger('attachement_id');
-            $table->unsignedBigInteger('checklist_id');
-            $table->foreign('board_id')->references('id')->on('boards');
+            $table->unsignedBigInteger('cards');
+            $table->foreign('kanban_id')->references('id')->on('kanban');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('labels')->references('id')->on('labels');
-            $table->foreign('comments')->references('id')->on('comments');
-            $table->foreign('attachement_id')->references('id')->on('attachements');
-            $table->foreign('checklist_id')->references('id')->on('checklists');
+            $table->foreign('cards')->references('id')->on('cards');
             $table->timestamps();
         });
     }
@@ -43,6 +36,6 @@ class CreateCardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cards');
+        Schema::dropIfExists('boards');
     }
 }

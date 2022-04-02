@@ -4,18 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Checklist extends Model
+class Comments extends Model
 {
-    protected $fillable = ['title', 'checklist_items', 'created_by','card_id'];
+    protected $fillable = ['message','updated_at', 'card_id', 'created_by'];
     protected $cast = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
 
-    public function CheckListItems()
-    {
-        return $this->hasMany(ChecklistItems::class);
-    }
     public function Card()
     {
         return $this->hasOne(Card::class);

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use App\Card;
-use App\Board;
+use App\Boards;
 use App\Kanban;
 
 class KanbanController extends Controller
@@ -26,7 +26,7 @@ class KanbanController extends Controller
     {
         // TO DO : check if user is allowed to get the requested boards
         $kanban = Kanban::where('id', $request->id)->get();
-        $boards = Board::where('kanban_id', $kanban[0]->id)->get();
+        $boards = Boards::where('kanban_id', $kanban[0]->id)->get();
         $myBoards = [];
         if(json_decode($kanban[0]->order) != null)
         {
@@ -126,7 +126,7 @@ class KanbanController extends Controller
      */
     public function boardMaxId(Request $request)
     {
-        return Board::max('id') ?? 0;
+        return Boards::max('id') ?? 0;
     }
 
     /**
@@ -135,7 +135,7 @@ class KanbanController extends Controller
      */
     public function saveBoard(Request $request)
     {
-        Board::create([
+        Boards::create([
             'id' => $request->board[0]['id'],
             'title' => $request->board[0]['title'],
             'kanban_id' => $request->kanbanId
@@ -160,7 +160,7 @@ class KanbanController extends Controller
     public function getBoard(Request $request)
     {
         // TO DO : Check if user is allowed to access to this board
-        return Board::select('title')->where('id',$request->id)->get();
+        return Boards::select('title')->where('id',$request->id)->get();
     }
 
     /**
@@ -182,7 +182,7 @@ class KanbanController extends Controller
      */
     public function editBoard(Request $request): string
     {
-        if(Board::where('id', $request->id)->update(['title' => $request->title]))
+        if(Boards::where('id', $request->id)->update(['title' => $request->title]))
         {
             return 'Ok';
         }
