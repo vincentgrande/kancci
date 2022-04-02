@@ -13,7 +13,7 @@ class CreateCardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('cards', function (Blueprint $table) {
+      Schema::create('cards', function (Blueprint $table) {
             $table->bigIncrements('id')->unique()->autoIncrement();
             $table->string('title');
             $table->string('description');

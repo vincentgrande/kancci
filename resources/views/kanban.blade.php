@@ -4,20 +4,11 @@
 
 @section('content')
     <style>
-        .custom-button {
-            border: none;
-            color: white;
-            background-color:transparent;
-            padding-left: 0;
-            margin: 10px;
-            text-align: right;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            right: 0px;
-        }
+    .kanban-container {
+        width: auto;
+    }
     </style>
-    <div id="actions" class="mb-4 w-100"><button class="btn btn-success" id="addBoard">Add board</button></div>
+    <div id="actions" class="mb-4 w-100"><button class="btn text-white" style="background-color: #8ED081" id="addBoard">Add board</button></div>
     <br>
     <div id="myKanban" style="overflow: auto;" class="mb-3"></div>
     <div id="modal-container"></div>
@@ -30,31 +21,6 @@
     @endphp
     <script>var myInput = document.getElementById("thm-title"); myInput.InnerHTML = "I am a hacker";</script>
     <script>
-        const slider = document.querySelector('#myKanban');
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-        slider.addEventListener('mousedown', (e) => {
-            isDown = true;
-            slider.classList.add('active');
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        });
-        slider.addEventListener('mouseleave', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-        slider.addEventListener('mouseup', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-        slider.addEventListener('mousemove', (e) => {
-            if(!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 3; //scroll-fast
-            slider.scrollLeft = scrollLeft - walk;
-        });
         /**
          * function to save all boards and card in database
          */
@@ -87,8 +53,10 @@
          */
         var addBoard = document.getElementById("addBoard");
         addBoard.addEventListener("click", function() {
-            $.ajax({ // Ajax : fetch id max from tables
-                url: "{{ route('tablemaxid') }}",
+            newuid = Math.random().toString(36).substr(2, 9) // Create uid for the new board
+
+            $.ajax({ // Ajax : fetch id max from boards
+                url: "{{ route('boardMaxId') }}",
                 method: 'get',
                 data: {
                     "_token": "{{ csrf_token() }}"
@@ -98,6 +66,7 @@
                     board = [
                         {
                             id: parseInt(result)+1,
+                            uid: newuid,
                             title: "Kanban Default",
                             item: [
                             ]
@@ -106,7 +75,7 @@
 
                     console.log(board);
                     $.ajax({ // Ajax to save kanban in DB.
-                        url: "{{ route('saveTable') }}",
+                        url: "{{ route('saveBoard') }}",
                         method: 'post',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -120,18 +89,124 @@
                             }
                         }});
                 }});
-            // Save new board in tables
-
         });
+        /**
+         * function to remove board from kanban
+         */
         let removeBoard = function(eid) {
-            // To Do Ajax : remove board from bdd
             Kanban.removeBoard(eid.toString());
             saveKanban()
         };
         /**
+         * function to remove card from board
+         */
+        let removeCard = function(eid) {
+            Kanban.removeElement(eid.toString());
+            saveKanban()
+        };
+        /**
+         * function to show modal to edit board
+         */
+        let showEdit = function(eid) {
+            $.ajax({
+                url: "{{ route('getboard') }}",
+                method: 'get',
+                data: {
+                    id:eid
+                },
+                success: function(result){
+                    console.log(result[0].title)
+                    $('#modal-container').append (`
+                            <div class="modal edit-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit board `+result[0].title+`</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit`+eid+`').modal('hide'); ">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" id="uid" name="uid" value="`+eid+`">
+                                        <label for="title">Title:</label>
+                                        <input type="text" id="title" name="title" value="`+result[0].title+`"><br>
+                                        <button class="btn btn-danger mt-5" onclick="removeBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove board</button>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
+                                        <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`','{{route('editBoard')}}')">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`);
+                    $('#edit'+eid+'').modal('show');
+                }});
+
+        };
+        /**
+         * function to show modal to edit card
+         */
+        let showEditCard = function(eid){
+            $.ajax({
+                url: "{{ route('getcard') }}",
+                method: 'get',
+                data: {
+                    id:eid
+                },
+                success: function(result){
+                    console.log("============Debug result=============")
+                    console.log(result.checklistitems)
+                    console.log("============END debug result=============")
+
+                    $('#modal-container').append (`
+                    <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result.title+`</h5><br>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit`+eid+`').modal('hide');">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" id="uid" name="uid" value="`+result.uid+`">
+                                                <label for="title">Title:</label>
+                                                <input type="text" id="title" name="title" value="`+result.title+`"><br>
+                                                <button class="btn btn-danger mt-5" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
+                                                <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`','{{route('editCard')}}')">Save changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    `);
+                    $('#edit'+eid+'').modal('show');
+                }});
+        }
+
+        let saveChanges = function(eid, route) {
+            let title = $("#title").val()
+            console.log(title)
+            $.ajax({
+                url:  route,
+                method: 'post',
+                data: {
+                    id:eid,
+                    title:title
+                },
+                success: function(result){
+                    $('#edit'+eid).modal('hide');
+                    getBoards()
+                }});
+        }
+        /**
          * function to add a new card in a board
          */
-        let addCard = function(tableid){
+        let addCard = function(boardid){
             let uidVerif = function(){
                 newuid = Math.random().toString(36).substr(2, 9) // Create uid for the new card
                 console.log(newuid)
@@ -141,16 +216,16 @@
                     data: {
                         "_token": "{{ csrf_token() }}",
                         uid: newuid,
-                        table: tableid,
-                        title:'New card toto'
+                        board: boardid,
+                        title:'New card'
                     },
                     success: function(result){
-                        if(result == 'true'){ // Verify if the new uid is not already used.
+                        if(result === 'True'){ // Verify if the new uid is not already used.
                             Kanban.addElement(
-                                tableid,
+                                boardid,
                                 {
                                     id: newuid,
-                                    title:'New card toto',
+                                    title:'New card',
                                 }
                             );
                             saveKanban()
@@ -178,9 +253,7 @@
                 class: 'kanban-title-button btn btn-primary w-100',         // default class of the button
                 footer: true,                                                // position the button on footer
             },
-
-
-            click            : function (el) { console.log('#card'+el.dataset.eid); $('#card'+el.dataset.eid).modal('show'); },                             // callback when any board's item are clicked
+            click            : function (el) { console.log('#edit'+el.dataset.eid); showEditCard(el.dataset.eid);/*$('#card'+el.dataset.eid).modal('show');*/ },                             // callback when any board's item are clicked
             context          : function (el, event) {},                      // callback when any board's item are right clicked
             dragEl           : function (el, source) {},                     // callback when any board's item are dragged
             dragendEl        : function (el) { saveKanban() },                             // callback when any board's item stop drag
@@ -193,6 +266,12 @@
 
         $(document).ready(function() {
             getBoards(); // fetch boards from database after page load
+            $(document).on('hide.bs.modal','.edit-modal', function () {
+                $('.edit-modal').remove(); // Remove edit board modal on close event
+            });
+            $(document).on('hide.bs.modal','.edit-card-modal', function () {
+                $('.edit-card-modal').remove(); // Remove edit card modal on close event
+            });
         });
 
         /**
@@ -213,73 +292,32 @@
                         console.log(result[board])
                         var taskList = [];
                         $.each(result[board].item, function (task) { // build cards array
-                            $('#modal-container').append (`
-                            <div class="modal" id="card`+result[board].item[task].id+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">`+result[board].item[task].title+`</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#card`+result[board].item[task].id+`').modal('hide');">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        ...
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#card`+result[board].item[task].id+`').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success">Save changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                            `);
                             taskList.push({
                                 id: result[board].item[task].id,
                                 title: result[board].item[task].title,
                             })
                         });
-                        $('#modal-container').append (`
-                            <div class="modal" id="board`+result[board].id+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit board</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#board`+result[board].id+`').modal('hide');">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        ...
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#board`+result[board].id+`').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success">Save changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                            `);
+
                         boardsList.push({ // build boards array
                             id: result[board].id,
                             title: result[board].title,
                             item: taskList
                         });
                     });
+                    console.log(boardsList)
                     Kanban.addBoards(boardsList); // Add boards to kanban
-                    let id=0;
-                    let header = $('.kanban-board-header');
-                    header.each(function(index){
-                        console.log(this)
-                        let settingsBtn = document.createElement("button")
-                        settingsBtn.innerHTML = "📝";
-                        settingsBtn.setAttribute('onclick',"alert('yo "+id+"')")
-                        settingsBtn.classList = "btn float-right align-top";
-                        $(this).append(settingsBtn)
-                        id++
-                    });
+                    let elements = $('.kanban-board');
+                    elements = Array.from(elements); //convert to array
+                    elements.map(element => // map on kanban-boards to add edit button
+                        {
+                            let settingsBtn = document.createElement("button")
+                            settingsBtn.innerHTML = "📝";
+                            settingsBtn.setAttribute('onclick',"showEdit("+element.dataset.id+"); /*removeBoard("+element.dataset.id+")*/")
+                            settingsBtn.classList = "btn float-right";
+                            element.children[0].append(settingsBtn)
+                        }
+                    );
                 }});
         }
-
     </script>
 @stop

@@ -71,8 +71,6 @@
     padding: 15px;
     margin-bottom: 20px;
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    -webkit-animation: append-animate 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    animation: append-animate 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     border-radius: 10px;
 }
 
@@ -84,14 +82,14 @@
         transform: translateY(0);
     }
 }
-@keyframes append-animate {
+/*@keyframes append-animate {
     from {
         transform: translateY(-20px);
     }
     to {
         transform: translateY(0);
     }
-}
+}*/
 .kanban-item:hover {
     cursor: move;
 }
