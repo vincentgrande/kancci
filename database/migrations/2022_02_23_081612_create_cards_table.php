@@ -13,29 +13,25 @@ class CreateCardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('kanbans', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('title');
-            $table->longText('order')->nullable();
-            $table->timestamps();
-        });
-        Schema::create('tables', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('title');
-            $table->unsignedBigInteger('kanban_id');
-            $table->foreign('kanban_id')->references('id')->on('kanbans');
-            $table->timestamps();
-        });
         Schema::create('cards', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->unique()->autoIncrement();
             $table->string('title');
-            $table->string('uid')->unique();
-            $table->string('description')->nullable();
-            $table->date('startDate')->nullable();
-            $table->date('endDate')->nullable();
-            $table->boolean('isActive');
-            $table->unsignedBigInteger('table_id');
-            $table->foreign('table_id')->references('id')->on('tables');
+            $table->string('description');
+            $table->integer('orderNo');
+            $table->dateTime('startDate');
+            $table->dateTime('endDate');
+            $table->unsignedBigInteger('board_id');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('labels');
+            $table->unsignedBigInteger('comments');
+            $table->unsignedBigInteger('attachement_id');
+            $table->unsignedBigInteger('checklist_id');
+            $table->foreign('board_id')->references('id')->on('boards');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('labels')->references('id')->on('labels');
+            $table->foreign('comments')->references('id')->on('comments');
+            $table->foreign('attachement_id')->references('id')->on('attachements');
+            $table->foreign('checklist_id')->references('id')->on('checklists');
             $table->timestamps();
         });
     }

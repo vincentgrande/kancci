@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'updated_at', 'reset_token', 'workgroups', 'boards'
     ];
 
     /**
@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'reset_token'
     ];
 
     /**
@@ -34,6 +34,15 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
+    public function Boards()
+    {
+        return $this->hasMany(Boards::class);
+    }
+    public function WorkGroups()
+    {
+        return $this->hasMany(WorkGroups::class);
+    }
 }

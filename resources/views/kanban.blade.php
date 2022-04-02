@@ -8,7 +8,7 @@
             border: none;
             color: white;
             background-color:transparent;
-            padding: left;
+            padding-left: 0;
             margin: 10px;
             text-align: right;
             text-decoration: none;
@@ -25,8 +25,10 @@
 @stop
 @section('scripts')
     @php
-        $count = 0;
+
+            $count = 0;
     @endphp
+    <script>var myInput = document.getElementById("thm-title"); myInput.InnerHTML = "I am a hacker";</script>
     <script>
         const slider = document.querySelector('#myKanban');
         let isDown = false;
