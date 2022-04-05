@@ -12,4 +12,9 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+    .js('resources/theme/js/jquery.min.js', 'public/js')
+    .js('resources/js/jkanban.min.js', 'public/js')
+    .js('resources/js/bootstrap.bundle.min.js', 'public/js')
+    .js('resources/js/bootstrap.min.js', 'public/js')
+    .js('resources/theme/js/sb-admin-2.min.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css')

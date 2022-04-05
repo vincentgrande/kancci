@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>KANCCI - @yield('title')</title>
+    <title>KANCCI</title>
     <link href="css/all.min.css" rel="stylesheet" type="text/css">
     <link href="css/jkanban.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -27,12 +27,12 @@
 
             <!-- Topbar -->
             <nav class=" bg-primary mb-4 shadow position-relative">
-                        <a class="d-flex text-center align-items-center justify-content-center text-decoration-none" href="{{ route('index') }}">
-                            <div class="text-light font-weight-bold h1 rotate-n-15 text-center">
-                                <i class="fab fa-trello"></i>
-                            </div>
-                            <div id="test" class="text-light text-center h1 font-weight-bold m-3">KANCCI</div>
-                        </a>
+                <a class="d-flex text-center align-items-center justify-content-center text-decoration-none" href="{{ route('index') }}">
+                    <div class="text-light font-weight-bold h1 rotate-n-15 text-center">
+                        <i class="fab fa-trello"></i>
+                    </div>
+                    <div id="test" class="text-light text-center h1 font-weight-bold m-3">KANCCI</div>
+                </a>
             </nav>
             <!-- End of Topbar -->
 
@@ -61,7 +61,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>You seem's to be not connected 😓</p>
+                                    <p>It seems you are not logged in 😓</p>
                                     <p>You need to be registered and connected to use all the kanban's functionnalities ! 👌</p>
                                 </div>
                                 <div class="modal-footer">

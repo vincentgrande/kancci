@@ -2,18 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use App\Card;
 use App\Board;
 use App\Kanban;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 class KanbanController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+    }
+
+    /**
      * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
+    {
+        if(Auth::check()){
+            return view('index');
+        }else{
+            return view('welcome');
+        }
+    }
+
+    /**
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function kanban()
     {
         return view('kanban');
     }

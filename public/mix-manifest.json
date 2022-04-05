@@ -1,12 +1,9 @@
 {
-    "/js/app.js": "/js/app.js?id=6769c8a9fdb052a1d661",
-    "/js/jquery.min.js": "/js/jquery.min.js?id=150c73896ec355a6f522",
-    "/js/jkanban.min.js": "/js/jkanban.min.js?id=cbc4f56c7f0b2451b948",
-    "/js/bootstrap.bundle.min.js": "/js/bootstrap.bundle.min.js?id=4a82aaa830da129b4a63",
-    "/js/bootstrap.min.js": "/js/bootstrap.min.js?id=007e026fe476f145a77b",
-    "/js/sb-admin-2.min.js": "/js/sb-admin-2.min.js?id=38017b4a267b2105ca4d",
-    "/css/all.min.css": "/css/all.min.css?id=a798707e69c07751e86c",
-    "/css/sb-admin-2.css": "/css/sb-admin-2.css?id=6717b96eb10a3bee236d",
-    "/css/jkanban.min.css": "/css/jkanban.min.css?id=38a3b5cbea48189f5ae4",
-    "/css/app.css": "/css/app.css?id=68b329da9893e34099c7"
+    "/js/app.js": "/js/app.js",
+    "/js/jquery.min.js": "/js/jquery.min.js",
+    "/js/jkanban.min.js": "/js/jkanban.min.js",
+    "/js/bootstrap.bundle.min.js": "/js/bootstrap.bundle.min.js",
+    "/js/bootstrap.min.js": "/js/bootstrap.min.js",
+    "/js/sb-admin-2.min.js": "/js/sb-admin-2.min.js",
+    "/css/app.css": "/css/app.css"
 }
