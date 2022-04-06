@@ -11,10 +11,16 @@ class Card extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
-    public function board()
+    /**
+     * Get the Board that owns the Card
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function Board(): BelongsTo
     {
-        return $this->hasOne(Board::class);
+        return $this->belongsTo(Board::class);
     }
+    
     public function creator()
     {
         return $this->hasOne(User::class);

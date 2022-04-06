@@ -18,13 +18,10 @@
 
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content" class="bg-gray">
-
             <!-- Topbar -->
             <nav class=" bg-primary mb-4 shadow position-relative">
                 <a class="d-flex text-center align-items-center justify-content-center text-decoration-none" href="{{ route('index') }}">
@@ -35,7 +32,6 @@
                 </a>
             </nav>
             <!-- End of Topbar -->
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <!-- Content Row -->
@@ -49,7 +45,6 @@
                         <a class="btn btn-success m-2" href="{{ route('login') }}">Login</a>
                         <a class="btn btn-success m-2" href="{{ route('register') }}">Register</a>
                     </div>
-
                     <div id="myKanban" style="overflow: auto;" class="mb-3 "></div>
                     <div class="modal edit-card-modal" id="welcome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -71,12 +66,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
         <!-- End of Main Content -->
-
         <!-- Footer -->
         <footer class="sticky-footer bg-primary ">
             <div class="container my-auto">
@@ -86,19 +78,14 @@
             </div>
         </footer>
         <!-- End of Footer -->
-
     </div>
     <!-- End of Content Wrapper -->
-
 </div>
 <!-- End of Page Wrapper -->
-
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
-
-
 <script src="js/app.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>

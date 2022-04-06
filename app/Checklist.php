@@ -6,22 +6,39 @@ use Illuminate\Database\Eloquent\Model;
 
 class Checklist extends Model
 {
-    protected $fillable = ['title', 'checklist_items', 'created_by','card_id'];
+    protected $fillable = ['title', 'created_by','card_id'];
     protected $cast = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
 
-    public function CheckListItems()
+    /**
+     * Get all of the checklistitems for the Checklist
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function checklistitems(): HasMany
     {
         return $this->hasMany(ChecklistItem::class);
     }
-    public function Card()
+    
+    /**
+     * Get the card associated with the Checklist
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function card(): HasOne
     {
         return $this->hasOne(Card::class);
     }
-    public function creator()
+
+    /**
+     * Get the user that owns the Checklist
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 }

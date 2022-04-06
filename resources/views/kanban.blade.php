@@ -68,7 +68,6 @@
         var addBoard = document.getElementById("addBoard");
         addBoard.addEventListener("click", function() {
             newid = Math.random().toString(36).substr(2, 9) // Create uid for the new board
-
             $.ajax({ // Ajax : fetch id max from boards
                 url: "{{ route('boardMaxId') }}",
                 method: 'get',
@@ -85,7 +84,6 @@
                             ]
                         }
                     ];
-
                     console.log(board);
                     $.ajax({ // Ajax to save kanban in DB.
                         url: "{{ route('saveBoard') }}",
@@ -144,7 +142,6 @@
                                         <label for="title">Title:</label>
                                         <input type="text" id="title" name="title" value="`+result[0].title+`"><br>
                                         <button class="btn btn-danger mt-5" onclick="removeBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove board</button>
-
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
@@ -155,7 +152,6 @@
                         </div>`);
                     $('#edit'+eid+'').modal('show');
                 }});
-
         };
         /**
          * function to show modal to edit card
@@ -171,7 +167,6 @@
                     console.log("============Debug result=============")
                     console.log(result.checklistitems)
                     console.log("============END debug result=============")
-
                     $('#modal-container').append (`
                     <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -187,7 +182,6 @@
                                                 <label for="title">Title:</label>
                                                 <input type="text" id="title" name="title" value="`+result.title+`"><br>
                                                 <button class="btn btn-danger mt-5" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
-
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
@@ -200,7 +194,9 @@
                     $('#edit'+eid+'').modal('show');
                 }});
         }
-
+        /**
+         * Function to save changes from cards or boards  
+         */
         let saveChanges = function(eid, route) {
             let title = $("#title").val()
             console.log(title)
@@ -310,7 +306,6 @@
                                 title: result[board].item[task].title,
                             })
                         });
-
                         boardsList.push({ // build boards array
                             id: result[board].id,
                             title: result[board].title,

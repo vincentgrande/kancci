@@ -11,7 +11,6 @@
 |
 */
 
-
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,18 +29,19 @@ Route::get('/', 'KanbanController@index')->name("index");
 Route::middleware('auth')->group(function () {
     Route::get('/kanban', 'KanbanController@kanban')->name("kanban");
     Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");
-    Route::post('verifycardid', 'KanbanController@verifyCardId')->name("verifyCardId");
-    Route::post('savetodb', 'KanbanController@saveToDB')->name("saveToDB");
-    Route::get('boardmaxid', 'KanbanController@boardMaxId')->name("boardMaxId");
-    Route::post('saveboard', 'KanbanController@saveBoard')->name("saveBoard");
     Route::get('getcard', 'KanbanController@getCard')->name("getcard");
     Route::get('getboard', 'KanbanController@getBoard')->name("getboard");
+    Route::get('boardmaxid', 'KanbanController@boardMaxId')->name("boardMaxId");
+
+    Route::post('verifycardid', 'KanbanController@verifyCardId')->name("verifyCardId");
+    Route::post('savetodb', 'KanbanController@saveToDB')->name("saveToDB");
+    Route::post('saveboard', 'KanbanController@saveBoard')->name("saveBoard");
     Route::post('editcard', 'KanbanController@editCard')->name("editCard");
     Route::post('editboard', 'KanbanController@editBoard')->name("editBoard");
 });
 
 /**
- * Login routes
+ * Auth routes
  */
 Route::get('/register', function () {
     return view('auth.register');
@@ -55,11 +55,11 @@ Route::get('/forgot-password', function () {
     return view('auth.forgot-password');
 })->name("forgot-password");
 
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
+/**
+ * Error routes
+ */
 Route::get('404', function(){
     return view('error.404');
 })->name('notfound');

@@ -15,7 +15,6 @@ class KanbanController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
      * @return void
      */
     public function __construct()
@@ -90,7 +89,6 @@ class KanbanController extends Controller
         }else{
             return json_encode(null);
         }
-
     }
 
     /**
