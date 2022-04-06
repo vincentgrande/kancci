@@ -18,9 +18,9 @@ class ChecklistItem extends Model
     *
     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
     */
-    public function Checklist(): BelongsTo
+    public function checklist(): BelongsTo
     {
-        return $this->belongsTo(Checklist::class);
+        return $this->belongsTo(Checklist::class,'id','checklist_id');
     }
 
     /**
@@ -28,9 +28,9 @@ class ChecklistItem extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function Card(): BelongsTo
+    public function card(): BelongsTo
     {
-        return $this->belongsTo(Card::class);
+        return $this->belongsTo(Card::class,'id','card_id');
     }
 
 }

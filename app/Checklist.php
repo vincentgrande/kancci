@@ -21,7 +21,7 @@ class Checklist extends Model
     {
         return $this->hasMany(ChecklistItem::class);
     }
-    
+
     /**
      * Get the card associated with the Checklist
      *
@@ -29,7 +29,7 @@ class Checklist extends Model
      */
     public function card(): HasOne
     {
-        return $this->hasOne(Card::class);
+        return $this->hasOne(Card::class,'id','card_id');
     }
 
     /**
@@ -39,6 +39,6 @@ class Checklist extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'id','created_by');
     }
 }

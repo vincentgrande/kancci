@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Labels extends Migration
+class CreateChecklistitemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class Labels extends Migration
      */
     public function up()
     {
-        Schema::create('labels', function (Blueprint $table) {
-            $table->bigIncrements('id')->unique()->autoIncrement();
+        Schema::create('checklistitems', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('label');
-            $table->string('color');
-            $table->unsignedBigInteger('board_id');
-            $table->unsignedBigInteger('created_by');
+            $table->boolean('isChecked');
+            $table->unsignedBigInteger('checklist_id');
+            $table->foreign('checklist_id')->references('id')->on('checklists');
             $table->unsignedBigInteger('card_id');
-            $table->foreign('board_id')->references('id')->on('boards');
-            $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('card_id')->references('id')->on('cards');
             $table->timestamps();
         });
@@ -34,6 +32,6 @@ class Labels extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('labels');
+        Schema::dropIfExists('checklistitems');
     }
 }

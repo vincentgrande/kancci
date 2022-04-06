@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'updated_at', 'reset_token', 'workgroups', 'boards'
+        'name', 'email', 'password', 'updated_at', 'reset_token'
     ];
 
     /**
@@ -37,12 +37,28 @@ class User extends Authenticatable
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
-    public function Boards()
+
+    /**
+     * Get the board associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function board()
     {
         return $this->hasMany(Board::class);
     }
-    public function WorkGroups()
+
+    /**
+     * Get the workgroup associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\belongsToMany
+     */
+    public function workgroup()
     {
-        return $this->hasMany(WorkGroup::class);
+        return $this->belongsToMany(WorkGroup::class);
+    }
+    public function workgroup_user()
+    {
+        return $this->hasMany('App\WorkGroupUser');
     }
 }

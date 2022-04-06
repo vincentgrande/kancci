@@ -6,21 +6,43 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class WorkGroup extends Model
 {
-    protected $fillable = ['title', 'updated_at', 'created_by', 'users', 'kanban_id'];
+    protected $fillable = ['title', 'updated_at', 'created_by'];
     protected $casts = [
         'updated_at' => 'datetime',
         'created_at' => 'datetime'
     ];
+
+    /**
+     * Get the creator associated with the WorkGroup
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function creator()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class,'id','created_by');
     }
+
+    /**
+     * Get the users associated with the Workgroup
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\belongsToMany
+     */
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class);
     }
+
+    /**
+     * Get the kanban associated with the WorkGroup
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function kanban()
     {
         return $this->hasMany(Kanban::class);
+    }
+    public function workgroup_user()
+    {
+        return $this->hasMany('App\WorkGroupUser');
     }
 }

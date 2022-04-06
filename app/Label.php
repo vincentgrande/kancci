@@ -6,22 +6,56 @@ use Illuminate\Database\Eloquent\Model;
 
 class Label extends Model
 {
-    protected $fillable = ['id','label','color', 'updated_at', 'created_by','board_id', 'card_id'];
+    protected $fillable = ['label','color', 'updated_at', 'created_by'];
     protected $cast = [
       'created_at' => 'datetime',
       'updated_at' => 'datetime'
     ];
 
-    public function Board()
+    /**
+     * Get the board associated with the Label
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function board()
     {
-        return $this->hasMany(Board::class);
+        return $this->belongsTo(Board::class);
     }
-    public function Card()
+
+    /**
+     * Get the cards associated with the Label
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function cards()
     {
-        return $this->hasOne(Card::class);
+        return $this->belongsToMany(Card::class);
     }
+    public function card_label()
+    {
+        return $this->hasMany('App\CardLabel');
+    }
+    /**
+     * Get the creator associated with the Label
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function creator()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class, 'id','created_by');
+    }
+
+    /**
+     * Get the kanban associated with the WorkGroup
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function kanban()
+    {
+        return $this->hasMany(Kanban::class);
+    }
+    public function kanban_label()
+    {
+        return $this->hasMany('App\KanbanLabel');
     }
 }

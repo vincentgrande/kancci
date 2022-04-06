@@ -12,12 +12,23 @@ class Comment extends Model
         'updated_at' => 'datetime'
     ];
 
-    public function Card()
+    /**
+     * Get the card associated with the comment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function card()
     {
-        return $this->hasOne(Card::class);
+        return $this->belongsTo(Card::class,'id','card_id');
     }
+
+    /**
+     * Get the creator associated with the comment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function creator()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class,'id','created_by');
     }
 }

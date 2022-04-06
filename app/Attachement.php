@@ -12,12 +12,23 @@ class Attachement extends Model
         'updated_at' => 'datetime'
     ];
 
-    public function Card()
+    /**
+     * Get the card that owns the Attachment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function card()
     {
-        return $this->hasOne(Card::class);
+        return $this->belongsTo(Card::class,'id','card_id');
     }
+
+    /**
+     * Get the creator that owns the Attachment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function creator()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class, 'id','uploaded_by');
     }
 }

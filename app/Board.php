@@ -6,25 +6,49 @@ use Illuminate\Database\Eloquent\Model;
 
 class Board extends Model
 {
-    protected $fillable = ['id', 'title', 'orderNo', 'updated_at', 'kanban_id', 'labels', 'cards', 'created_by'];
+    protected $fillable = ['title', 'updated_at', 'kanban_id', 'created_by'];
+
     protected $casts = [
         'updated_at' => 'datetime',
         'created_at' => 'datetime'
     ];
 
+    /**
+     * Get the cards owned by the board
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function cards()
     {
         return $this->hasMany(Card::class);
     }
+
+    /**
+     * Get the kanban that owns the board
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function kanban()
     {
-        return $this->hasOne(Kanban::class);
+        return $this->belongsTo(Kanban::class,'id','kanban_id');
     }
+
+    /**
+     * Get the creator that owns the board
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function creator()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class,'id','created_by');
     }
-    public function Labels()
+
+    /**
+     * Get the labels that owns the board
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function labels()
     {
         return $this->hasMany(Label::class);
     }

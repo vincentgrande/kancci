@@ -21,10 +21,6 @@ class CreateUsersTable extends Migration
             $table->string('email', '255')->unique('pm_email');
             $table->string('password');
             $table->string('reset_token');
-            $table->unsignedBigInteger('boards')->nullable();
-            $table->unsignedBigInteger('workgroups')->nullable();
-            $table->foreign('boards')->references('id')->on('boards');
-            $table->foreign('workgroups')->references('id')->on('workgroups');
             $table->rememberToken();
             $table->timestamps();
         });

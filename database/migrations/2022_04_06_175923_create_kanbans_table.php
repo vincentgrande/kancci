@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateChecklistsTable extends Migration
+class CreateKanbansTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateChecklistsTable extends Migration
      */
     public function up()
     {
-        Schema::create('checklists', function (Blueprint $table) {
-            $table->bigIncrements('id')->unique()->autoIncrement();
+        Schema::create('kanbans', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('title');
-            $table->unsignedBigInteger('checklist_items');
+            $table->longText('order');
+            $table->string('visibility');
+            $table->unsignedBigInteger('workgroup_id');
+            $table->foreign('workgroup_id')->references('id')->on('workgroups');
             $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('card_id');
-            $table->foreign('checklist_items')->references('id')->on('checklist_items');
             $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('card_id')->references('id')->on('cards');
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class CreateChecklistsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('checklists');
+        Schema::dropIfExists('kanbans');
     }
 }

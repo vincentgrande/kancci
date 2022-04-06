@@ -13,25 +13,18 @@ class CreateCardsTable extends Migration
      */
     public function up()
     {
-      Schema::create('cards', function (Blueprint $table) {
-            $table->bigIncrements('id')->unique()->autoIncrement();
+        Schema::create('cards', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('title');
             $table->string('description');
-            $table->integer('orderNo');
-            $table->dateTime('startDate');
-            $table->dateTime('endDate');
+            $table->date('startDate')->nullable();
+            $table->date('endDate')->nullable();
             $table->boolean('isActive');
             $table->unsignedBigInteger('board_id');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('labels');
-            $table->unsignedBigInteger('comments');
-            $table->unsignedBigInteger('attachement_id');
-            $table->unsignedBigInteger('checklist_id');
             $table->foreign('board_id')->references('id')->on('boards');
+            $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('labels')->references('id')->on('labels');
-            $table->foreign('comments')->references('id')->on('comments');
-            $table->foreign('attachement_id')->references('id')->on('attachements');
+            $table->unsignedBigInteger('checklist_id');
             $table->foreign('checklist_id')->references('id')->on('checklists');
             $table->timestamps();
         });
