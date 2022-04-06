@@ -36,22 +36,24 @@
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
             <a class="nav-link" href="{{ route('index') }}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span></a>
+                <i class="fas fa-users"></i>
+                <span>Your workspaces</span></a>
         </li>
-
         <!-- Divider -->
         <hr class="sidebar-divider">
+        
+        @yield('actions')
 
-        <li class="nav-item active">
-            <a class="nav-link" href="#">
-                <i class="fab fa-trello"></i>
-                <span>KANCCI</span></a>
-        </li>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
+        <div class="fixed-bottom">
+             <!-- Divider -->
+            <hr class="sidebar-divider">
+            <li class="nav-item active"> 
+                <a class="nav-link" href="#">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Documentation</span></a>
+            </li>
+        </div>
     </ul>
     <!-- End of Sidebar -->
 

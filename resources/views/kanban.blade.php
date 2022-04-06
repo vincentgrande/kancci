@@ -2,14 +2,29 @@
 
 @section('title', 'Kanban')
 
+@section('actions')
+    <li class="nav-item active">
+        <a class="nav-link" id="addBoard">
+            <i class="fas fa-plus-square"></i>
+            <span>Add board</span></a>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <li class="nav-item active">
+        <a class="nav-link"> <!-- TO DO : Open modal with workspaces settings-->
+            <i class="fas fa-cog"></i>
+            <span>Manage workspace</span></a>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+@endsection
+
 @section('content')
     <style>
     .kanban-container {
         width: auto;
     }
     </style>
-    <div id="actions" class="mb-4 w-100"><button class="btn text-white" style="background-color: #8ED081" id="addBoard">Add board</button></div>
-    <br>
     <div id="myKanban" style="overflow: auto;" class="mb-3"></div>
     <div id="modal-container"></div>
 
