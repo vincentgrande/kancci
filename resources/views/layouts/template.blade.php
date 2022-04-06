@@ -143,7 +143,7 @@
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="$('#userDropdown').dropdown('toggle');">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ ucfirst(trans(Auth::user()->name)) }}</span>
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::check() ? ucfirst(trans(Auth::user()->name)) : 'Guest'  }}</span>
                             <img class="img-profile rounded-circle"
                                  src="img/undraw_profile.svg">
                         </a>
@@ -177,12 +177,6 @@
                 <div class="row text-dark">
                     @yield('content')
                 </div>
-                <!--<div class="text-center">
-                    <div class="error mx-auto" data-text="404">404</div>
-                    <p class="lead text-gray-800 mb-5">Page Not Found</p>
-                    <p class="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
-                    <a href="index.html">&larr; Back to home page</a>
-                </div>-->
             </div>
 
         </div>

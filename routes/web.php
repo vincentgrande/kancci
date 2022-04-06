@@ -59,3 +59,7 @@ Route::get('/forgot-password', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('404', function(){
+    return view('error.404');
+})->name('notfound');
