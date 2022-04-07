@@ -8,10 +8,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>KANCCI - @yield('title')</title>
-    <link href="css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="css/jkanban.min.css" rel="stylesheet" type="text/css">
+    <link href="{{asset('css/all.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('css/jkanban.min.css')}}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="css/sb-admin-2.css" rel="stylesheet">
+    <link href="{{asset('css/sb-admin-2.css')}}" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -147,7 +147,7 @@
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="$('#userDropdown').dropdown('toggle');">
                             <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::check() ? ucfirst(trans(Auth::user()->name)) : 'Guest'  }}</span>
                             <img class="img-profile rounded-circle"
-                                 src="img/undraw_profile.svg">
+                                 src="{{asset('img/undraw_profile.svg')}}">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -232,12 +232,12 @@
         </div>
     </div>
 </div>
-<script src="js/app.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src='js/jkanban.min.js'></script>
-<script src="js/sb-admin-2.min.js"></script>
+<script src="{{asset('js/app.js')}}"></script>
+<script src="{{asset('js/jquery.min.js')}}"></script>
+<script src="{{asset('js/bootstrap.min.js')}}"></script>
+<script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
+<script src='{{asset('js/jkanban.min.js')}}'></script>
+<script src="{{asset('js/sb-admin-2.min.js')}}"></script>
 
 @yield('scripts')
 </body>
