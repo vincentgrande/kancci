@@ -7,6 +7,7 @@
         <h1 class="h4 text-gray-900 mb-4">KANCCI - Login</h1>
     </div>
     <form method="POST" action="{{ route('login') }}">
+        @csrf
         <div class="form-group">
             <label for="email" class="text-dark">{{ __('E-Mail Address') }}</label>
 

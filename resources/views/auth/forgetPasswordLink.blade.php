@@ -5,7 +5,7 @@
 @section('content')
 
     <div class="text-center">
-        <h1 class="h4 text-gray-900 mb-4">KANCCI - Login</h1>
+        <h1 class="h4 text-gray-900 mb-4">KANCCI - Reset password</h1>
     </div>
     <form action="{{ route('reset.password.post') }}" method="POST">
         @csrf
