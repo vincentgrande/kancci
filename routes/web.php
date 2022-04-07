@@ -51,9 +51,11 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name("login");
 
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name("forgot-password");
+Route::get('forgot-password', 'UserSettingController@showForgetPasswordForm')->name('forget.password.get');
+Route::post('forgot-password', 'UserSettingController@submitForgetPasswordForm')->name('forget.password.post'); 
+Route::get('reset-password/{token}', 'UserSettingController@showResetPasswordForm')->name('reset.password.get');
+Route::post('reset-password', 'UserSettingController@submitResetPasswordForm')->name('reset.password.post');
+
 
 Auth::routes();
 

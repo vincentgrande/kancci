@@ -6,15 +6,22 @@
     <div class="text-center">
         <h1 class="h4 text-gray-900 mb-2">Forgot Your Password?</h1>
     </div>
-    <form class="user">
-        <div class="form-group">
-            <input type="email" class="form-control form-control-user"
-                id="exampleInputEmail" aria-describedby="emailHelp"
-                placeholder="Enter Email Address...">
+    @if (Session::has('message'))
+        <div class="alert alert-success" role="alert">
+            {{ Session::get('message') }}
         </div>
-        <a href="{{route("login")}}" class="btn btn-primary btn-user btn-block">
+    @endif
+    <form action="{{ route('forget.password.post') }}" method="POST">
+        @csrf
+        <div class="form-group">
+            <input type="email" class="form-control form-control-user" id="email_address" name="email" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+            @if ($errors->has('email'))
+                <span class="text-danger">{{ $errors->first('email') }}</span>
+            @endif
+        </div>
+        <button type="submit" class="btn btn-primary btn-user btn-block">
             Reset Password
-        </a>
+        </button>
     </form>
     <hr>
     <div class="text-center">
