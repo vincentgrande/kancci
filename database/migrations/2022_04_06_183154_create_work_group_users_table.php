@@ -21,7 +21,6 @@ class CreateWorkGroupUsersTable extends Migration
             $table->foreign('workgroup_id')->references('id')->on('workgroups');
             $table->timestamps();
         });
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
     }
 

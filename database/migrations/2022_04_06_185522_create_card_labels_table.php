@@ -21,6 +21,8 @@ class CreateCardLabelsTable extends Migration
             $table->foreign('label_id')->references('id')->on('labels');
             $table->timestamps();
         });
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
     }
 
     /**
