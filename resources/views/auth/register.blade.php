@@ -46,8 +46,8 @@
                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
             </div>
         </div>
-
-        <button type="submit" class="btn btn-success btn-user btn-block">
+        {!! NoCaptcha::display() !!}
+        <button type="submit" class="btn btn-success btn-user btn-block mt-2">
             Register Account
         </button>
     </form>
