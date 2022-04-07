@@ -16,7 +16,7 @@ class CreateCardsTable extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->date('startDate')->nullable();
             $table->date('endDate')->nullable();
             $table->boolean('isActive');
@@ -24,7 +24,7 @@ class CreateCardsTable extends Migration
             $table->foreign('board_id')->references('id')->on('boards');
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users');
-            $table->unsignedBigInteger('checklist_id');
+            $table->unsignedBigInteger('checklist_id')->nullable();
             $table->foreign('checklist_id')->references('id')->on('checklists');
             $table->timestamps();
         });

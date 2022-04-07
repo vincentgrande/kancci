@@ -55,7 +55,7 @@
                 data: {
                     "_token": "{{ csrf_token() }}",
                     boards: kanbanBoard,
-                    kanbanId: 1
+                    kanbanId: {{ $kanban }}
                 },
                 success: function(result){
                     console.log(result)
@@ -123,6 +123,7 @@
                 url: "{{ route('getboard') }}",
                 method: 'get',
                 data: {
+                    "_token": "{{ csrf_token() }}",
                     id:eid
                 },
                 success: function(result){
@@ -161,6 +162,7 @@
                 url: "{{ route('getcard') }}",
                 method: 'get',
                 data: {
+                    "_token": "{{ csrf_token() }}",
                     id:eid
                 },
                 success: function(result){
@@ -204,6 +206,7 @@
                 url:  route,
                 method: 'post',
                 data: {
+                    "_token": "{{ csrf_token() }}",
                     id:eid,
                     title:title
                 },
@@ -291,7 +294,8 @@
                 url: "{{ route('getBoards') }}",
                 method: 'get',
                 data: {
-                    id:1
+                    "_token": "{{ csrf_token() }}",
+                    id:{{ $kanban }}
                 },
                 success: function(result){
                     $('.kanban-container').html('');

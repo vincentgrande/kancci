@@ -27,7 +27,8 @@ Route::get('/', 'KanbanController@index')->name("index");
  * Protected routes
  */
 Route::middleware('auth')->group(function () {
-    Route::get('/kanban', 'KanbanController@kanban')->name("kanban");
+    Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup");    
+    Route::get('/kanban/{id}', 'KanbanController@kanban')->name("kanban");
     Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");
     Route::get('getcard', 'KanbanController@getCard')->name("getcard");
     Route::get('getboard', 'KanbanController@getBoard')->name("getboard");

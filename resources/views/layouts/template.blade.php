@@ -37,7 +37,7 @@
         <li class="nav-item active">
             <a class="nav-link" href="{{ route('index') }}">
                 <i class="fas fa-users"></i>
-                <span>Your workspaces</span></a>
+                <span>Your workgroups</span></a>
         </li>
         <!-- Divider -->
         <hr class="sidebar-divider">

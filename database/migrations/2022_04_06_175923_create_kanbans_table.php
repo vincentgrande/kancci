@@ -16,7 +16,7 @@ class CreateKanbansTable extends Migration
         Schema::create('kanbans', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->longText('order');
+            $table->longText('order')->nullable();
             $table->string('visibility');
             $table->unsignedBigInteger('workgroup_id');
             $table->foreign('workgroup_id')->references('id')->on('workgroups');

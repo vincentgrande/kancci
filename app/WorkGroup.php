@@ -6,6 +6,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class WorkGroup extends Model
 {
+
+    protected $table = 'workgroups';
+
     protected $fillable = ['title', 'updated_at', 'created_by'];
     protected $casts = [
         'updated_at' => 'datetime',
