@@ -11,9 +11,9 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
     <li class="nav-item active">
-        <a class="nav-link"> <!-- TO DO : Open modal with workspaces settings-->
+        <a class="nav-link"> <!-- TO DO : Open modal with kanban settings-->
             <i class="fas fa-cog"></i>
-            <span>Manage workspace</span></a>
+            <span>Manage kanban</span></a>
     </li>
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -42,14 +42,12 @@
             let board = [];
             var kanbanBoard = $('.kanban-board').map(function(_, x) {
                 let kanbanids = [];
-                console.log("debug party ",x.children[1].children)
                 Array.prototype.slice.call(x.children[1].children).forEach( (x)=>{
                     kanbanids.push(x.dataset.eid)
                 })
                 return { id:x.dataset.id, items: kanbanids }; // Create an array with boards ID's and cards ID's
             }).get();
             board.push(kanbanBoard);
-            console.log('ici', kanbanBoard)
             $.ajax({ // Ajax to save kanban in DB.
                 url: "{{ route('saveToDB') }}",
                 method: 'post',
@@ -59,7 +57,6 @@
                     kanbanId: {{ $kanban }}
                 },
                 success: function(result){
-                    console.log('oui bon',result)
                     getBoards()
                 }});
         }
@@ -94,7 +91,7 @@
                             kanbanId: {{ $kanban }}
                         },
                         success: function(result){
-                            if(result ==='true'){
+                            if(result === 'true'){
                                 Kanban.addBoards(board);
                                 saveKanban()
                             }
@@ -260,7 +257,7 @@
                 class: 'kanban-title-button btn btn-primary w-100',         // default class of the button
                 footer: true,                                                // position the button on footer
             },
-            click            : function (el) { console.log('#edit'+el.dataset.eid); showEditCard(el.dataset.eid);/*$('#card'+el.dataset.eid).modal('show');*/ },                             // callback when any board's item are clicked
+            click            : function (el) { showEditCard(el.dataset.eid);/*$('#card'+el.dataset.eid).modal('show');*/ },                             // callback when any board's item are clicked
             context          : function (el, event) {},                      // callback when any board's item are right clicked
             dragEl           : function (el, source) {},                     // callback when any board's item are dragged
             dragendEl        : function (el) { saveKanban() },                             // callback when any board's item stop drag

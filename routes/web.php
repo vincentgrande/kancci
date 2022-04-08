@@ -27,7 +27,7 @@ Route::get('/', 'KanbanController@index')->name("index");
  * Protected routes
  */
 Route::middleware('auth')->group(function () {
-    Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup");    
+    Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup");
     Route::get('/kanban/{id}', 'KanbanController@kanban')->name("kanban");
     Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");
     Route::get('getcard', 'KanbanController@getCard')->name("getcard");
@@ -39,6 +39,10 @@ Route::middleware('auth')->group(function () {
     Route::post('saveboard', 'KanbanController@saveBoard')->name("saveBoard");
     Route::post('editcard', 'KanbanController@editCard')->name("editCard");
     Route::post('editboard', 'KanbanController@editBoard')->name("editBoard");
+
+    Route::post('addkanban', 'WorkgroupController@addKanban')->name("addKanban");
+    Route::get('getkanban', 'WorkgroupController@getKanban')->name("getKanban");
+
 });
 
 /**
@@ -53,7 +57,7 @@ Route::get('/login', function () {
 })->name("login");
 
 Route::get('forgot-password', 'UserSettingController@showForgetPasswordForm')->name('forget.password.get');
-Route::post('forgot-password', 'UserSettingController@submitForgetPasswordForm')->name('forget.password.post'); 
+Route::post('forgot-password', 'UserSettingController@submitForgetPasswordForm')->name('forget.password.post');
 Route::get('reset-password/{token}', 'UserSettingController@showResetPasswordForm')->name('reset.password.get');
 Route::post('reset-password', 'UserSettingController@submitResetPasswordForm')->name('reset.password.post');
 

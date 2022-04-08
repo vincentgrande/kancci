@@ -16,11 +16,27 @@ class WorkgroupController extends Controller
         if ($workGroup == null){
             return redirect()->route('index');
         }
-        $kanban = Kanban::where('workgroup_id',$workGroup->workgroup_id)->get();
-
         return view('workgroup',[
             'workgroup' => $workGroup,
-            'kanbans' => $kanban,
         ]);
+    }
+
+    public function addKanban(Request $request)
+    {
+        Kanban::create([
+            'title' => $request->title,
+            'workgroup_id' => $request->workgroup_id,
+            'visibility' => 'visible',
+            'created_by' => Auth::user()->id,
+        ]);
+
+        return redirect()->route('workgroup',['id'=>$request->workgroup_id]);
+    }
+    public function getKanban(Request $request){
+
+        $kanban = Kanban::where('workgroup_id',$request->workgroup_id)->get();
+
+        return $kanban;
+
     }
 }
