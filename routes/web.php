@@ -43,6 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::post('addkanban', 'WorkgroupController@addKanban')->name("addKanban");
     Route::get('getkanban', 'WorkgroupController@getKanban')->name("getKanban");
 
+    Route::post('addworkgroup', 'WorkgroupController@addWorkgroup')->name("addWorkgroup");
+    Route::get('getworkgroup', 'WorkgroupController@getWorkgroup')->name("getWorkgroup");
 });
 
 /**

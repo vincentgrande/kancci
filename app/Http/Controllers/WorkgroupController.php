@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\WorkGroup;
 use App\WorkGroupUser;
 use App\Kanban;
 
@@ -30,7 +31,7 @@ class WorkgroupController extends Controller
             'created_by' => Auth::user()->id,
         ]);
 
-        return redirect()->route('workgroup',['id'=>$request->workgroup_id]);
+        return back();
     }
     public function getKanban(Request $request){
 
@@ -38,5 +39,22 @@ class WorkgroupController extends Controller
 
         return $kanban;
 
+    }
+    public function getWorkgroup(){
+        $user = Auth::user();
+        $workGroup = WorkGroupUser::where('user_id',$user->id)->with('user')->with('workgroup')->get();
+        return  $workGroup;
+    }
+
+    public function addWorkgroup(Request $request){
+        $workgroup = WorkGroup::create([
+            'title' => $request->title,
+            'created_by' => Auth::user()->id,
+        ]);
+        WorkGroupUser::create([
+            'user_id' => Auth::user()->id,
+            'workgroup_id' => $workgroup->id,
+        ]);
+        return back();
     }
 }

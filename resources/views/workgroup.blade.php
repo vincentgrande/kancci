@@ -30,7 +30,7 @@
          * function to add a new kanban
          */
         let newKanban = function(title){
-            $.ajax({ // Ajax : fetch id max from boards
+            $.ajax({
                 url: "{{ route('addKanban') }}",
                 method: 'post',
                 data: {
@@ -77,7 +77,7 @@
         });
         let getKanban = function(){
             $('.kanbans').empty()
-            $.ajax({ // Ajax : fetch id max from boards
+            $.ajax({
                 url: "{{ route('getKanban') }}",
                 method: 'get',
                 data: {
