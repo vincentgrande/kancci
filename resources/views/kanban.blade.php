@@ -42,13 +42,14 @@
             let board = [];
             var kanbanBoard = $('.kanban-board').map(function(_, x) {
                 let kanbanids = [];
+                console.log("debug party ",x.children[1].children)
                 Array.prototype.slice.call(x.children[1].children).forEach( (x)=>{
                     kanbanids.push(x.dataset.eid)
                 })
                 return { id:x.dataset.id, items: kanbanids }; // Create an array with boards ID's and cards ID's
             }).get();
             board.push(kanbanBoard);
-            console.log( kanbanBoard)
+            console.log('ici', kanbanBoard)
             $.ajax({ // Ajax to save kanban in DB.
                 url: "{{ route('saveToDB') }}",
                 method: 'post',
@@ -58,7 +59,7 @@
                     kanbanId: {{ $kanban }}
                 },
                 success: function(result){
-                    console.log(result)
+                    console.log('oui bon',result)
                     getBoards()
                 }});
         }
@@ -72,7 +73,6 @@
                 url: "{{ route('boardMaxId') }}",
                 method: 'get',
                 data: {
-                    "_token": "{{ csrf_token() }}"
                 },
                 success: function(result){
                     console.log(result)
@@ -91,7 +91,7 @@
                         data: {
                             "_token": "{{ csrf_token() }}",
                             board: board,
-                            kanbanId: 1
+                            kanbanId: {{ $kanban }}
                         },
                         success: function(result){
                             if(result ==='true'){
@@ -123,7 +123,6 @@
                 url: "{{ route('getboard') }}",
                 method: 'get',
                 data: {
-                    "_token": "{{ csrf_token() }}",
                     id:eid
                 },
                 success: function(result){
@@ -162,7 +161,6 @@
                 url: "{{ route('getcard') }}",
                 method: 'get',
                 data: {
-                    "_token": "{{ csrf_token() }}",
                     id:eid
                 },
                 success: function(result){
@@ -197,7 +195,7 @@
                 }});
         }
         /**
-         * Function to save changes from cards or boards  
+         * Function to save changes from cards or boards
          */
         let saveChanges = function(eid, route) {
             let title = $("#title").val()
@@ -220,23 +218,20 @@
          */
         let addCard = function(boardid){
             let uidVerif = function(){
-                newuid = Math.random().toString(36).substr(2, 9) // Create uid for the new card
-                console.log(newuid)
                 $.ajax({
                     url: "{{ route('verifyCardId') }}",
                     method: 'post',
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        id: newuid,
                         board: boardid,
                         title:'New card'
                     },
                     success: function(result){
-                        if(result === 'True'){ // Verify if the new uid is not already used.
+                        if(result != null){ // Verify if the new uid is not already used.
                             Kanban.addElement(
                                 boardid,
                                 {
-                                    id: newuid,
+                                    id:result,
                                     title:'New card',
                                 }
                             );
@@ -294,7 +289,6 @@
                 url: "{{ route('getBoards') }}",
                 method: 'get',
                 data: {
-                    "_token": "{{ csrf_token() }}",
                     id:{{ $kanban }}
                 },
                 success: function(result){

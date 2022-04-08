@@ -57,16 +57,18 @@ class KanbanController extends Controller
     public function getBoards(Request $request)
     {
         // TO DO : check if user is allowed to get the requested boards
-        $kanban = Kanban::where('id', $request->id)->get();
-        $boards = Board::where('kanban_id', $kanban[0]->id)->get();
+        $kanban = Kanban::where('id', $request->id)->first();
+
+        $boards = Board::where('kanban_id', $kanban['id'])->get();
         $myBoards = [];
-        if(json_decode($kanban[0]->order) != null)
+        if(json_decode($kanban['order']) != null)
         {
-            foreach(json_decode($kanban[0]->order) as $order)
+            foreach(json_decode($kanban['order']) as $order)
             {
                 $cards = [];
                 foreach($boards as $b)
                 {
+
                     if(isset($order->{'items'})){
                         foreach($order->{'items'} as $ord){
                             $uid = $ord;
@@ -84,7 +86,7 @@ class KanbanController extends Controller
                         {
                             if($card != null && $card->isActive == true && $b->id == $card->board_id)
                             {
-                                $item['id'] = $card->uid;
+                                $item['id'] = $card->id;
                                 $item['title'] = $card->title;
                                 $item['class'] = $card->uid;
                                 array_push( $board['item'], $item);
@@ -106,7 +108,6 @@ class KanbanController extends Controller
      */
     public function verifyCardId(Request $request)
     {
-
         $card = Card::create([
             'title' => $request->title,
             'description' => '',
@@ -114,7 +115,7 @@ class KanbanController extends Controller
             'board_id' => $request->board,
             'created_by' => Auth::user()->id,
         ]);
-        return 'True';
+        return $card->id;
     }
 
     /**
@@ -180,7 +181,7 @@ class KanbanController extends Controller
     public function getCard(Request $request)
     {
         // TO DO : Check if user is allowed to access to this card
-        return Card::where('uid',$request->id)->first();
+        return Card::where('id',$request->id)->first();
     }
 
     /**
@@ -199,7 +200,7 @@ class KanbanController extends Controller
      */
     public function editCard(Request $request)
     {
-        if(Card::where('uid', $request->id)->update(['title' => $request->title]))
+        if(Card::where('id', $request->id)->update(['title' => $request->title]))
         {
             return 'Ok';
         }
