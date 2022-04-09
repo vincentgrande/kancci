@@ -76,11 +76,12 @@
         <div class="cookiebar" style="height: 10%;display: none;">
             <div class="fixed-bottom  bg-warning text-primary text-center font-weight-bold   justify-content-center align-items-center">
                 <div class="cookiebar-content">
-                    <span>We use cookies on this website to enhance your user experience.</span>
-                    <a href="#">Read more</a>
+                    <span>We use cookies on this website.<br>
+Necessary cookies help make this website usable by enabling basic functions.<br>
+                        We do not store any personal data of our users in the cookies.</span>
                 </div>
-                <div class="cookiebar-consent">
-                    <button id="cookiebar-consent-button" type="button" class="btn btn-danger">Got it!</button>
+                <div class="cookiebar-consent mb-2">
+                    <button id="cookiebar-consent-button" type="button" class="btn btn-danger ">Got it!</button>
                 </div>
             </div>
         </div>
@@ -198,7 +199,8 @@
                 return cookies[key];
             },
             setItem: (key, value) => {
-                document.cookie = `${key}=${value}`;
+                var expires = (new Date(Date.now()+ 86400*100000)).toUTCString();
+                document.cookie = `${key}=${value}; expires=` + expires +`86400)`;
             }
         };
 
