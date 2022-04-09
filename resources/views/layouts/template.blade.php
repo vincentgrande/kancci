@@ -27,7 +27,7 @@
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fab fa-trello"></i>
             </div>
-            <div id="test" class="sidebar-brand-text mx-3">KANCCI</div>
+            <div id="main-logo" class="sidebar-brand-text mx-3">KANCCI</div>
         </a>
 
         <!-- Divider -->
@@ -41,14 +41,14 @@
         </li>
         <!-- Divider -->
         <hr class="sidebar-divider">
-        
+
         @yield('actions')
 
 
         <div class="fixed-bottom">
              <!-- Divider -->
             <hr class="sidebar-divider">
-            <li class="nav-item active"> 
+            <li class="nav-item active">
                 <a class="nav-link" href="#">
                     <i class="fas fa-file-alt"></i>
                     <span>Documentation</span></a>
@@ -200,10 +200,6 @@
 </div>
 <!-- End of Page Wrapper -->
 
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
 
 <!-- Logout Modal-->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

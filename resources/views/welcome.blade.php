@@ -86,7 +86,7 @@ Necessary cookies help make this website usable by enabling basic functions.<br>
             </div>
         </div>
         <!-- Footer -->
-        <footer class="sticky-footer bg-primary ">
+        <footer class="sticky-footer bg-primary fixed-bottom">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
                     <span>Copyright &copy; KANCCI - 2022</span>

@@ -10,7 +10,7 @@
     </li>
     <!-- Divider -->
     <hr class="sidebar-divider">
-    <li class="nav-item active">
+    <li class="nav-item active" id="manageWorkgroup">
         <a class="nav-link"> <!-- TO DO : Open modal with workgroup settings-->
             <i class="fas fa-cog"></i>
             <span>Manage workgroup</span></a>
@@ -20,6 +20,7 @@
 @endsection
 
 @section('content')
+
    <div class="row kanbans"></div>
    <div id="modal-container"></div>
 
@@ -44,7 +45,7 @@
                     getKanban()
                 }});
         }
-        var addKanban = document.getElementById("addKanban");
+        let addKanban = document.getElementById("addKanban");
         addKanban.addEventListener("click", function() {
             $('#modal-container').append (`
                             <div class="modal edit-modal" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -59,6 +60,46 @@
                                     <div class="modal-body">
                                         <label for="title">Title:</label>
                                         <input type="text" id="title" name="title"><br>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit').modal('hide');">Close</button>
+                                        <button type="button" class="btn btn-success" onclick="newKanban($('#title').val())">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`);
+            $('#edit').modal('show');
+        });
+        let manageWorkgroup = document.getElementById("manageWorkgroup");
+        manageWorkgroup.addEventListener("click", function() {
+            $('#modal-container').append (`
+                            <div class="modal edit-modal" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Manage workgroup !</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit').modal('hide'); ">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label for="title">Title : </label>
+                                        <input type="text" id="title" name="title" value="{{ $workgroup->workgroup->title }}"><br>
+                                         <hr class="sidebar-divider">
+                                        <label for="invite">Invite : </label>
+                                        <input type="text" id="invite" name="invite" placeholder="Partner email"><br>
+                                    @foreach($workgroup_users as $user)
+                                    <hr class="sidebar-divider">
+                                    <div class="row">
+                                      <div class="col-md-7 col-sm-7">
+                                        <h5><a href="#" class="profile-link">{{$user->user->name}}</a></h5>
+                                            <p>{{$user->user->email}}</p>
+                                          </div>
+                                          <div class="col-md-3 col-sm-3">
+                                            <button class="btn btn-danger pull-right">Remove</button>
+                                          </div>
+                                          </div>
+                                    @endforeach
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit').modal('hide');">Close</button>

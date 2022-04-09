@@ -14,11 +14,13 @@ class WorkgroupController extends Controller
     {
         $user = Auth::user();
         $workGroup = WorkGroupUser::where('user_id',$user->id)->where('workgroup_id', $id)->with('user')->with('workgroup')->first();
+        $workgroupUser = WorkGroupUser::where('workgroup_id', $id)->with('user')->get();
         if ($workGroup == null){
             return redirect()->route('index');
         }
         return view('workgroup',[
             'workgroup' => $workGroup,
+            'workgroup_users' => $workgroupUser,
         ]);
     }
 
