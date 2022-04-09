@@ -69,6 +69,21 @@
             </div>
         </div>
         <!-- End of Main Content -->
+        <!--<div id="cookie_consent_bar" style="height: 10%; display:none;" class="cookie_consent_bar fixed-bottom  bg-warning text-primary text-center font-weight-bold vh-10 d-flex justify-content-center align-items-center hidden">
+            <h4 class="m-2">cookie blabla </h4>
+            <button id="cookie_consent" type="button" class="btn btn-danger">Got it!</button>
+        </div>-->
+        <div class="cookiebar" style="height: 10%;display: none;">
+            <div class="fixed-bottom  bg-warning text-primary text-center font-weight-bold   justify-content-center align-items-center">
+                <div class="cookiebar-content">
+                    <span>We use cookies on this website to enhance your user experience.</span>
+                    <a href="#">Read more</a>
+                </div>
+                <div class="cookiebar-consent">
+                    <button id="cookiebar-consent-button" type="button" class="btn btn-danger">Got it!</button>
+                </div>
+            </div>
+        </div>
         <!-- Footer -->
         <footer class="sticky-footer bg-primary ">
             <div class="container my-auto">
@@ -86,12 +101,12 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
-<script src="js/app.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src='js/jkanban.min.js'></script>
-<script src="js/sb-admin-2.min.js"></script>
+<script src="{{asset('js/app.js')}}"></script>
+<script src="{{asset('js/jquery.min.js')}}"></script>
+<script src="{{asset('js/bootstrap.min.js')}}"></script>
+<script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
+<script src='{{asset('js/jkanban.min.js')}}'></script>
+<script src="{{asset('js/sb-admin-2.min.js')}}"></script>
 <script>
     let Kanban = new jKanban({
         element          : '#myKanban',                                           // selector of the kanban container
@@ -173,6 +188,45 @@
             element.children[0].append(settingsBtn)
         }
     );
+
+        const cookieStorage = {
+            getItem: (key) => {
+                const cookies = document.cookie
+                    .split(';')
+                    .map(cookie => cookie.split('='))
+                    .reduce((acc, [key, value]) => ({ ...acc, [key.trim()]: value }), {});
+                return cookies[key];
+            },
+            setItem: (key, value) => {
+                document.cookie = `${key}=${value}`;
+            }
+        };
+
+        const storageType = cookieStorage;
+        const consentPropertyName = 'kancci_consent';
+        const shouldShowPopup = () => !storageType.getItem(consentPropertyName);
+        const saveToStorage = () => storageType.setItem(consentPropertyName, true);
+
+
+        $(() => {
+            console.log(shouldShowPopup(storageType))
+            const consentPopup = $('.cookiebar');
+            const acceptButton = $('#cookiebar-consent-button');
+            const acceptHandling = event => {
+                saveToStorage(storageType);
+                $(consentPopup).fadeOut();
+            };
+
+            $(acceptButton).click((e) => acceptHandling(e));
+
+
+            if (shouldShowPopup(storageType)) {
+                setTimeout(() => {
+                    consentPopup.fadeIn();
+                    consentPopup.style.display = 'block';
+                }, 1000);
+            }
+        });
 </script>
 @yield('scripts')
 </body>

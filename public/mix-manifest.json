@@ -4,5 +4,6 @@
     "/js/jkanban.min.js": "/js/jkanban.min.js",
     "/js/bootstrap.bundle.min.js": "/js/bootstrap.bundle.min.js",
     "/js/bootstrap.min.js": "/js/bootstrap.min.js",
-    "/js/sb-admin-2.min.js": "/js/sb-admin-2.min.js"
+    "/js/sb-admin-2.min.js": "/js/sb-admin-2.min.js",
+    "/css/app.css": "/css/app.css"
 }

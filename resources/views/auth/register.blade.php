@@ -41,12 +41,15 @@
                 <span class="invalid-feedback" role="alert"> <strong>{{ $message }}</strong></span>
             @enderror
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6 mb-3 mb-sm-0">
                 <label for="password-confirm" class="text-dark">{{ __('Confirm Password') }}</label>
                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
             </div>
+            <div class="col-sm-6 mt-2">
+                {!! NoCaptcha::display() !!}
+            </div>
         </div>
-        {!! NoCaptcha::display() !!}
+
         <button type="submit" class="btn btn-success btn-user btn-block mt-2">
             Register Account
         </button>
