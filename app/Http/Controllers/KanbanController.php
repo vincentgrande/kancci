@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Checklist;
+use App\ChecklistItem;
 use App\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -181,7 +183,16 @@ class KanbanController extends Controller
     public function getCard(Request $request)
     {
         // TO DO : Check if user is allowed to access to this card
-        return Card::where('id',$request->id)->first();
+        $card = Card::where('id',$request->id)->first();
+        $checklist = Checklist::where('card_id',$request->id)->first();
+        $checklistitems = ChecklistItem::where('card_id',$request->id)->get();
+        $cardInfos = [
+            'card' => $card,
+            'checklist' => $checklist,
+            'checklistitems' => $checklistitems,
+        ];
+        return $cardInfos;
+
     }
 
     /**
@@ -218,5 +229,38 @@ class KanbanController extends Controller
             return 'Ok';
         }
         return 'nok';
+    }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function addChecklist(Request $request)
+    {
+         $checklist = Checklist::create([
+            'title' => 'New checklist',
+            'card_id' => $request->card_id,
+        ]);
+        Card::where('id',$request->card_id)->update(['checklist_id' => $checklist->id]);
+         if($checklist){
+             return 'Ok';
+         } else {
+             return 'Nok';
+         }
+    }
+    public function addChecklistItem(Request $request)
+    {
+        $card = Card::where('id',$request->card_id)->first();
+        $checklistitem = ChecklistItem::create([
+            'label' => $request->item,
+            'isChecked' => False,
+            'checklist_id' => $card->checklist_id,
+            'card_id' => $card->id
+        ]);
+        if($checklistitem){
+            return 'Ok';
+        } else {
+            return 'Nok';
+        }
     }
 }

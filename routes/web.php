@@ -45,6 +45,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('addworkgroup', 'WorkgroupController@addWorkgroup')->name("addWorkgroup");
     Route::get('getworkgroup', 'WorkgroupController@getWorkgroup')->name("getWorkgroup");
+
+    Route::post('addChecklist','KanbanController@addChecklist')->name('addChecklist');
+    Route::post('addChecklistItem','KanbanController@addChecklistItem')->name('addChecklistItem');
+
 });
 
 /**

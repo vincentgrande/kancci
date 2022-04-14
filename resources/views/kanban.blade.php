@@ -22,7 +22,7 @@
 @section('content')
     <style>
     .kanban-container {
-        width: auto;
+        width : max-content !important;
     }
     </style>
     <div id="myKanban" style="overflow: auto;" class="mb-3"></div>
@@ -162,25 +162,32 @@
                 },
                 success: function(result){
                     console.log("============Debug result=============")
-                    console.log(result.checklistitems)
+                    console.log(result)
                     console.log("============END debug result=============")
                     $('#modal-container').append (`
                     <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result.title+`</h5><br>
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result.card.title+`</h5><br>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit`+eid+`').modal('hide');">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <input type="hidden" id="id" name="id" value="`+result.id+`">
+                                                <input type="hidden" id="id" name="id" value="`+result.card.id+`">
                                                 <label for="title">Title:</label>
-                                                <input type="text" id="title" name="title" value="`+result.title+`"><br>
-                                                <button class="btn btn-danger mt-5" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
+                                                <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`"><br>
+                                            <div id="editCardDynamic"></div>
+                                            <div class="input-group">
+                                              <input class="form-control" type="text" id="item_title" name="item_title" placeholder="Item title" value="">
+                                              <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-success" onclick="addChecklistItem(`+result.card.id+`) ;">Add</button>
+                                              </div>
+                                            </div>
                                             </div>
                                             <div class="modal-footer">
+                                            <button class="btn btn-danger" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
                                                 <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
                                                 <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`','{{route('editCard')}}')">Save changes</button>
                                             </div>
@@ -188,7 +195,53 @@
                                     </div>
                                 </div>
                     `);
+                    addEditFunctions(result)
                     $('#edit'+eid+'').modal('show');
+                }});
+        }
+        let addEditFunctions = function(result){
+            if (result.checklist === null){
+                $('#editCardDynamic').append ("<button class='btn btn-primary mt-5' onclick='addChecklist("+result.card.id+")'>Add checklist</button>")
+            }else{
+                $('#editCardDynamic').append (" <input  class='form-control' type='text' id='checklisttitle' name='checklisttitle' value='"+result.checklist.title+"'><br><div id='checklistitems'></div>")
+                if(Object.keys(result.checklistitems).length !== 0) {
+                    result.checklistitems.map(x => {
+                        $('#checklistitems').append(`
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="item`+x.id+`" />
+                              <label class="form-check-label" for="item`+x.id+`">`+x.label+`</label>
+                            </div>
+                        `)
+                    })
+                }
+            }
+        }
+        let addChecklistItem = function(cardId){
+            let item = $('#item_title').val()
+            console.log(item)
+            $.ajax({
+                url: "{{ route('addChecklistItem') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    card_id:cardId,
+                    item:item,
+                },
+                success: function(result){
+                    console.log("SUCCESS : ",result)
+                }});
+        }
+        let addChecklist = function(cardId){
+            console.log(cardId)
+            $.ajax({
+                url: "{{ route('addChecklist') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    card_id:cardId,
+                },
+                success: function(result){
+                   console.log("SUCCESS : ",result)
                 }});
         }
         /**
