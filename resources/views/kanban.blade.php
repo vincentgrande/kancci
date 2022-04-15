@@ -142,7 +142,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`','{{route('editBoard')}}')">Save changes</button>
+                                        <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`')">Save changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -177,19 +177,16 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="id" name="id" value="`+result.card.id+`">
                                                 <label for="title">Title:</label>
-                                                <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`"><br>
-                                            <div id="editCardDynamic"></div>
-                                            <div class="input-group">
-                                              <input class="form-control" type="text" id="item_title" name="item_title" placeholder="Item title" value="">
-                                              <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-success" onclick="addChecklistItem(`+result.card.id+`) ;">Add</button>
-                                              </div>
-                                            </div>
+                                                <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`">
+                                                <hr class="sidebar-divider">
+
+                                            <div id="editCardDynamic" class="mb-2"></div>
+                                            <div id="checklist-form"></div>
                                             </div>
                                             <div class="modal-footer">
                                             <button class="btn btn-danger" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
                                                 <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
-                                                <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`','{{route('editCard')}}')">Save changes</button>
+                                                <button type="button" class="btn btn-success" onclick="saveCardChanges('`+eid+`')">Save changes</button>
                                             </div>
                                         </div>
                                     </div>
@@ -200,63 +197,108 @@
                 }});
         }
         let addEditFunctions = function(result){
+            console.log("ICI",result.checklistitems)
             if (result.checklist === null){
-                $('#editCardDynamic').append ("<button class='btn btn-primary mt-5' onclick='addChecklist("+result.card.id+")'>Add checklist</button>")
+                $('#editCardDynamic').append ("<button class='btn btn-primary' onclick='addChecklist("+result.card.id+")'>Add checklist</button>")
             }else{
-                $('#editCardDynamic').append (" <input  class='form-control' type='text' id='checklisttitle' name='checklisttitle' value='"+result.checklist.title+"'><br><div id='checklistitems'></div>")
+                $('#editCardDynamic').append (`
+                <label for="checklisttitle">Checklist :</label>
+                <input  class='form-control' type='text' id='checklisttitle' name='checklisttitle' value='`+result.checklist.title+`'>
+
+                <br><div id='checklistitems'></div>`)
                 if(Object.keys(result.checklistitems).length !== 0) {
                     result.checklistitems.map(x => {
                         $('#checklistitems').append(`
                             <div class="form-check">
-                              <input class="form-check-input" type="checkbox" value="" id="item`+x.id+`" />
-                              <label class="form-check-label" for="item`+x.id+`">`+x.label+`</label>
+                              <input class="form-check-input" type="checkbox" onchange="saveChecklist(this.id)" id="`+x.id+`" `+(x.isChecked === 1 ? 'checked' : '')+`/>
+                              <label class="form-check-label" for="`+x.id+`">`+x.label+`</label>
                             </div>
                         `)
                     })
                 }
+                $('#checklist-form').append(`<div class="input-group">
+                                              <input class="form-control" type="text" id="item_title" name="item_title" placeholder="Item title" value="">
+                                              <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-success" onclick="addChecklistItem(`+result.card.id+`)">Add</button>
+                                              </div>
+                                            </div>`)
             }
+        }
+        let saveChecklist = function(id){
+            $.ajax({
+                url:  '{{route('saveChecklist')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id:id,
+
+                },
+                success: function(result){
+                }});
         }
         let addChecklistItem = function(cardId){
             let item = $('#item_title').val()
-            console.log(item)
+            $('#item_title').val("")
             $.ajax({
                 url: "{{ route('addChecklistItem') }}",
                 method: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    card_id:cardId,
+                    card_id: cardId,
                     item:item,
                 },
                 success: function(result){
                     console.log("SUCCESS : ",result)
+                    $('#checklistitems').append(`
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="item`+result.id+`" />
+                              <label class="form-check-label" for="item`+result.id+`">`+result.label+`</label>
+                            </div>
+                        `)
                 }});
         }
-        let addChecklist = function(cardId){
-            console.log(cardId)
+        let addChecklist = function(r){
             $.ajax({
                 url: "{{ route('addChecklist') }}",
                 method: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    card_id:cardId,
+                    card_id:r.card.id,
                 },
                 success: function(result){
                    console.log("SUCCESS : ",result)
+                    addEditFunctions(r)
                 }});
         }
-        /**
-         * Function to save changes from cards or boards
-         */
-        let saveChanges = function(eid, route) {
+        let saveCardChanges = function(eid) {
             let title = $("#title").val()
-            console.log(title)
+            let checklisttitle = $("#checklisttitle").val()
             $.ajax({
-                url:  route,
+                url:  '{{route('editCard')}}',
                 method: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     id:eid,
-                    title:title
+                    title:title,
+                    checklisttitle:checklisttitle
+                },
+                success: function(result){
+                    $('#edit'+eid).modal('hide');
+                    getBoards()
+                }});
+        }
+        /**
+         * Function to save changes from boards
+         */
+        let saveChanges = function(eid) {
+            let title = $("#title").val()
+            $.ajax({
+                url:  '{{route('editBoard')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id:eid,
+                    title:title,
                 },
                 success: function(result){
                     $('#edit'+eid).modal('hide');

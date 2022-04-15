@@ -211,7 +211,7 @@ class KanbanController extends Controller
      */
     public function editCard(Request $request)
     {
-        if(Card::where('id', $request->id)->update(['title' => $request->title]))
+        if(Card::where('id', $request->id)->update(['title' => $request->title]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
         {
             return 'Ok';
         }
@@ -258,9 +258,18 @@ class KanbanController extends Controller
             'card_id' => $card->id
         ]);
         if($checklistitem){
-            return 'Ok';
+            return $checklistitem;
         } else {
             return 'Nok';
         }
     }
+
+    public function saveChecklist(Request $request)
+    {
+        $item = ChecklistItem::where('id',$request->id)->first();
+        ChecklistItem::where('id',$request->id)->update(['isChecked'=> !$item->isChecked]);
+        return 'Ok';
+    }
+
+
 }
