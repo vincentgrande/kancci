@@ -179,8 +179,19 @@
                                                 <label for="title">Title:</label>
                                                 <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`">
                                                 <hr class="sidebar-divider">
+<button class='btn btn-primary' id='addChecklist' onclick='addChecklist("`+result.card.id+`"); $("#editCardDynamic").removeAttr("hidden"); $(this).hide();' `+(result.checklist === null ? '' : 'hidden')+`>Add checklist</button>
 
-                                            <div id="editCardDynamic" class="mb-2"></div>
+                                            <div id="editCardDynamic" class="mb-2" `+(result.checklist === null ? 'hidden' : '')+`>
+                <label for="checklisttitle" >Checklist :</label>
+                <input  class='form-control' type='text' placeholder="Checklist title" id='checklisttitle' name='checklisttitle' value='`+(result.checklist === null ? 'New checklist' : result.checklist.title)+`'>
+                <br><div id='checklistitems'></div>
+<div class="input-group">
+                                              <input class="form-control" type="text" id="item_title" name="item_title" placeholder="Item title" value="">
+                                              <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-success" onclick="addChecklistItem(`+result.card.id+`)">Add</button>
+                                              </div>
+                                            </div>
+</div>
                                             <div id="checklist-form"></div>
                                             </div>
                                             <div class="modal-footer">
@@ -192,20 +203,12 @@
                                     </div>
                                 </div>
                     `);
+
                     addEditFunctions(result)
                     $('#edit'+eid+'').modal('show');
                 }});
         }
         let addEditFunctions = function(result){
-            console.log("ICI",result.checklistitems)
-            if (result.checklist === null){
-                $('#editCardDynamic').append ("<button class='btn btn-primary' onclick='addChecklist("+result.card.id+")'>Add checklist</button>")
-            }else{
-                $('#editCardDynamic').append (`
-                <label for="checklisttitle">Checklist :</label>
-                <input  class='form-control' type='text' id='checklisttitle' name='checklisttitle' value='`+result.checklist.title+`'>
-
-                <br><div id='checklistitems'></div>`)
                 if(Object.keys(result.checklistitems).length !== 0) {
                     result.checklistitems.map(x => {
                         $('#checklistitems').append(`
@@ -216,13 +219,6 @@
                         `)
                     })
                 }
-                $('#checklist-form').append(`<div class="input-group">
-                                              <input class="form-control" type="text" id="item_title" name="item_title" placeholder="Item title" value="">
-                                              <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-success" onclick="addChecklistItem(`+result.card.id+`)">Add</button>
-                                              </div>
-                                            </div>`)
-            }
         }
         let saveChecklist = function(id){
             $.ajax({
@@ -251,23 +247,22 @@
                     console.log("SUCCESS : ",result)
                     $('#checklistitems').append(`
                             <div class="form-check">
-                              <input class="form-check-input" type="checkbox" value="" id="item`+result.id+`" />
-                              <label class="form-check-label" for="item`+result.id+`">`+result.label+`</label>
+                              <input class="form-check-input" type="checkbox" onchange="saveChecklist(`+result.id+`)" id="`+result.id+`"/>
+                              <label class="form-check-label" for="`+result.id+`">`+result.label+`</label>
                             </div>
                         `)
                 }});
         }
-        let addChecklist = function(r){
+        let addChecklist = function(id){
             $.ajax({
                 url: "{{ route('addChecklist') }}",
                 method: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    card_id:r.card.id,
+                    card_id:id,
                 },
                 success: function(result){
-                   console.log("SUCCESS : ",result)
-                    addEditFunctions(r)
+                    console.log("SUCCESS : ",result)
                 }});
         }
         let saveCardChanges = function(eid) {
