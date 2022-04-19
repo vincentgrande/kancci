@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('addChecklistItem','KanbanController@addChecklistItem')->name('addChecklistItem');
     Route::post('saveChecklist','KanbanController@saveChecklist')->name('saveChecklist');
     Route::post('archiveCard','KanbanController@archiveCard')->name('archiveCard');
+    Route::post('archiveBoard','KanbanController@archiveBoard')->name('archiveBoard');
 
 });
 

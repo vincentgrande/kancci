@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Board extends Model
 {
-    protected $fillable = ['title', 'updated_at', 'kanban_id', 'created_by'];
+    protected $fillable = ['title', 'updated_at', 'kanban_id', 'created_by', 'isActive'];
 
     protected $casts = [
         'updated_at' => 'datetime',

@@ -97,15 +97,24 @@
         /**
          * function to remove board from kanban
          */
-        let removeBoard = function(eid) {
-            Kanban.removeBoard(eid.toString());
+        let archiveBoard = function(eid) {
+            $.ajax({
+                url: "{{ route('archiveBoard') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    board_id:eid
+                },
+                success: function(result){
+                    console.log(result)
+                }
+            });
             saveKanban()
         };
         /**
          * function to remove card from board
          */
         let archiveCard = function(eid) {
-            //Kanban.removeElement(eid.toString());
             $.ajax({
                 url: "{{ route('archiveCard') }}",
                 method: 'post',
@@ -146,7 +155,7 @@
                                         <input class="form-control" type="text" id="title" name="title" value="`+result[0].title+`"><br>
                                     </div>
                                     <div class="modal-footer">
-<button class="btn btn-danger" onclick="removeBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove board</button>
+<button class="btn btn-danger" onclick="archiveBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive board</button>
                                         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
                                         <button type="button" class="btn btn-success" onclick="saveChanges()">Save changes</button>
                                     </div>
@@ -430,7 +439,7 @@
                         {
                             let settingsBtn = document.createElement("button")
                             settingsBtn.innerHTML = "📝";
-                            settingsBtn.setAttribute('onclick',"showEdit("+element.dataset.id+"); /*removeBoard("+element.dataset.id+")*/")
+                            settingsBtn.setAttribute('onclick',"showEdit("+element.dataset.id+"); /*archiveBoard("+element.dataset.id+")*/")
                             settingsBtn.classList = "btn float-right";
                             element.children[0].append(settingsBtn)
                         }

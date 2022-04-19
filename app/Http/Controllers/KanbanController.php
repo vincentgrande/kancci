@@ -77,7 +77,7 @@ class KanbanController extends Controller
                                 array_push($cards, $card);
                             }
                         }
-                        if ($b->id == $order->{'id'}) {
+                        if ($b->id == $order->{'id'} && $b->isActive == true) {
                             $board['id'] = $b->id;
                             $board['title'] = $b->title;
                             $board['class'] = 'info';
@@ -170,6 +170,7 @@ class KanbanController extends Controller
             Board::create([
                 'id' => $request->board[0]['id'],
                 'title' => $request->board[0]['title'],
+                'isActive' => True,
                 'kanban_id' => $request->kanbanId,
                 'created_by' => Auth::user()->id,
             ]);
@@ -343,6 +344,17 @@ class KanbanController extends Controller
         $card = Card::where('id','=',$request->card_id)->first();
         if ($this->allowedBoardAccess($card->board_id) == True){
             if(Card::where('id', $card->id)->update(['isActive' => !$card->isActive]))
+            {
+                return 'Ok';
+            }
+        }
+        return 'Nok';
+    }
+    public function archiveBoard(Request $request)
+    {
+        $board = Board::where('id', $request->board_id)->first();
+        if ($this->allowedBoardAccess($board->id) == True){
+            if(Board::where('id', $board->id)->update(['isActive' => !$board->isActive]))
             {
                 return 'Ok';
             }
