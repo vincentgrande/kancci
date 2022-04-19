@@ -133,14 +133,14 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <input type="hidden" id="id" name="id" value="`+eid+`">
+                                        <input type="hidden" id="board_id" name="board_id" value="`+eid+`">
                                         <label for="title">Title:</label>
                                         <input type="text" id="title" name="title" value="`+result[0].title+`"><br>
                                         <button class="btn btn-danger mt-5" onclick="removeBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove board</button>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`')">Save changes</button>
+                                        <button type="button" class="btn btn-success" onclick="saveChanges()">Save changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -299,18 +299,20 @@
         /**
          * Function to save changes from boards
          */
-        let saveChanges = function(eid) {
+        let saveChanges = function() {
             let title = $("#title").val()
+            let board_id = $("#board_id").val()
+
             $.ajax({
                 url:  '{{route('editBoard')}}',
                 method: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    id:eid,
+                    id:board_id,
                     title:title,
                 },
                 success: function(result){
-                    $('#edit'+eid).modal('hide');
+                    $('#edit'+board_id).modal('hide');
                     getBoards()
                 }});
         }
@@ -375,6 +377,7 @@
         $(document).ready(function() {
             getBoards(); // fetch boards from database after page load
             $(document).on('hide.bs.modal','.edit-modal', function () {
+                saveChanges()
                 $('.edit-modal').remove(); // Remove edit board modal on close event
             });
             $(document).on('hide.bs.modal','.edit-card-modal', function () {
