@@ -211,9 +211,11 @@ class KanbanController extends Controller
      */
     public function editCard(Request $request)
     {
-        if(Card::where('id', $request->id)->update(['title' => $request->title]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
-        {
-            return 'Ok';
+        if (isset($request->id) && isset($request->title)){
+            if(Card::where('id', $request->id)->update(['title' => $request->title,'startDate' => $request->startDate, 'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+            {
+                return 'Ok';
+            }
         }
         return 'nok';
     }

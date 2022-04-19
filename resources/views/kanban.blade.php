@@ -20,6 +20,7 @@
 @endsection
 
 @section('content')
+
     <style>
     .kanban-container {
         width : max-content !important;
@@ -30,10 +31,7 @@
 
 @stop
 @section('scripts')
-    @php
 
-            $count = 0;
-    @endphp
     <script>
         /**
          * function to save all boards and card in database
@@ -175,7 +173,18 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <input type="hidden" id="id" name="id" value="`+result.card.id+`">
+<div class="datepicker date input-group">
+ <label for="start_date">Start date : </label>
+    <input type="date" placeholder="Start date" class="form-control" id="start_date" `+(result.card.startDate != null ? "value='"+result.card.startDate+"'" : '')+`>
+    <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
+</div><br>
+<div class="datepicker date input-group">
+    <label for="end_date">End date : </label>
+    <input type="date" placeholder="End date" class="form-control" id="end_date" `+(result.card.endDate != null ? "value='"+result.card.endDate+"'" : '')+`>
+    <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
+</div>
+ <hr class="sidebar-divider">
+                                                <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
                                                 <label for="title">Title:</label>
                                                 <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`">
                                                 <hr class="sidebar-divider">
@@ -197,7 +206,7 @@
                                             <div class="modal-footer">
                                             <button class="btn btn-danger" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
                                                 <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
-                                                <button type="button" class="btn btn-success" onclick="saveCardChanges('`+eid+`')">Save changes</button>
+                                                <button type="button" class="btn btn-success" onclick="saveCardChanges()">Save changes</button>
                                             </div>
                                         </div>
                                     </div>
@@ -265,20 +274,25 @@
                     console.log("SUCCESS : ",result)
                 }});
         }
-        let saveCardChanges = function(eid) {
+        let saveCardChanges = function() {
             let title = $("#title").val()
             let checklisttitle = $("#checklisttitle").val()
+            let startDate = $("#start_date").val()
+            let endDate = $("#end_date").val()
+            let card_id = $("#card_id").val()
             $.ajax({
                 url:  '{{route('editCard')}}',
                 method: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    id:eid,
+                    id:card_id,
                     title:title,
-                    checklisttitle:checklisttitle
+                    checklisttitle:checklisttitle,
+                    startDate:startDate,
+                    endDate:endDate,
                 },
                 success: function(result){
-                    $('#edit'+eid).modal('hide');
+                    $('#edit'+card_id).modal('hide');
                     getBoards()
                 }});
         }
@@ -364,6 +378,7 @@
                 $('.edit-modal').remove(); // Remove edit board modal on close event
             });
             $(document).on('hide.bs.modal','.edit-card-modal', function () {
+                saveCardChanges()
                 $('.edit-card-modal').remove(); // Remove edit card modal on close event
             });
         });
@@ -412,5 +427,6 @@
                     );
                 }});
         }
+
     </script>
 @stop
