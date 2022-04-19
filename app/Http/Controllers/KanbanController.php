@@ -218,7 +218,7 @@ class KanbanController extends Controller
         $card = Card::where('id','=',$request->id)->first();
         if ($this->allowedBoardAccess($card->board_id) == True){
                 if (isset($request->id) && isset($request->title)){
-                    if(Card::where('id', $request->id)->update(['title' => $request->title,'startDate' => $request->startDate, 'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                    if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'startDate' => $request->startDate, 'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
                     {
                         return 'Ok';
                     }
@@ -337,5 +337,16 @@ class KanbanController extends Controller
             }
         }
         return False;
+    }
+    public function archiveCard(Request $request)
+    {
+        $card = Card::where('id','=',$request->card_id)->first();
+        if ($this->allowedBoardAccess($card->board_id) == True){
+            if(Card::where('id', $card->id)->update(['isActive' => !$card->isActive]))
+            {
+                return 'Ok';
+            }
+        }
+        return 'Nok';
     }
 }

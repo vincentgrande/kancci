@@ -70,7 +70,6 @@
                 data: {
                 },
                 success: function(result){
-                    console.log(result)
                     board = [
                         {
                             id: parseInt(result)+1,
@@ -79,7 +78,6 @@
                             ]
                         }
                     ];
-                    console.log(board);
                     $.ajax({ // Ajax to save kanban in DB.
                         url: "{{ route('saveBoard') }}",
                         method: 'post',
@@ -106,8 +104,19 @@
         /**
          * function to remove card from board
          */
-        let removeCard = function(eid) {
-            Kanban.removeElement(eid.toString());
+        let archiveCard = function(eid) {
+            //Kanban.removeElement(eid.toString());
+            $.ajax({
+                url: "{{ route('archiveCard') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    card_id:eid
+                },
+                success: function(result){
+                    console.log(result)
+                }
+            });
             saveKanban()
         };
         /**
@@ -121,7 +130,6 @@
                     id:eid
                 },
                 success: function(result){
-                    console.log(result[0].title)
                     $('#modal-container').append (`
                             <div class="modal edit-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -135,10 +143,10 @@
                                     <div class="modal-body">
                                         <input type="hidden" id="board_id" name="board_id" value="`+eid+`">
                                         <label for="title">Title:</label>
-                                        <input type="text" id="title" name="title" value="`+result[0].title+`"><br>
-                                        <button class="btn btn-danger mt-5" onclick="removeBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove board</button>
+                                        <input class="form-control" type="text" id="title" name="title" value="`+result[0].title+`"><br>
                                     </div>
                                     <div class="modal-footer">
+<button class="btn btn-danger" onclick="removeBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove board</button>
                                         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
                                         <button type="button" class="btn btn-success" onclick="saveChanges()">Save changes</button>
                                     </div>
@@ -159,9 +167,6 @@
                     id:eid
                 },
                 success: function(result){
-                    console.log("============Debug result=============")
-                    console.log(result)
-                    console.log("============END debug result=============")
                     $('#modal-container').append (`
                     <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -187,6 +192,11 @@
                                                 <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
                                                 <label for="title">Title:</label>
                                                 <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`">
+<hr class="sidebar-divider">
+                                                <label for="description">Description:</label>
+
+    <textarea class="form-control" id="description" name="description" rows="3">`+(result.card.description !== "null" && result.card.description !== null ? result.card.description : '')+`</textarea>
+
                                                 <hr class="sidebar-divider">
 <button class='btn btn-primary' id='addChecklist' onclick='addChecklist("`+result.card.id+`"); $("#editCardDynamic").removeAttr("hidden"); $(this).hide();' `+(result.checklist === null ? '' : 'hidden')+`>Add checklist</button>
 
@@ -204,7 +214,7 @@
                                             <div id="checklist-form"></div>
                                             </div>
                                             <div class="modal-footer">
-                                            <button class="btn btn-danger" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
+                                            <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button>
                                                 <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
                                                 <button type="button" class="btn btn-success" onclick="saveCardChanges()">Save changes</button>
                                             </div>
@@ -253,7 +263,6 @@
                     item:item,
                 },
                 success: function(result){
-                    console.log("SUCCESS : ",result)
                     $('#checklistitems').append(`
                             <div class="form-check">
                               <input class="form-check-input" type="checkbox" onchange="saveChecklist(`+result.id+`)" id="`+result.id+`"/>
@@ -271,11 +280,11 @@
                     card_id:id,
                 },
                 success: function(result){
-                    console.log("SUCCESS : ",result)
                 }});
         }
         let saveCardChanges = function() {
             let title = $("#title").val()
+            let description = $("#description").val()
             let checklisttitle = $("#checklisttitle").val()
             let startDate = $("#start_date").val()
             let endDate = $("#end_date").val()
@@ -287,6 +296,7 @@
                     "_token": "{{ csrf_token() }}",
                     id:card_id,
                     title:title,
+                    description:description,
                     checklisttitle:checklisttitle,
                     startDate:startDate,
                     endDate:endDate,
@@ -302,7 +312,6 @@
         let saveChanges = function() {
             let title = $("#title").val()
             let board_id = $("#board_id").val()
-
             $.ajax({
                 url:  '{{route('editBoard')}}',
                 method: 'post',
@@ -370,7 +379,7 @@
             dropEl           : function (el, target, source, sibling) {},    // callback when any board's item drop in a board
             dragBoard        : function (el, source) {},                     // callback when any board stop drag
             dragendBoard     : function (el) {saveKanban()},                             // callback when any board stop drag
-            buttonClick      : function(el, boardId) {  /*removeBoard(boardId); */ addCard(boardId)},                     // callback when the board's button is clicked
+            buttonClick      : function(el, boardId) {  addCard(boardId)},                     // callback when the board's button is clicked
             propagationHandlers: [],
         })
 
@@ -401,7 +410,6 @@
                     result = JSON.parse(result)
                     var boardsList = [];
                     $.each(result, function (board) {
-                        console.log(result[board])
                         var taskList = [];
                         $.each(result[board].item, function (task) { // build cards array
                             taskList.push({
@@ -415,7 +423,6 @@
                             item: taskList
                         });
                     });
-                    console.log(boardsList)
                     Kanban.addBoards(boardsList); // Add boards to kanban
                     let elements = $('.kanban-board');
                     elements = Array.from(elements); //convert to array
