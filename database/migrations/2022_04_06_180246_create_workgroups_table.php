@@ -16,6 +16,7 @@ class CreateWorkgroupsTable extends Migration
         Schema::create('workgroups', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
+            $table->string('logo');
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();

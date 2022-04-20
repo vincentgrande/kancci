@@ -1,7 +1,9 @@
 .kanban-container {
   position: relative;
   box-sizing: border-box;
-  width: auto;
+  width: max-content !important;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .kanban-container * {

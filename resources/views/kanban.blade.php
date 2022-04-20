@@ -18,21 +18,16 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 @endsection
-
 @section('content')
-    <style>
-    .kanban-container {
-        width: auto;
-    }
-    </style>
+
     <div id="myKanban" style="overflow: auto;" class="mb-3"></div>
     <div id="modal-container"></div>
 
 @stop
-@section('scripts')
+@section("scripts")
     @php
 
-            $count = 0;
+        $count = 0;
     @endphp
     <script>
         /**

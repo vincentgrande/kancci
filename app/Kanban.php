@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kanban extends Model
 {
-    protected $fillable = ['title', 'order', 'visibility', 'updated_at', 'created_by', 'workgroup_id'];
+    protected $fillable = ['title', 'order', 'visibility', 'background', 'updated_at', 'created_by', 'workgroup_id'];
     protected $casts = [
         'updated_at' => 'datetime',
         'created_at' => 'datetime'

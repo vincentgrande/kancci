@@ -52,7 +52,7 @@ class Handler extends ExceptionHandler
     {
         if($this->isHttpException($exception))
         {
-            switch ($exception->getStatusCode()) 
+            switch ($exception->getStatusCode())
                 {
                 // not found
                 case 404:
@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
                 break;
 
                 default:
-                    return $this->renderHttpException($e);
+                    return $this->renderHttpException($exception);
                 break;
             }
         }

@@ -18,6 +18,7 @@ class CreateKanbansTable extends Migration
             $table->string('title');
             $table->longText('order')->nullable();
             $table->string('visibility');
+            $table->string('background');
             $table->unsignedBigInteger('workgroup_id');
             $table->foreign('workgroup_id')->references('id')->on('workgroups');
             $table->unsignedBigInteger('created_by');
