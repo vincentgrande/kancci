@@ -2041,18 +2041,18 @@ pre code {
 }
 
 .form-control::-moz-placeholder {
-  color: #E6F5FF;
-  opacity: 1;
+    /*color: #E6F5FF;*/
+    /*opacity: 1;*/
 }
 
 .form-control:-ms-input-placeholder {
-  color: #E6F5FF;
-  opacity: 1;
+    /*color: #E6F5FF;*/
+    /*opacity: 1;*/
 }
 
 .form-control::placeholder {
-  color: #E6F5FF;
-  opacity: 1;
+  /*color: #E6F5FF;*/
+    /*opacity: 1;*/
 }
 
 .form-control:disabled, .form-control[readonly] {
@@ -7888,7 +7888,7 @@ button.bg-dark:focus {
 }
 
 .fixed-bottom {
-  position: fixed;
+  position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
@@ -12029,31 +12029,31 @@ body.sidebar-toggled footer.sticky-footer {
 
 .form-control::-moz-placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #3C4F65;
-  opacity: 1;
+    /*color: #3C4F65;*/
+    /*opacity: 1;*/
   /* Firefox */
 }
 
 .form-control:-ms-input-placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #3C4F65;
-  opacity: 1;
+  /*color: #3C4F65;*/
+  /*opacity: 1;*/
   /* Firefox */
 }
 
 .form-control::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #3C4F65;
-  opacity: 1;
+    /*color: #3C4F65;
+    opacity: 1;*/
   /* Firefox */
 }
 
 .form-control:-ms-input-placeholder {
   /* Internet Explorer 10-11 */
-  color: #3C4F65;
+  /*color: #3C4F65;*/
 }
 
 .form-control::-ms-input-placeholder {
   /* Microsoft Edge */
-  color: #3C4F65;
+    /*color: #3C4F65;*/
 }

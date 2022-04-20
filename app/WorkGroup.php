@@ -9,7 +9,7 @@ class WorkGroup extends Model
 
     protected $table = 'workgroups';
 
-    protected $fillable = ['title', 'updated_at', 'created_by'];
+    protected $fillable = ['title', 'logo', 'updated_at', 'created_by'];
     protected $casts = [
         'updated_at' => 'datetime',
         'created_at' => 'datetime'
@@ -22,7 +22,7 @@ class WorkGroup extends Model
      */
     public function creator()
     {
-        return $this->belongsTo(User::class,'id','created_by');
+        return $this->belongsTo('App\User');
     }
 
     /**

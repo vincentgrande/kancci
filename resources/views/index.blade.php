@@ -14,7 +14,18 @@
 @endsection
 
 @section('content')
-    <div class="row workgroups"></div>
+    <label for="ownerWorkgroups" style="margin-left: 15px;
+                             margin-top: -12px; position: absolute;
+                             background-color: #f8f9fc; border: 2px solid #f8f9fc;">Your Workgroups</label>
+    <div class="row justify-content-center ml-1 mr-2 mb-2 border border-primary rounded" id="ownerWorkgroups">
+
+    </div>
+    <label for="invitedWorkgroups" style="margin-left: 15px;
+                             margin-top: -12px; position: absolute;
+                             background-color: #f8f9fc; border: 2px solid #f8f9fc;" hidden="hidden">Invited Workgroups</label>
+    <div class="row justify-content-center mr-2" id="invitedWorkgroups" hidden="hidden">
+
+    </div>
     <div id="modal-container"></div>
 @stop
 
@@ -39,7 +50,7 @@
         }
         var addWorkgroup = document.getElementById("addWorkgroup");
         addWorkgroup.addEventListener("click", function() {
-            $('#modal-container').append (`
+            $('#ownerWorkgroups').append (`
                             <div class="modal edit-modal" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -50,17 +61,22 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <label for="title">Title:</label>
-                                        <input type="text" id="title" name="title"><br>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success" onclick="newWorkgroup($('#title').val())">Save changes</button>
-                                    </div>
+                                        <label for="title" class="label-control">Title :</label>
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-tag fa-fw" id="iconTitle"></i></span>
+                                            </div>
+                                            <input id="title" type="text" class="form-control" name="title">
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" onclick="newWorkgroup($('#title').val())">Create</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit').modal('hide');">Close</button>
                                 </div>
                             </div>
                         </div>
-                        `);
+                    </div>
+`);
             $('#edit').modal('show');
         });
         $(document).ready(function() {
@@ -70,7 +86,7 @@
             });
         });
         let getWorkgroup = function(){
-            $('.workgroups').empty()
+            $('#ownerWorkgroups').empty()
             $.ajax({
                 url: "{{ route('getWorkgroup') }}",
                 method: 'get',
@@ -78,10 +94,11 @@
                 },
                 success: function(result){
                     result.forEach(x => {
-                        $('.workgroups').append(`
-                            <div class="col-sm-6">
+                        $('#ownerWorkgroups').append(`
+                            <div class="mt-2">
                               <div class="card m-2" style="width: 20rem;">
                                 <div class="card-body text-center">
+                                    <img class="img-thumbnail mb-3 mx-auto" src="../img/`+ x.workgroup.logo+`" width="100" height="100"/>
                                   <h5 class="card-title">`+ x.workgroup.title+` `+
                         (x.workgroup.created_by === x.user_id ? '<i class="fas fa-crown text-warning"></i>' : '')
                             +`

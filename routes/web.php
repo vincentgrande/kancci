@@ -45,6 +45,18 @@ Route::middleware('auth')->group(function () {
 
     Route::post('addworkgroup', 'WorkgroupController@addWorkgroup')->name("addWorkgroup");
     Route::get('getworkgroup', 'WorkgroupController@getWorkgroup')->name("getWorkgroup");
+    Route::get('/workgroup/infos/{id}', 'WorkgroupController@getWorkgroupById')->name("WorkgroupInfosGet");
+    Route::get('/workgroup/infos', function() { return view('workgroup-info');})->name("WorkgroupInfos");
+    Route::post('/workgroup/infos/{id}', 'WorkgroupController@UpdateWorkgroupInfos')->name('WorkgroupInfoPost');
+    //Route::post('/workgroup/infos/{id}', 'WorkgroupController@UpdateWorkgroupBackground')->name('WorkgroupBackgroundPost');
+    //Route::post('/workgroup/infos/{id}', 'WorkgroupController@UpdateWorkgroupBackground')->name('WorkgroupBackgroundPost');
+
+    Route::get('/settings/profile', function() { return view('auth.settings-profile');})->name("settingsProfileGet");
+    Route::post('/settings/profile', 'UserSettingController@changePicture')->name("settingsProfilePost");
+    Route::get('/settings/email', function() { return view('auth.settings-email');})->name("settingsEmailGet");
+    Route::post('/settings/email', 'UserSettingController@changeEmail')->name("settingsEmailPost");
+    Route::get('/settings/security', function() { return view('auth.settings-security');})->name("settingsSecurityGet");
+    Route::post('/settings/security','UserSettingController@changePassword')->name("settingsSecurityPost");
 });
 
 /**
