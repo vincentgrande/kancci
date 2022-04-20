@@ -250,7 +250,7 @@
                 result.workgroupuser.map(x => {
                     $('#card_users').append(`
                             <img id="user`+x.id+`" class="img-profile rounded-circle `+(x.card_user === 1 ? 'border border-success border-4' : '')+`" style="width:50px;"
-                                 src="`+(x.picture !== undefined && x.picture !== null ? '{{asset('img/uploaded/')}}/'+x.picture : '{{asset('img/undraw_profile.svg')}}')+`" onclick="joinCard(`+x.id+`,`+result.card.id+`)">
+                                 src="`+ '{{asset('img/')}}/'+x.picture +`" onclick="joinCard(`+x.id+`,`+result.card.id+`)">
                         `)
                 })
             }
