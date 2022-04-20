@@ -95,7 +95,7 @@
                 success: function(result){
                     result.forEach(x => {
                         $('#ownerWorkgroups').append(`
-                            <div class="col-sm-6 mt-2">
+                            <div class="mt-2">
                               <div class="card m-2" style="width: 20rem;">
                                 <div class="card-body text-center">
                                     <img class="img-thumbnail mb-3 mx-auto" src="../img/`+ x.workgroup.logo+`" width="100" height="100"/>
