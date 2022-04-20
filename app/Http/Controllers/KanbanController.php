@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\CardUser;
 use App\Checklist;
 use App\ChecklistItem;
 use App\WorkGroup;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use App\Card;
+use App\User;
 use App\Board;
 use App\Kanban;
 use App\WorkGroupUser;
@@ -179,6 +181,42 @@ class KanbanController extends Controller
         return 'false';
     }
 
+    public function debug(){
+        /*$card = Card::where('id',4)->first();
+        $board = Board::where('id',$card->board_id)->first();
+        $kanban = Kanban::where('id',$board->kanban_id)->first();
+        $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
+        $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get('user_id');
+        $users = [];
+        foreach($workgroupuser as $wku)
+        {
+            foreach(CardUser::where('card_id',1)->get() as $u){
+                $user = User::where('id',$wku->user_id)->select()->first();
+                if($user->id == $u->user_id){
+                    $user["card_user"] = 1;
+                }else{
+                    $user["card_user"] = 0;
+                }
+                array_push($users, $user);
+            }
+        }*/
+        dd(CardUser::where('card_id',1)->get());
+    }
+    public function joinCard(Request $request)
+    {
+        $card = Card::where('id',$request->card_id)->first();
+        if ($this->allowedBoardAccess($card->board_id) == True) {
+            $carduser = CardUser::where('card_id',$request->card_id)->where('user_id',$request->user_id)->first();
+            if ($carduser !== null) {
+                $carduser->delete();
+                return 0;
+            }else{
+                $carduser = CardUser::create(['user_id' => $request->user_id, 'card_id' => $card->id]);
+                return 1;
+            }
+        }
+        return '';
+    }
     /**
      * @param Request $request
      * @return mixed
@@ -187,12 +225,30 @@ class KanbanController extends Controller
     {
         $card = Card::where('id',$request->id)->first();
         if ($this->allowedBoardAccess($card->board_id) == True) {
+            $board = Board::where('id',$card->board_id)->first();
+            $kanban = Kanban::where('id',$board->kanban_id)->first();
+            $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
+            $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get('user_id');
+            $users = [];
+            foreach($workgroupuser as $wku)
+            {
+                $user = User::where('id',$wku->user_id)->select()->first();
+                foreach(CardUser::where('card_id',$card->id)->where('user_id',$wku->user_id)->get() as $cu){
+                    if($user->id == $cu->user_id){
+                        $user["card_user"] = 1;
+                    }else{
+                        $user["card_user"] = 0;
+                    }
+                }
+                array_push($users, $user);
+            }
             $checklist = Checklist::where('card_id', $request->id)->first();
             $checklistitems = ChecklistItem::where('card_id', $request->id)->get();
             $cardInfos = [
                 'card' => $card,
                 'checklist' => $checklist,
                 'checklistitems' => $checklistitems,
+                'workgroupuser' => $users,
             ];
             return $cardInfos;
         }

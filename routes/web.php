@@ -48,8 +48,10 @@ Route::middleware('auth')->group(function () {
     Route::post('saveChecklist','KanbanController@saveChecklist')->name('saveChecklist');
     Route::post('archiveCard','KanbanController@archiveCard')->name('archiveCard');
     Route::post('archiveBoard','KanbanController@archiveBoard')->name('archiveBoard');
+    Route::post('joinCard','KanbanController@joinCard')->name('joinCard');
 
 });
+Route::get('debug', 'KanbanController@debug')->name("debug");
 
 /**
  * Auth routes

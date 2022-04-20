@@ -61,4 +61,8 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\WorkGroupUser');
     }
+    public function card_user()
+    {
+        return $this->hasMany('App\CardUser');
+    }
 }

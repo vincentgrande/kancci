@@ -25,6 +25,9 @@
     .kanban-container {
         width : max-content !important;
     }
+    .border-4 {
+        border-width:4px !important;
+    }
     </style>
     <div id="myKanban" style="overflow: auto;" class="mb-3"></div>
     <div id="modal-container"></div>
@@ -106,7 +109,6 @@
                     board_id:eid
                 },
                 success: function(result){
-                    console.log(result)
                 }
             });
             saveKanban()
@@ -123,7 +125,6 @@
                     card_id:eid
                 },
                 success: function(result){
-                    console.log(result)
                 }
             });
             saveKanban()
@@ -221,6 +222,9 @@
                                             </div>
 </div>
                                             <div id="checklist-form"></div>
+<hr class="sidebar-divider">
+<div id="card_users"></div>
+
                                             </div>
                                             <div class="modal-footer">
                                             <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button>
@@ -236,6 +240,7 @@
                     $('#edit'+eid+'').modal('show');
                 }});
         }
+
         let addEditFunctions = function(result){
                 if(Object.keys(result.checklistitems).length !== 0) {
                     result.checklistitems.map(x => {
@@ -247,6 +252,31 @@
                         `)
                     })
                 }
+            if(Object.keys(result.workgroupuser).length !== 0) {
+                result.workgroupuser.map(x => {
+                    $('#card_users').append(`
+                            <img id="user`+x.id+`" class="img-profile rounded-circle `+(x.card_user === 1 ? 'border border-success border-4' : '')+`" style="width:50px;"
+                                 src="`+(x.picture !== undefined && x.picture !== null ? '{{asset('img/uploaded/')}}/'+x.picture : '{{asset('img/undraw_profile.svg')}}')+`" onclick="joinCard(`+x.id+`,`+result.card.id+`)">
+                        `)
+                })
+            }
+        }
+        let joinCard = function(user_id, card_id){
+            $.ajax({
+                url:  '{{route('joinCard')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    card_id:card_id,
+                    user_id:user_id,
+                },
+                success: function(result){
+                    if(result === "1"){
+                        $("#user"+user_id).addClass("border border-success border-4")
+                    }else if(result === "0"){
+                        $("#user"+user_id).removeClass("border border-success border-4")
+                    }
+                }});
         }
         let saveChecklist = function(id){
             $.ajax({
