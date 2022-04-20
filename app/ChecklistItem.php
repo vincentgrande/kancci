@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChecklistItem extends Model
 {
-    protected $fillable = ['label', 'is_checked','checklist_id','card_id'];
+    protected $fillable = ['label', 'isChecked','checklist_id','card_id'];
+    protected $table = 'checklistitems';
 
     protected $cast = [
         'created_at' => 'datetime',

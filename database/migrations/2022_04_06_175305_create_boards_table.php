@@ -16,6 +16,7 @@ class CreateBoardsTable extends Migration
         Schema::create('boards', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
+            $table->boolean('isActive');
             $table->unsignedBigInteger('kanban_id');
             $table->foreign('kanban_id')->references('id')->on('kanbans');
             $table->unsignedBigInteger('created_by');

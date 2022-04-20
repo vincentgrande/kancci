@@ -1,9 +1,12 @@
 {
     "/js/app.js": "/js/app.js",
     "/js/jquery.min.js": "/js/jquery.min.js",
+    "/js/sb-admin-2.min.js": "/js/sb-admin-2.min.js",
     "/js/jkanban.min.js": "/js/jkanban.min.js",
     "/js/bootstrap.bundle.min.js": "/js/bootstrap.bundle.min.js",
     "/js/bootstrap.min.js": "/js/bootstrap.min.js",
-    "/js/sb-admin-2.min.js": "/js/sb-admin-2.min.js",
+    "/css/sb-admin-2.css": "/css/sb-admin-2.css",
+    "/css/jkanban.min.css": "/css/jkanban.min.css",
+    "/css/all.min.css": "/css/all.min.css",
     "/css/app.css": "/css/app.css"
 }

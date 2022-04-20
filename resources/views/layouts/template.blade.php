@@ -217,7 +217,6 @@
                                                      document.getElementById('logout-form').submit();">
                     {{ __('Logout') }}
                 </a>
-
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
@@ -231,7 +230,6 @@
 <script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
 <script src='{{asset('js/jkanban.min.js')}}'></script>
 <script src="{{asset('js/sb-admin-2.min.js')}}"></script>
-
 @yield('scripts')
 </body>
 </html>

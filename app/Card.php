@@ -73,4 +73,9 @@ class Card extends Model
     {
         return $this->hasOne(Checklist::class, 'id','checklist_id');
     }
+
+    public function card_user()
+    {
+        return $this->hasMany('App\CardUser');
+    }
 }
