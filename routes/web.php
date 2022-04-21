@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('boardmaxid', 'KanbanController@boardMaxId')->name("boardMaxId");
     Route::get('getkanban', 'WorkgroupController@getKanban')->name("getKanban");
     Route::get('getworkgroup', 'WorkgroupController@getWorkgroup')->name("getWorkgroup");
+    Route::get('kanbanInfos', 'KanbanController@kanbanInfos')->name("kanbanInfos");
 
     Route::post('verifycardid', 'KanbanController@verifyCardId')->name("verifyCardId");
     Route::post('savetodb', 'KanbanController@saveToDB')->name("saveToDB");
@@ -64,6 +65,10 @@ Route::middleware('auth')->group(function () {
     Route::post('archiveCard','KanbanController@archiveCard')->name('archiveCard');
     Route::post('archiveBoard','KanbanController@archiveBoard')->name('archiveBoard');
     Route::post('joinCard','KanbanController@joinCard')->name('joinCard');
+
+    Route::post('editKanban','KanbanController@editKanban')->name('editKanban');
+    Route::post('joinKanban','KanbanController@joinKanban')->name('joinKanban');
+
 
 });
 Route::get('debug', 'KanbanController@debug')->name("debug");

@@ -11,7 +11,7 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
     <li class="nav-item active">
-        <a class="nav-link"> <!-- TO DO : Open modal with kanban settings-->
+        <a class="nav-link" id="manageKanban"> <!-- TO DO : Open modal with kanban settings-->
             <i class="fas fa-cog"></i>
             <span>Manage kanban</span></a>
     </li>
@@ -37,6 +37,128 @@
 
     <script>
         @if(!isset($visibility))
+        var manageKanban = document.getElementById("manageKanban");
+        manageKanban.addEventListener("click", function() {
+            $.ajax({
+                url: "{{ route('kanbanInfos') }}",
+                method: 'get',
+                data: {
+                    id: {{ $kanban }}
+                },
+                success: function(result){
+                    console.log(result)
+                    $('#modal-container').append (`
+                            <div class="modal manage-modal" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Manage kanban !</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit').modal('hide'); ">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                       <input id="id" type="text" class="form-control" name="id" value="`+result.kanban.id+`" hidden>
+                                        <label for="title" class="label-control">Title :</label>
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-tag fa-fw" id="iconTitle"></i></span>
+                                            </div>
+                                            <input id="title" type="text" class="form-control" name="title" value="`+result.kanban.title+`">
+                                        </div>
+ <hr class="sidebar-divider">
+ <label for="visibility" class="label-control">Kanban visibility :</label>
+
+<select class="custom-select" id="visibility" name="visibility" onchange="saveKanbanChanges()">
+  <option selected>`+result.kanban.visibility+`</option>
+`+(result.kanban.visibility != "visible" ? '  <option value="visible">visible</option>' : '')+`
+`+(result.kanban.visibility != "private" ? '  <option value="private">private</option>' : '')+`
+`+(result.kanban.visibility != "public" ? '  <option value="public">public</option>' : '')+`
+</select>
+ <hr class="sidebar-divider">
+
+<div id="workgroup_users"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit').modal('hide');">Close</button>
+<button type="button" class="btn btn-success" data-dismiss="modal" onclick="$('#edit').modal('hide');">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+`);
+                    addWorkgroupUsers(result)
+                    $('#edit').modal('show');
+                }});
+        });
+        let saveKanbanChanges = function() {
+            let id = $("#id").val()
+            let title = $("#title").val()
+            let visibility = $("#visibility").val()
+            $.ajax({
+                url:  '{{route('editKanban')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id:id,
+                    title:title,
+                    visibility:visibility,
+                },
+                success: function(result){
+                    console.log(result)
+                    let elements = $('.kanban-user');
+                    elements = Array.from(elements); //convert to array
+                    elements.map(element => // map on kanban-boards to add edit button
+                        {
+                            $("#"+element.id).removeClass('border border-success border-4')
+                            result.map(x => {
+                                if(visibility === "private" && "user"+x.user_id === element.id){
+                                    $("#"+element.id).attr('onclick','addKanbanUser("'+id+'","'+x.user_id+'")')
+                                    $("#"+element.id).addClass('border border-success border-4')
+                                }else if (visibility === "private"){
+                                    $("#"+element.id).attr('onclick','addKanbanUser("'+id+'","'+element.id.replace('user','')+'")')
+                                }else if(visibility !== "private"){
+                                    $("#"+element.id).attr('onclick','')
+                                    $("#"+element.id).addClass('border border-success border-4')
+                                }
+                            })
+                        }
+                    );
+                }});
+        }
+        let addWorkgroupUsers = function(result){
+            if(Object.keys(result.workgroupuser).length !== 0) {
+                result.workgroupuser.map(x => {
+                    $('#workgroup_users').append(`
+                            <img id="user`+x.id+`" class="kanban-user img-profile rounded-circle `+(x.kanban_user === 1 ? 'border border-success border-4' : '')+`" style="width:50px;height:50px;"
+                                 src="`+ '{{asset('img/')}}/'+x.picture +`" onclick='addKanbanUser("`+result.kanban.id+`","`+x.id+`")'> `)
+                    if(result.kanban.visibility !== "private"){
+                        $("#user"+x.id).attr('onclick','')
+                    }else{
+                        $("#user"+x.id).attr('onclick','addKanbanUser("'+result.kanban.id+'","'+x.id+'")')
+                    }
+                })
+
+            }
+        }
+        let addKanbanUser = function(kanban_id, user_id){
+            $.ajax({
+                url:  '{{route('joinKanban')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    kanban_id:kanban_id,
+                    user_id:user_id,
+                },
+                success: function(result){
+                    if(result === "1"){
+                        $("#user"+user_id).addClass("border border-success border-4")
+                    }else if(result === "0"){
+                        $("#user"+user_id).removeClass("border border-success border-4")
+                    }
+                }});
+
+        }
         /**
          * function to save all boards and card in database
          */
@@ -389,7 +511,7 @@
                 result.workgroupuser.map(x => {
                     $('#card_users').append(`
                             <img id="user`+x.id+`" class="img-profile rounded-circle `+(x.card_user === 1 ? 'border border-success border-4' : '')+`" style="width:50px;height:50px;"
-                                 src="`+ '{{asset('img/')}}/'+x.picture +`" @if(!isset($visibility)) onclick="joinCard(`+x.id+`,`+result.card.id+`) @endif">
+                                 src="`+ '{{asset('img/')}}/'+x.picture +`" @if(!isset($visibility)) onclick="joinCard(`+x.id+`,`+result.card.id+`)"@endif>
                         `)
                 })
             }
@@ -434,6 +556,10 @@
                 saveCardChanges()
                 @endif
                 $('.edit-card-modal').remove(); // Remove edit card modal on close event
+            });
+            $(document).on('hide.bs.modal','.manage-modal', function () {
+                saveKanbanChanges()
+                $('.manage-modal').remove(); // Remove edit board modal on close event
             });
         });
         /**

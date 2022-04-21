@@ -189,36 +189,7 @@ class KanbanController extends Controller
     }
 
     public function debug(){
-        $kanban = Kanban::where('id',1)->first();
-        if($kanban->visibility == "private")
-        {
-            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
-            foreach ($kanbanuser as $ku){
-                if (2 == $ku->user_id){
-                    return "True";
-                }
-            }
-        }else if($kanban->visibility == "visible")
-        {
-            $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
-            $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
-            foreach ($workgroupuser as $wk){
-                if (2 == $wk->user_id){
-                    return "True";
-                }
-            }
-        }
-        else if($kanban->visibility == "public")
-        {
-            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
-            foreach ($kanbanuser as $ku){
-                if (2 == $ku->user_id){
-                    return "True";
-                }
-            }
-            return "public";
-        }
-        return "False";
+        dd(KanbanUser::where('kanban_id',1)->get());
     }
 
     public function joinCard(Request $request)
@@ -236,6 +207,7 @@ class KanbanController extends Controller
         }
         return '';
     }
+
     /**
      * @param Request $request
      * @return mixed
@@ -384,9 +356,9 @@ class KanbanController extends Controller
 
     /**
      * @param $boardId
-     * @return bool
+     * @return string
      */
-    public function allowedBoardAccess($boardId):bool
+    public function allowedBoardAccess($boardId)
     {
         $board = Board::where('id',$boardId)->first();
         $kanban = Kanban::where('id',$board->kanban_id)->first();
@@ -410,12 +382,6 @@ class KanbanController extends Controller
         }
         else if($kanban->visibility == "public")
         {
-            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
-            foreach ($kanbanuser as $ku){
-                if (Auth::user()->id == $ku->user_id){
-                    return "True";
-                }
-            }
             $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
             $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
             foreach ($workgroupuser as $wk){
@@ -430,7 +396,7 @@ class KanbanController extends Controller
 
     /**
      * @param $kanbanId
-     * @return mixed
+     * @return string
      */
     public function allowedKanbanAccess($kanbanId)
     {
@@ -455,12 +421,6 @@ class KanbanController extends Controller
         }
         else if($kanban->visibility == "public")
         {
-            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
-            foreach ($kanbanuser as $ku){
-                if (Auth::user()->id == $ku->user_id){
-                    return "True";
-                }
-            }
             $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
             $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
             foreach ($workgroupuser as $wk){
@@ -470,8 +430,13 @@ class KanbanController extends Controller
             }
             return "public";
         }
-        return False;
+        return 'False';
     }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function archiveCard(Request $request)
     {
         $card = Card::where('id','=',$request->card_id)->first();
@@ -483,6 +448,11 @@ class KanbanController extends Controller
         }
         return 'Nok';
     }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function archiveBoard(Request $request)
     {
         $board = Board::where('id', $request->board_id)->first();
@@ -493,5 +463,69 @@ class KanbanController extends Controller
             }
         }
         return 'Nok';
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function kanbanInfos(Request $request)
+    {
+        $kanban = Kanban::where('id', $request->id)->first();
+        $workgroupuser = WorkGroupUser::where('workgroup_id',$kanban->workgroup_id)->get();
+        $users = [];
+        foreach($workgroupuser as $wku)
+        {
+            $user = User::where('id',$wku->user_id)->select()->first();
+
+            if($kanban->visibility == "visible"){
+                $user["kanban_user"] = 1;
+            }else if($kanban->visibility == "private"){
+                $ku = KanbanUser::where('kanban_id',$kanban->id)->where('user_id',$user->id)->first();
+                if($ku != null){
+                    $user["kanban_user"] = 1;
+                }else{
+                    $user["kanban_user"] = 0;
+                }
+            }else{
+                $user["kanban_user"] = 1;
+            }
+            array_push($users, $user);
+        }
+       $kanbanInfos = [
+           'kanban'=>$kanban,
+           'workgroupuser'=>$users,
+       ];
+       return $kanbanInfos;
+    }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function editKanban(Request $request)
+    {
+        if(isset($request->title) && isset($request->visibility) && ($request->visibility == "visible" || $request->visibility == "private" || $request->visibility == "public")){
+            Kanban::where('id',$request->id)->update(['title'=>$request->title,'visibility'=>$request->visibility]);
+
+            if (KanbanUser::where('kanban_id',$request->id)->where('user_id',Auth::user()->id)->first() == null) {
+                KanbanUser::create(['user_id' => Auth::user()->id, 'kanban_id' => $request->id]);
+            }
+            $ku = KanbanUser::where('kanban_id',$request->id)->get();
+            return $ku;
+        }
+        return 'Nok';
+    }
+
+    public function joinKanban(Request $request)
+    {
+        $kanbanuser = KanbanUser::where('kanban_id',$request->kanban_id)->where('user_id',$request->user_id)->first();
+        if ($kanbanuser != null) {
+            $kanbanuser->delete();
+            return 0;
+        }else{
+            $kanbanuser = KanbanUser::create(['user_id' => $request->user_id, 'kanban_id' => $request->kanban_id]);
+            return 1;
+        }
     }
 }
