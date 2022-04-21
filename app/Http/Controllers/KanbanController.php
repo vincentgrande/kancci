@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CardUser;
 use App\Checklist;
 use App\ChecklistItem;
+use App\KanbanUser;
 use App\WorkGroup;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -50,9 +51,15 @@ class KanbanController extends Controller
      */
     public function kanban($id)
     {
-        if($this->allowedKanbanAccess($id) == True) {
+        if($this->allowedKanbanAccess($id) == 'True' && $this->allowedKanbanAccess($id) != 'public') {
             return view('kanban', [
                 'kanban' => $id,
+            ]);
+        }
+        if($this->allowedKanbanAccess($id) == 'public') {
+            return view('kanban', [
+                'kanban' => $id,
+                'visibility' => 'public',
             ]);
         }
         return redirect()->route('index');
@@ -64,7 +71,7 @@ class KanbanController extends Controller
      */
     public function getBoards(Request $request)
     {
-        if($this->allowedKanbanAccess($request->id) == True) {
+        if($this->allowedKanbanAccess($request->id) == "True" || $this->allowedKanbanAccess($request->id) == "public") {
             $kanban = Kanban::where('id', $request->id)->first();
             $boards = Board::where('kanban_id', $kanban['id'])->get();
             $myBoards = [];
@@ -129,7 +136,7 @@ class KanbanController extends Controller
      */
     public function saveToDB(Request $request)
     {
-        if($this->allowedKanbanAccess($request->kanbanId) == True) {
+        if($this->allowedKanbanAccess($request->kanbanId) == "True") {
             $boards = json_encode($request->boards);
             if ($request->boards != null) {
                 foreach ($request->boards as $b) {
@@ -168,7 +175,7 @@ class KanbanController extends Controller
      */
     public function saveBoard(Request $request)
     {
-        if($this->allowedKanbanAccess($request->kanbanId) == True){
+        if($this->allowedKanbanAccess($request->kanbanId) == "True"){
             Board::create([
                 'id' => $request->board[0]['id'],
                 'title' => $request->board[0]['title'],
@@ -182,26 +189,38 @@ class KanbanController extends Controller
     }
 
     public function debug(){
-        /*$card = Card::where('id',4)->first();
-        $board = Board::where('id',$card->board_id)->first();
-        $kanban = Kanban::where('id',$board->kanban_id)->first();
-        $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
-        $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get('user_id');
-        $users = [];
-        foreach($workgroupuser as $wku)
+        $kanban = Kanban::where('id',1)->first();
+        if($kanban->visibility == "private")
         {
-            foreach(CardUser::where('card_id',1)->get() as $u){
-                $user = User::where('id',$wku->user_id)->select()->first();
-                if($user->id == $u->user_id){
-                    $user["card_user"] = 1;
-                }else{
-                    $user["card_user"] = 0;
+            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
+            foreach ($kanbanuser as $ku){
+                if (2 == $ku->user_id){
+                    return "True";
                 }
-                array_push($users, $user);
             }
-        }*/
-        dd(CardUser::where('card_id',1)->get());
+        }else if($kanban->visibility == "visible")
+        {
+            $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
+            $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
+            foreach ($workgroupuser as $wk){
+                if (2 == $wk->user_id){
+                    return "True";
+                }
+            }
+        }
+        else if($kanban->visibility == "public")
+        {
+            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
+            foreach ($kanbanuser as $ku){
+                if (2 == $ku->user_id){
+                    return "True";
+                }
+            }
+            return "public";
+        }
+        return "False";
     }
+
     public function joinCard(Request $request)
     {
         $card = Card::where('id',$request->card_id)->first();
@@ -224,7 +243,9 @@ class KanbanController extends Controller
     public function getCard(Request $request)
     {
         $card = Card::where('id',$request->id)->first();
-        if ($this->allowedBoardAccess($card->board_id) == True) {
+        $board = Board::where('id', $card->board_id)->first();
+
+        if ($this->allowedBoardAccess($card->board_id) == True || $this->allowedKanbanAccess($board->kanban_id) == "public" || $this->allowedKanbanAccess($board->kanban_id) == "True") {
             $board = Board::where('id',$card->board_id)->first();
             $kanban = Kanban::where('id',$board->kanban_id)->first();
             $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
@@ -369,29 +390,85 @@ class KanbanController extends Controller
     {
         $board = Board::where('id',$boardId)->first();
         $kanban = Kanban::where('id',$board->kanban_id)->first();
-        $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
-        $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
-        foreach ($workgroupuser as $wk){
-            if (Auth::user()->id == $wk->user_id){
-                return True;
+        if($kanban->visibility == "private")
+        {
+            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
+            foreach ($kanbanuser as $ku){
+                if (Auth::user()->id == $ku->user_id){
+                    return "True";
+                }
+            }
+        }else if($kanban->visibility == "visible")
+        {
+            $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
+            $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
+            foreach ($workgroupuser as $wk){
+                if (Auth::user()->id == $wk->user_id){
+                    return "True";
+                }
             }
         }
-        return False;
+        else if($kanban->visibility == "public")
+        {
+            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
+            foreach ($kanbanuser as $ku){
+                if (Auth::user()->id == $ku->user_id){
+                    return "True";
+                }
+            }
+            $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
+            $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
+            foreach ($workgroupuser as $wk){
+                if (Auth::user()->id == $wk->user_id){
+                    return "True";
+                }
+            }
+            return "public";
+        }
+        return "False";
     }
 
     /**
      * @param $kanbanId
-     * @return bool
+     * @return mixed
      */
-    public function allowedKanbanAccess($kanbanId):bool
+    public function allowedKanbanAccess($kanbanId)
     {
         $kanban = Kanban::where('id',$kanbanId)->first();
-        $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
-        $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
-        foreach ($workgroupuser as $wk){
-            if (Auth::user()->id == $wk->user_id){
-                return True;
+        if($kanban->visibility == "private")
+        {
+            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
+            foreach ($kanbanuser as $ku){
+                if (Auth::user()->id == $ku->user_id){
+                    return "True";
+                }
             }
+        }else if($kanban->visibility == "visible")
+        {
+            $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
+            $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
+            foreach ($workgroupuser as $wk){
+                if (Auth::user()->id == $wk->user_id){
+                    return "True";
+                }
+            }
+        }
+        else if($kanban->visibility == "public")
+        {
+            $kanbanuser = KanbanUser::where('kanban_id',$kanban->id)->get();
+            foreach ($kanbanuser as $ku){
+                if (Auth::user()->id == $ku->user_id){
+                    return "True";
+                }
+            }
+            $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
+            $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get();
+            foreach ($workgroupuser as $wk){
+                if (Auth::user()->id == $wk->user_id){
+                    return "True";
+                }
+            }
+            return "public";
         }
         return False;
     }

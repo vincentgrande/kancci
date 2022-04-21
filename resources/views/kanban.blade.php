@@ -36,6 +36,7 @@
 @section('scripts')
 
     <script>
+        @if(!isset($visibility))
         /**
          * function to save all boards and card in database
          */
@@ -166,95 +167,8 @@
                     $('#edit'+eid+'').modal('show');
                 }});
         };
-        /**
-         * function to show modal to edit card
-         */
-        let showEditCard = function(eid){
-            $.ajax({
-                url: "{{ route('getcard') }}",
-                method: 'get',
-                data: {
-                    id:eid
-                },
-                success: function(result){
-                    $('#modal-container').append (`
-                    <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result.card.title+`</h5><br>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit`+eid+`').modal('hide');">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-<div class="datepicker date input-group">
- <label for="start_date">Start date : </label>
-    <input type="date" placeholder="Start date" class="form-control" id="start_date" `+(result.card.startDate != null ? "value='"+result.card.startDate+"'" : '')+`>
-    <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
-</div><br>
-<div class="datepicker date input-group">
-    <label for="end_date">End date : </label>
-    <input type="date" placeholder="End date" class="form-control" id="end_date" `+(result.card.endDate != null ? "value='"+result.card.endDate+"'" : '')+`>
-    <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
-</div>
- <hr class="sidebar-divider">
-                                                <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
-                                                <label for="title">Title:</label>
-                                                <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`">
-<hr class="sidebar-divider">
-                                                <label for="description">Description:</label>
-    <textarea class="form-control" id="description" name="description" rows="3">`+(result.card.description !== "null" && result.card.description !== null ? result.card.description : '')+`</textarea>
-                                                <hr class="sidebar-divider">
-<button class='btn btn-primary' id='addChecklist' onclick='addChecklist("`+result.card.id+`"); $("#editCardDynamic").removeAttr("hidden"); $(this).hide();' `+(result.checklist === null ? '' : 'hidden')+`>Add checklist</button>
-                                            <div id="editCardDynamic" class="mb-2" `+(result.checklist === null ? 'hidden' : '')+`>
-                <label for="checklisttitle" >Checklist :</label>
-                <input  class='form-control' type='text' placeholder="Checklist title" id='checklisttitle' name='checklisttitle' value='`+(result.checklist === null ? 'New checklist' : result.checklist.title)+`'>
-                <br><div id='checklistitems'></div>
-<div class="input-group">
-                                              <input class="form-control" type="text" id="item_title" name="item_title" placeholder="Item title" value="">
-                                              <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-success" onclick="addChecklistItem(`+result.card.id+`)">Add</button>
-                                              </div>
-                                            </div>
-</div>
-                                            <div id="checklist-form"></div>
-<hr class="sidebar-divider">
-<div id="card_users"></div>
-                                            </div>
-                                            <div class="modal-footer">
-                                            <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button>
-                                                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
-                                                <button type="button" class="btn btn-success" onclick="saveCardChanges()">Save changes</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                    `);
-                    addEditFunctions(result)
-                    $('#edit'+eid+'').modal('show');
-                }});
-        }
-        let addEditFunctions = function(result){
-            if(Object.keys(result.checklistitems).length !== 0) {
-                result.checklistitems.map(x => {
-                    $('#checklistitems').append(`
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox" onchange="saveChecklist(this.id)" id="`+x.id+`" `+(x.isChecked === 1 ? 'checked' : '')+`/>
-                              <label class="form-check-label" for="`+x.id+`">`+x.label+`</label>
-                            </div>
-                        `)
-                })
-            }
-            if(Object.keys(result.workgroupuser).length !== 0) {
-                result.workgroupuser.map(x => {
-                    $('#card_users').append(`
-                            <img id="user`+x.id+`" class="img-profile rounded-circle `+(x.card_user === 1 ? 'border border-success border-4' : '')+`" style="width:50px;"
-                                 src="`+ '{{asset('img/')}}/'+x.picture +`" onclick="joinCard(`+x.id+`,`+result.card.id+`)">
-                        `)
-                })
-            }
-        }
+
+
         let joinCard = function(user_id, card_id){
             $.ajax({
                 url:  '{{route('joinCard')}}',
@@ -321,6 +235,7 @@
             let startDate = $("#start_date").val()
             let endDate = $("#end_date").val()
             let card_id = $("#card_id").val()
+
             $.ajax({
                 url:  '{{route('editCard')}}',
                 method: 'post',
@@ -387,6 +302,98 @@
             }
             uidVerif()
         }
+        @endif
+        /**
+         * function to show modal to edit card
+         */
+        let showEditCard = function(eid){
+            $.ajax({
+                url: "{{ route('getcard') }}",
+                method: 'get',
+                data: {
+                    id:eid
+                },
+                success: function(result){
+                    $('#modal-container').append (`
+                    <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result.card.title+`</h5><br>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit`+eid+`').modal('hide');">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+<div class="datepicker date input-group">
+ <label for="start_date">Start date : </label>
+    <input type="date" placeholder="Start date" class="form-control" id="start_date" `+(result.card.startDate != null ? "value='"+result.card.startDate+"'" : '')+` @if(isset($visibility)) readonly @endif>
+    <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
+</div><br>
+<div class="datepicker date input-group">
+    <label for="end_date">End date : </label>
+    <input type="date" placeholder="End date" class="form-control" id="end_date" `+(result.card.endDate != null ? "value='"+result.card.endDate+"'" : '')+` @if(isset($visibility)) readonly @endif>
+    <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
+</div>
+ <hr class="sidebar-divider">
+                                                <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
+                                                <label for="title">Title:</label>
+                                                <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`" @if(isset($visibility)) readonly @endif>
+<hr class="sidebar-divider">
+                                                <label for="description">Description:</label>
+    <textarea class="form-control" id="description" name="description" rows="3" @if(isset($visibility)) readonly @endif>`+(result.card.description !== "null" && result.card.description !== null ? result.card.description : '')+`</textarea>
+                                                @if(!isset($visibility))
+                    <hr class="sidebar-divider" id='addChecklistDivider'>
+                   <button class='btn btn-primary' id='addChecklist' onclick='addChecklist("`+result.card.id+`"); $("#editCardDynamic").removeAttr("hidden"); $(this).hide(); $("#addChecklistDivider").hide();' `+(result.checklist === null ? '' : 'hidden')+`>Add checklist</button> @endif
+                                            <div id="editCardDynamic" class="mb-2" `+(result.checklist === null ? 'hidden' : '')+`>
+                                             <hr class="sidebar-divider">
+                <label for="checklisttitle" >Checklist :</label>
+                <input  class='form-control' type='text' placeholder="Checklist title" id='checklisttitle' name='checklisttitle' value='`+(result.checklist === null ? 'New checklist' : result.checklist.title)+`'>
+                <br><div id='checklistitems'></div>
+<div class="input-group">
+                                              <input class="form-control" type="text" id="item_title" name="item_title" placeholder="Item title" value="">
+                                              <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-success" onclick="addChecklistItem(`+result.card.id+`)">Add</button>
+                                              </div>
+                                            </div>
+</div>
+                                            <div id="checklist-form"></div>
+<hr class="sidebar-divider">
+<div id="card_users"></div>
+                                            </div>
+                                            <div class="modal-footer">
+                                             @if(!isset($visibility)) <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button> @endif
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
+                                                 @if(!isset($visibility))<button type="button" class="btn btn-success" onclick="saveCardChanges()">Save changes</button>@endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    `);
+                    addEditFunctions(result)
+                    $('#edit'+eid+'').modal('show');
+                }});
+        }
+        let addEditFunctions = function(result){
+            if(Object.keys(result.checklistitems).length !== 0) {
+                result.checklistitems.map(x => {
+                    $('#checklistitems').append(`
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" @if(!isset($visibility))   onchange="saveChecklist(this.id)"@endif id="`+x.id+`" `+(x.isChecked === 1 ? 'checked' : '')+`/>
+                              <label class="form-check-label" for="`+x.id+`">`+x.label+`</label>
+                            </div>
+                        `)
+                })
+            }
+            if(Object.keys(result.workgroupuser).length !== 0) {
+                result.workgroupuser.map(x => {
+                    $('#card_users').append(`
+                            <img id="user`+x.id+`" class="img-profile rounded-circle `+(x.card_user === 1 ? 'border border-success border-4' : '')+`" style="width:50px;height:50px;"
+                                 src="`+ '{{asset('img/')}}/'+x.picture +`" @if(!isset($visibility)) onclick="joinCard(`+x.id+`,`+result.card.id+`) @endif">
+                        `)
+                })
+            }
+        }
         /**
          * Create the kanban
          */
@@ -395,9 +402,9 @@
             gutter           : '15px',                                       // gutter of the board
             widthBoard       : '250px',                                      // width of the board
             responsivePercentage: false,                                    // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
-            dragItems        : true,                                         // if false, all items are not draggable
+            dragItems        : @if(!isset($visibility)) true @else false @endif,                                         // if false, all items are not draggable
             boards           : [],                                           // json of boards
-            dragBoards       : true,                                         // the boards are draggable, if false only item can be dragged
+            dragBoards       : @if(!isset($visibility)) true @else false @endif,                                         // the boards are draggable, if false only item can be dragged
             itemAddOptions: {
                 enabled: true,                                              // add a button to board for easy item creation
                 content: "Add card +",                                                // text or html content of the board button
@@ -407,21 +414,25 @@
             click            : function (el) { showEditCard(el.dataset.eid);/*$('#card'+el.dataset.eid).modal('show');*/ },                             // callback when any board's item are clicked
             context          : function (el, event) {},                      // callback when any board's item are right clicked
             dragEl           : function (el, source) {},                     // callback when any board's item are dragged
-            dragendEl        : function (el) { saveKanban() },                             // callback when any board's item stop drag
+            dragendEl        : function (el) { @if(!isset($visibility)) saveKanban() @endif},                             // callback when any board's item stop drag
             dropEl           : function (el, target, source, sibling) {},    // callback when any board's item drop in a board
             dragBoard        : function (el, source) {},                     // callback when any board stop drag
-            dragendBoard     : function (el) {saveKanban()},                             // callback when any board stop drag
-            buttonClick      : function(el, boardId) {  addCard(boardId)},                     // callback when the board's button is clicked
+            dragendBoard     : function (el) {@if(!isset($visibility)) saveKanban() @endif},                             // callback when any board stop drag
+            buttonClick      : function(el, boardId) {  @if(!isset($visibility)) addCard(boardId) @endif},                     // callback when the board's button is clicked
             propagationHandlers: [],
         })
         $(document).ready(function() {
             getBoards(); // fetch boards from database after page load
             $(document).on('hide.bs.modal','.edit-modal', function () {
+                @if(!isset($visibility))
                 saveChanges()
+                @endif
                 $('.edit-modal').remove(); // Remove edit board modal on close event
             });
             $(document).on('hide.bs.modal','.edit-card-modal', function () {
+                @if(!isset($visibility))
                 saveCardChanges()
+                @endif
                 $('.edit-card-modal').remove(); // Remove edit card modal on close event
             });
         });
