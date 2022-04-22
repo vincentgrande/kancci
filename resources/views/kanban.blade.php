@@ -481,7 +481,18 @@
 </div>
                                             <div id="checklist-form"></div>
 <hr class="sidebar-divider">
+ @if(!isset($visibility))
+<div class="input-group">
+    <div class="custom-file">
+        <input type="file" class="custom-file-input" id="file" name='file'
+          aria-describedby="attachment" accept=".txt, .doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/*,.pdf" onchange="$('form#uploadFile').submit();">
+        <label class="custom-file-label" for="attachment">Choose file</label>
+    </div>
+</div>
+<hr class="sidebar-divider">
+@endif
 <div id="card_users"></div>
+
                                             </div>
                                             <div class="modal-footer">
                                              @if(!isset($visibility)) <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button> @endif
@@ -496,6 +507,7 @@
                     $('#edit'+eid+'').modal('show');
                 }});
         }
+
         let addEditFunctions = function(result){
             if(Object.keys(result.checklistitems).length !== 0) {
                 result.checklistitems.map(x => {
@@ -543,7 +555,7 @@
             buttonClick      : function(el, boardId) {  @if(!isset($visibility)) addCard(boardId) @endif},                     // callback when the board's button is clicked
             propagationHandlers: [],
         })
-        $(document).ready(function() {
+        $(document).ready(function(e) {
             getBoards(); // fetch boards from database after page load
             $(document).on('hide.bs.modal','.edit-modal', function () {
                 @if(!isset($visibility))
@@ -606,3 +618,4 @@
         }
     </script>
 @stop
+

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Attachement;
 use App\CardUser;
 use App\Checklist;
 use App\ChecklistItem;
@@ -15,6 +16,7 @@ use App\Board;
 use App\Kanban;
 use App\WorkGroupUser;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use phpDocumentor\Reflection\Types\Integer;
 
 
@@ -527,5 +529,27 @@ class KanbanController extends Controller
             $kanbanuser = KanbanUser::create(['user_id' => $request->user_id, 'kanban_id' => $request->kanban_id]);
             return 1;
         }
+    }
+    public function uploadFile(Request $request)
+    {
+        request()->validate([
+            'file'  => 'required|mimes:doc,docx,pdf,txt,jpeg,png,jpg,svg',
+        ]);
+        if ($files = $request->file('file')) {
+            //store file into document folder
+            $file = $request->file->store('public/attachments');
+            $filename = Hash::make($request->file->hashName());
+            $filename = str_replace('/', 'l', $filename);
+            $filename = str_replace('.', 'i', $filename);
+            $file = $filename.'.'. $request->file->extension();
+            $attachement = Attachement::create([
+                'extension' => $request->file->extension(),
+                'filepath' => 'attachments/' .$file,
+                'uploaded_by' => Auth::user()->id,
+                'card_id' => $request->card_id,
+            ]);
+            return "Ok";
+        }
+        return "Nok";
     }
 }

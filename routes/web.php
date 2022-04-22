@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('editKanban','KanbanController@editKanban')->name('editKanban');
     Route::post('joinKanban','KanbanController@joinKanban')->name('joinKanban');
+    Route::post('uploadFile','KanbanController@uploadFile')->name('uploadFile');
 
 
 });
