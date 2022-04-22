@@ -577,4 +577,14 @@ class KanbanController extends Controller
         }
         return back();
     }
+    public function deleteItem(Request $request)
+    {
+        $checklistitem = ChecklistItem::where('id',$request->id)->first();
+        $card = Card::where('id','=',$checklistitem->card_id)->first();
+        if ($this->allowedBoardAccess($card->board_id) == 'True') {
+            $checklistitem->delete();
+            return "Ok";
+        }
+        return "Nok";
+    }
 }

@@ -131,7 +131,7 @@
                 result.workgroupuser.map(x => {
                     $('#workgroup_users').append(`
                             <img id="user`+x.id+`" class="kanban-user img-profile rounded-circle `+(x.kanban_user === 1 ? 'border border-success border-4' : '')+`" style="width:50px;height:50px;"
-                                 src="`+ '{{asset('img/')}}/'+x.picture +`" onclick='addKanbanUser("`+result.kanban.id+`","`+x.id+`")'> `)
+                                 src="`+ '{{asset('img/')}}/'+x.picture +`" onclick='addKanbanUser("`+result.kanban.id+`","`+x.id+`")' title="`+x.name+` - `+x.email+`"> `)
                     if(result.kanban.visibility !== "private"){
                         $("#user"+x.id).attr('onclick','')
                     }else{
@@ -332,9 +332,9 @@
                 },
                 success: function(result){
                     $('#checklistitems').append(`
-                            <div class="form-check">
+                            <div class="form-check m-2" id="item`+result.id+`">
                               <input class="form-check-input" type="checkbox" onchange="saveChecklist(`+result.id+`)" id="`+result.id+`"/>
-                              <label class="form-check-label" for="`+result.id+`">`+result.label+`</label>
+                              <label class="form-check-label" for="`+result.id+`">`+result.label+`</label> @if(!isset($visibility))<button class="btn btn-danger btn-sm" onclick='deleteItem(`+result.id+`)'><i class="fas fa-times"></i></button>@endif
                             </div>
                         `)
                 }});
@@ -472,7 +472,7 @@
                                              <hr class="sidebar-divider">
                 <label for="checklisttitle" >Checklist :</label>
                 <input  class='form-control' type='text' placeholder="Checklist title" id='checklisttitle' name='checklisttitle' value='`+(result.checklist === null ? 'New checklist' : result.checklist.title)+`'>
-                <br><div id='checklistitems'></div>
+                <br><div id='checklistitems' class="mb-2"></div>
 <div class="input-group">
                                               <input class="form-control" type="text" id="item_title" name="item_title" placeholder="Item title" value="">
                                               <div class="input-group-append">
@@ -484,23 +484,27 @@
 <hr class="sidebar-divider">
 <div id="files"></div>
  @if(!isset($visibility))
-<form action="{{ route('uploadFile') }}" id="upload" method="post" enctype="multipart/form-data">
-    @csrf
-    <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
-    <div class="input-group mt-2">
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="file" name='file'
-              aria-describedby="attachment" accept=".txt, .doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/*,.pdf" onchange="$('form#upload').submit();">
-            <label class="custom-file-label" for="attachment">Choose file</label>
+    <form action="{{ route('uploadFile') }}" id="upload" method="post" enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
+        <div class="input-group mt-2">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="file" name='file'
+                  aria-describedby="attachment" accept=".txt, .doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/*,.pdf" onchange="$('form#upload').submit();">
+                <label class="custom-file-label" for="attachment">Choose file</label>
+            </div>
         </div>
-    </div>
-</form>
-<hr class="sidebar-divider">
+    </form>
+    <hr class="sidebar-divider">
+@else
+    <hr class="sidebar-divider">
 @endif
+
+
 <div id="card_users"></div>
-                                            </div>
-                                            <div class="modal-footer">
-                                             @if(!isset($visibility)) <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button> @endif
+                                        </div>
+                                        <div class="modal-footer">
+@if(!isset($visibility)) <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button> @endif
                                                 <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
                                                  @if(!isset($visibility))<button type="button" class="btn btn-success" onclick="saveCardChanges()">Save changes</button>@endif
                                             </div>
@@ -517,9 +521,9 @@
             if(Object.keys(result.checklistitems).length !== 0) {
                 result.checklistitems.map(x => {
                     $('#checklistitems').append(`
-                            <div class="form-check">
+                            <div class="form-check m-2" id="item`+x.id+`">
                               <input class="form-check-input" type="checkbox" @if(!isset($visibility))   onchange="saveChecklist(this.id)"@endif id="`+x.id+`" `+(x.isChecked === 1 ? 'checked' : '')+`/>
-                              <label class="form-check-label" for="`+x.id+`">`+x.label+`</label>
+                              <label class="form-check-label" for="`+x.id+`">`+x.label+`</label> @if(!isset($visibility))<button class="btn btn-danger btn-sm " onclick='deleteItem(`+x.id+`)'><i class="fas fa-times"></i></button>@endif
                             </div>
                         `)
                 })
@@ -528,7 +532,7 @@
                 result.workgroupuser.map(x => {
                     $('#card_users').append(`
                             <img id="user`+x.id+`" class="img-profile rounded-circle `+(x.card_user === 1 ? 'border border-success border-4' : '')+`" style="width:50px;height:50px;"
-                                 src="`+ '{{asset('img/')}}/'+x.picture +`" @if(!isset($visibility)) onclick="joinCard(`+x.id+`,`+result.card.id+`)"@endif>
+                                 src="`+ '{{asset('img/')}}/'+x.picture +`" @if(!isset($visibility)) onclick="joinCard(`+x.id+`,`+result.card.id+`)"@endif title="`+x.name+` - `+x.email+`">
                         `)
                 })
             }
@@ -542,6 +546,20 @@
                     `)
                 })
             }
+        }
+        let deleteItem = function(id){
+            $.ajax({
+                url: "{{ route('deleteItem') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id: id
+                },
+                success: function (result) {
+                    $("#item"+id).remove()
+                    console.log(result)
+                }
+            })
         }
         let deleteFile = function(id){
             $.ajax({
