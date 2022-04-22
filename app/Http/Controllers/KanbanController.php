@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Alert;
 use App\Attachement;
 use App\CardUser;
 use App\Checklist;
@@ -589,5 +590,42 @@ class KanbanController extends Controller
             return "Ok";
         }
         return "Nok";
+    }
+
+    public function getAlert()
+    {
+        setlocale(LC_TIME, ['fr', 'fra', 'fr_FR']);
+        $carduser = CardUser::where('user_id', 1)->with('card')->get();
+        $alerts = [];
+
+        foreach($carduser as $cu){
+            $card = Card::where('id', $cu->card_id)->whereDate('endDate','<=', date("Y-m-d"))->first();
+            $card2 = Card::where('id', $cu->card_id)->whereDate('endDate','>', date("Y-m-d"))->get();
+            foreach($card2 as $c){
+                Alert::where('card_id', $c->id)->where('user_id', Auth::user()->id)->delete();
+            }
+            if($card != []) {
+                $alerte = Alert::with('card')->where('user_id', Auth::user()->id)->where('card_id', $card->id)->first();
+
+                if ($alerte == []) {
+                    $alerte = Alert::create([
+                        'card_id' => $cu->card->id,
+                        'user_id' => Auth::user()->id,
+                    ]);
+                }
+            }
+
+        }
+        return(Alert::with('card')->where('is_read',false)->where('user_id', Auth::user()->id)->get());
+    }
+    public function readAlert(Request $request)
+    {
+        $alert = Alert::where('id',$request->id)->where('user_id', Auth::user()->id)->first();
+        if($alert){
+            $alert->is_read = true;
+            $alert->save();
+            return 'Ok';
+        }
+        return 'Nok';
     }
 }

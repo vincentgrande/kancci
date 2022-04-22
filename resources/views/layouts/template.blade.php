@@ -118,7 +118,8 @@
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="$('#alertsDropdown').dropdown('toggle');">
                             <i class="fas fa-bell fa-fw"></i>
                             <!-- Counter - Alerts -->
-                            <span class="badge badge-danger badge-counter">3+</span>
+
+                            <span id="badge" class="badge badge-danger badge-counter"></span>
                         </a>
                         <!-- Dropdown - Alerts -->
                         <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -126,17 +127,10 @@
                             <h6 class="dropdown-header">
                                 Alerts Center
                             </h6>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <div class="mr-3">
-                                    <div class="icon-circle bg-warning">
-                                        <i class="fas fa-exclamation-triangle text-white"></i>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="small text-gray-500">January 14, 2022</div>
-                                    Take the train
-                                </div>
-                            </a>
+                            <div id="alertList">
+
+                            </div>
+
                         </div>
                     </li>
 
@@ -226,6 +220,58 @@
 </div>
 <script src="{{asset('js/app.js')}}"></script>
 <script src="{{asset('js/jquery.min.js')}}"></script>
+<script>
+    let getAlert = function(){
+        $.ajax({
+            url: "{{ route('getAlert') }}",
+            method: 'get',
+            data: {
+            },
+            success: function (result) {
+                if(result !== "0"){
+                    document.getElementById('badge').innerHTML = result.length + "+"
+                    console.log(result)
+
+                    result.map(x => {
+                        $('#alertList').append(`
+                                        <a class="dropdown-item d-flex align-items-center alerte" href="#">
+                                        <div class="mr-3">
+                                            <div class="icon-circle bg-warning">
+                                                <i class="fas fa-exclamation-triangle text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div class="position-relative">
+                                            <div class="small text-danger"> End date :  `+x.card.endDate+`</div>
+                                            `+x.card.title+`
+                                            <button class="btn btn-danger btn-sm " onclick='readAlert(`+x.id+`)'><i class="fas fa-times"></i></button>
+                                        </div>
+                                    </a>
+                                        `)
+                    })
+                }
+            }
+        })
+    }
+
+    let readAlert = function(id){
+        $.ajax({
+            url: "{{ route('readAlert') }}",
+            method: 'post',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                id: id
+            },
+            success: function (result) {
+                $('#alertList').empty()
+                getAlert()
+            }
+        })
+    }
+    getAlert()
+
+
+
+</script>
 <script src="{{asset('js/bootstrap.min.js')}}"></script>
 <script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
 <script src='{{asset('js/jkanban.min.js')}}'></script>

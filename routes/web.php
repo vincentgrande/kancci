@@ -73,6 +73,9 @@ Route::middleware('auth')->group(function () {
     Route::post('deleteFile','KanbanController@deleteFile')->name('deleteFile');
     Route::post('deleteItem','KanbanController@deleteItem')->name('deleteItem');
 
+    Route::post('readAlert','KanbanController@readAlert')->name('readAlert');
+    Route::get('getAlert','KanbanController@getAlert')->name('getAlert');
+
     Route::get('showFile/{id}','KanbanController@showFile')->name('showFile');
 
 });
