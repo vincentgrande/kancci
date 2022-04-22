@@ -239,11 +239,13 @@ class KanbanController extends Controller
             }
             $checklist = Checklist::where('card_id', $request->id)->first();
             $checklistitems = ChecklistItem::where('card_id', $request->id)->get();
+            $attachments = Attachement::where('card_id', $request->id)->get();
             $cardInfos = [
                 'card' => $card,
                 'checklist' => $checklist,
                 'checklistitems' => $checklistitems,
                 'workgroupuser' => $users,
+                'attachments' => $attachments,
             ];
             return $cardInfos;
         }
@@ -442,7 +444,7 @@ class KanbanController extends Controller
     public function archiveCard(Request $request)
     {
         $card = Card::where('id','=',$request->card_id)->first();
-        if ($this->allowedBoardAccess($card->board_id) == True){
+        if ($this->allowedBoardAccess($card->board_id) == 'True'){
             if(Card::where('id', $card->id)->update(['isActive' => !$card->isActive]))
             {
                 return 'Ok';
@@ -458,7 +460,7 @@ class KanbanController extends Controller
     public function archiveBoard(Request $request)
     {
         $board = Board::where('id', $request->board_id)->first();
-        if ($this->allowedBoardAccess($board->id) == True){
+        if ($this->allowedBoardAccess($board->id) == 'True'){
             if(Board::where('id', $board->id)->update(['isActive' => !$board->isActive]))
             {
                 return 'Ok';
@@ -545,16 +547,34 @@ class KanbanController extends Controller
             $filename = $filename.'.'. $request->file->extension();
             $destinationPath = public_path() . '/attachments';
             $attachement = Attachement::create([
-                'extension' => $request->file->extension(),
+                'original_name' => $request->file->getClientOriginalName(),
                 'filepath' => 'attachments/' .$filename,
                 'uploaded_by' => Auth::user()->id,
                 'card_id' => $request->card_id,
             ]);
             $file->move($destinationPath, $filename);
-
             return back();
         }
         return back();
+    }
 
+    public function deleteFile(Request $request)
+    {
+        $attachement = Attachement::where('id',$request->id)->first();
+        $card = Card::where('id','=',$attachement->card_id)->first();
+        if ($this->allowedBoardAccess($card->board_id) == 'True') {
+            $attachement->delete();
+            return "Ok";
+        }
+        return "Nok";
+    }
+
+    public function showFile($id){
+        $attachement = Attachement::where('id',$id)->first();
+        $card = Card::where('id','=',$attachement->card_id)->first();
+        if ($this->allowedBoardAccess($card->board_id) == 'True') {
+            return redirect($attachement->filepath);
+        }
+        return back();
     }
 }

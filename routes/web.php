@@ -70,6 +70,9 @@ Route::middleware('auth')->group(function () {
     Route::post('joinKanban','KanbanController@joinKanban')->name('joinKanban');
     Route::post('uploadFile','KanbanController@uploadFile')->name('uploadFile');
 
+    Route::post('deleteFile','KanbanController@deleteFile')->name('deleteFile');
+    Route::get('showFile/{id}','KanbanController@showFile')->name('showFile');
+
 
 });
 Route::get('debug', 'KanbanController@debug')->name("debug");

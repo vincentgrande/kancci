@@ -436,6 +436,7 @@
                     id:eid
                 },
                 success: function(result){
+                    console.log(result)
                     $('#modal-container').append (`
                     <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -481,11 +482,12 @@
 </div>
                                             <div id="checklist-form"></div>
 <hr class="sidebar-divider">
+<div id="files"></div>
  @if(!isset($visibility))
 <form action="{{ route('uploadFile') }}" id="upload" method="post" enctype="multipart/form-data">
     @csrf
     <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
-    <div class="input-group">
+    <div class="input-group mt-2">
         <div class="custom-file">
             <input type="file" class="custom-file-input" id="file" name='file'
               aria-describedby="attachment" accept=".txt, .doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/*,.pdf" onchange="$('form#upload').submit();">
@@ -496,7 +498,6 @@
 <hr class="sidebar-divider">
 @endif
 <div id="card_users"></div>
-
                                             </div>
                                             <div class="modal-footer">
                                              @if(!isset($visibility)) <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button> @endif
@@ -531,6 +532,30 @@
                         `)
                 })
             }
+            if(Object.keys(result.attachments).length !== 0) {
+                result.attachments.map(x => {
+                    $('#files').append(`
+                        <li id='file`+x.id+`'>
+                            <a href='/showFile/`+x.id+`' target='_blank'>`+x.original_name+`</a>
+                            <button class="btn btn-danger btn-sm" onclick='deleteFile(`+x.id+`)'><i class="fas fa-times"></i></button>
+                        </li>
+                    `)
+                })
+            }
+        }
+        let deleteFile = function(id){
+            $.ajax({
+                url: "{{ route('deleteFile') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id: id
+                },
+                success: function (result) {
+                    $("#file"+id).remove()
+                    console.log(result)
+                }
+            })
         }
         /**
          * Create the kanban
@@ -579,6 +604,12 @@
             });
             $("#upload").submit(function(e) {
                 e.preventDefault(); // <==stop page refresh==>
+                let formData = new FormData();
+                formData.append("file", fileupload.files[0]);
+                fetch('{{route('uploadFile')}}', {
+                    method: "POST",
+                    body: formData
+                });
             });
         });
         /**
