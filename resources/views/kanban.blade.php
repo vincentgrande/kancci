@@ -157,7 +157,6 @@
                         $("#user"+user_id).removeClass("border border-success border-4")
                     }
                 }});
-
         }
         /**
          * function to save all boards and card in database
@@ -425,6 +424,10 @@
             uidVerif()
         }
         @endif
+        const convertToDate = (d) => {
+            const [year, month, day] = d.split("-");
+            return new Date(year, month - 1, day);
+        }
         /**
          * function to show modal to edit card
          */
@@ -437,6 +440,12 @@
                 },
                 success: function(result){
                     console.log(result)
+                    const today = new Date();
+                    const yyyy = today.getFullYear();
+                    let mm = today.getMonth() + 1; // Months start at 0!
+                    let dd = today.getDate();
+                    const date = yyyy + '-' + mm + '-' + dd;
+
                     $('#modal-container').append (`
                     <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -448,17 +457,21 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
+
+
 <div class="datepicker date input-group">
  <label for="start_date">Start date : </label>
-    <input type="date" placeholder="Start date" class="form-control" id="start_date" `+(result.card.startDate != null ? "value='"+result.card.startDate+"'" : '')+` @if(isset($visibility)) readonly @endif>
+    <input type="date" placeholder="Start date" class="form-control `+(result.card.startDate != null && convertToDate(result.card.startDate) <= convertToDate(date) ? "bg-success text-light" : '')+` " id="start_date" `+(result.card.startDate != null  ? "value='"+result.card.startDate+"'" : '')+` @if(isset($visibility)) readonly @endif>
     <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
 </div><br>
 <div class="datepicker date input-group">
     <label for="end_date">End date : </label>
-    <input type="date" placeholder="End date" class="form-control" id="end_date" `+(result.card.endDate != null ? "value='"+result.card.endDate+"'" : '')+` @if(isset($visibility)) readonly @endif>
+    <input type="date" placeholder="End date" class="form-control `+(result.card.endDate != null && convertToDate(result.card.endDate) <= convertToDate(date) ? "bg-danger text-light" : '')+`" id="end_date" `+(result.card.endDate != null ? "value='"+result.card.endDate+"'" : '')+` @if(isset($visibility)) readonly @endif>
     <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
 </div>
  <hr class="sidebar-divider">
+
+
                                                 <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
                                                 <label for="title">Title:</label>
                                                 <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`" @if(isset($visibility)) readonly @endif>

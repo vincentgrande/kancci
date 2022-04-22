@@ -563,6 +563,9 @@ class KanbanController extends Controller
         $attachement = Attachement::where('id',$request->id)->first();
         $card = Card::where('id','=',$attachement->card_id)->first();
         if ($this->allowedBoardAccess($card->board_id) == 'True') {
+            if (file_exists($attachement->filepath)){
+                unlink($attachement->filepath);
+            }
             $attachement->delete();
             return "Ok";
         }
