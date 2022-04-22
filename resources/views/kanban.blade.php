@@ -482,13 +482,17 @@
                                             <div id="checklist-form"></div>
 <hr class="sidebar-divider">
  @if(!isset($visibility))
-<div class="input-group">
-    <div class="custom-file">
-        <input type="file" class="custom-file-input" id="file" name='file'
-          aria-describedby="attachment" accept=".txt, .doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/*,.pdf" onchange="$('form#uploadFile').submit();">
-        <label class="custom-file-label" for="attachment">Choose file</label>
+<form action="{{ route('uploadFile') }}" id="upload" method="post" enctype="multipart/form-data">
+    @csrf
+    <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
+    <div class="input-group">
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="file" name='file'
+              aria-describedby="attachment" accept=".txt, .doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/*,.pdf" onchange="$('form#upload').submit();">
+            <label class="custom-file-label" for="attachment">Choose file</label>
+        </div>
     </div>
-</div>
+</form>
 <hr class="sidebar-divider">
 @endif
 <div id="card_users"></div>
@@ -572,6 +576,9 @@
             $(document).on('hide.bs.modal','.manage-modal', function () {
                 saveKanbanChanges()
                 $('.manage-modal').remove(); // Remove edit board modal on close event
+            });
+            $("#upload").submit(function(e) {
+                e.preventDefault(); // <==stop page refresh==>
             });
         });
         /**

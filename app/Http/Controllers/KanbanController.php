@@ -532,24 +532,29 @@ class KanbanController extends Controller
     }
     public function uploadFile(Request $request)
     {
-        request()->validate([
-            'file'  => 'required|mimes:doc,docx,pdf,txt,jpeg,png,jpg,svg',
+        $request->validate([
+            'image.*' => 'mimes:doc,pdf,docx,zip,jpeg,png,jpg,gif,svg',
         ]);
-        if ($files = $request->file('file')) {
-            //store file into document folder
-            $file = $request->file->store('public/attachments');
+        if($file = $request->hasFile('file')) {
+
+            $file = $request->file('file');
+            $fileName = $file->getClientOriginalName();
             $filename = Hash::make($request->file->hashName());
             $filename = str_replace('/', 'l', $filename);
             $filename = str_replace('.', 'i', $filename);
-            $file = $filename.'.'. $request->file->extension();
+            $filename = $filename.'.'. $request->file->extension();
+            $destinationPath = public_path() . '/attachments';
             $attachement = Attachement::create([
                 'extension' => $request->file->extension(),
-                'filepath' => 'attachments/' .$file,
+                'filepath' => 'attachments/' .$filename,
                 'uploaded_by' => Auth::user()->id,
                 'card_id' => $request->card_id,
             ]);
-            return "Ok";
+            $file->move($destinationPath, $filename);
+
+            return back();
         }
-        return "Nok";
+        return back();
+
     }
 }
