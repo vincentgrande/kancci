@@ -25,7 +25,7 @@ class WorkgroupController extends Controller
         $user = Auth::user();
         $workGroup = WorkGroup::where('created_by',$user->id)->where('id', $id)->with('creator')->first();
         $workgroupUser = WorkGroupUser::where('workgroup_id', $id)->with('user')->get();
-        if ($workGroup == null){
+        if ($workGroup == null & $workgroupUser == null){
             return redirect()->route('index');
         }
         return view('workgroup',[
@@ -53,7 +53,7 @@ class WorkgroupController extends Controller
 
     /**
      * @param Request $request
-     * @return mixed
+     * @return Kanban | null
      */
     public function getKanban(Request $request){
 
@@ -63,27 +63,9 @@ class WorkgroupController extends Controller
     }
 
     /**
-     * @return mixed
-     */
-    public function getWorkgroup(){
-        $user = Auth::user();
-        $workGroup = WorkGroupUser::where('user_id',$user->id)->with('user')->with('workgroup')->get();
-        return  $workGroup;
-    }
-
-    /**
-     * @return WorkGroup | null
-     */
-    public function getWorkgroupFromUser(){
-        $user = Auth::user();
-        $workGroup = WorkGroup::where('created_by',$user->id)->with('creator')->get();
-        return  $workGroup;
-    }
-
-    /**
      * @return WorkGroupUser | null
      */
-    public function getWorkGroupInvited() {
+    public function getWorkgroup(){
         $user = Auth::user();
         $workGroup = WorkGroupUser::where('user_id',$user->id)->with('user')->with('workgroup')->get();
         return  $workGroup;

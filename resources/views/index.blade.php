@@ -93,7 +93,7 @@
         });
         let getWorkGroup = function() {
             $.ajax({
-                url: "{{ route('getWorkGroupInvited') }}",
+                url: "{{ route('getWorkgroup') }}",
                 method: 'get',
                 data: {
                 },

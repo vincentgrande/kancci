@@ -4,17 +4,24 @@
 
 @section('actions')
     <li class="nav-item active">
-        <a class="nav-link" id="addKanban">
+        <a class="nav-link" id="addKanban" href="#">
             <i class="fas fa-plus-square"></i>
             <span>Create kanban</span></a>
     </li>
     <!-- Divider -->
+    <?php
+    use Illuminate\Support\Facades\Auth;
+    if($workgroup_users[0]->workgroup->created_by == Auth::user()->id)
+    {?>
     <hr class="sidebar-divider">
     <li class="nav-item active" id="manageWorkgroup">
-        <a class="nav-link" href="{{route('WorkgroupInfosGet', $workgroup->id)}}"> <!-- TO DO : Open modal with workgroup settings-->
+        <a class="nav-link" href="{{route('WorkgroupInfosGet', $workgroup->id)}}">
             <i class="fas fa-cog"></i>
             <span>Manage workgroup</span></a>
     </li>
+    <?php
+        }
+    ?>
     <!-- Divider -->
     <hr class="sidebar-divider">
 @endsection
@@ -23,23 +30,23 @@
         /**
          * function to add a new kanban
          */
-
-        let newKanban = function(title, background){
-            $.ajax({
-                url: "{{ route('addKanban') }}",
-                method: 'post',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "workgroup_id" :  {{$workgroup->id}},
-                    "title" : title,
-                    "background" : background
-                },
-                success: function(result){
-                    $('#edit').modal('hide');
-                    console.log(result)
-                    getKanban()
-                }});
-        }
+            let newKanban = function (title, background) {
+                $.ajax({
+                    url: "{{ route('addKanban') }}",
+                    method: 'post',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "workgroup_id": {{$workgroup_users[0]->workgroup->id}},
+                        "title": title,
+                        "background": background
+                    },
+                    success: function (result) {
+                        $('#edit').modal('hide');
+                        console.log(result)
+                        getKanban()
+                    }
+                });
+            }
         let addKanban = document.getElementById("addKanban");
         addKanban.addEventListener("click", function() {
             $('#modal-container').append (`
@@ -115,7 +122,7 @@
                 url: "{{ route('getKanban') }}",
                 method: 'get',
                 data: {
-                    "workgroup_id" :  {{$workgroup->id}},
+                    "workgroup_id" :  {{$workgroup_users[0]->workgroup->id}},
                 },
                 success: function(result){
                     result.forEach(x => {
