@@ -10,3 +10,11 @@
 ## KANCCI
 
 KANCCI est un projet "Trello like" dans le cadre de la licence CDA.
+
+Guide d'Installation :
+
+- composer upgrade
+- php artisan migrate
+- Installer vos clés pour captcha dans le .env
+- php artisan serve
+- Testez l'application !
