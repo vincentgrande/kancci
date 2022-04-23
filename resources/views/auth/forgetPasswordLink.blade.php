@@ -3,7 +3,36 @@
 @section('title', 'Password reset')
 
 @section('content')
-
+    <script>
+        function ViewPass()
+        {
+            var input = document.getElementById("password");
+            var icon = document.getElementById("iconPassword");
+            if(input.type === "password")
+            {
+                input.type = "text";
+                icon.className = "fa fa-eye-slash fa-fw";
+            }
+            else{
+                input.type = "password";
+                icon.className = "fa fa-eye fa-fw";
+            }
+        }
+        function ViewConfirmPass()
+        {
+            var input = document.getElementById("password-confirm");
+            var icon = document.getElementById("iconConfirmPassword");
+            if(input.type === "password")
+            {
+                input.type = "text";
+                icon.className = "fa fa-eye-slash fa-fw";
+            }
+            else{
+                input.type = "password";
+                icon.className = "fa fa-eye fa-fw";
+            }
+        }
+    </script>
     <div class="text-center">
         <h1 class="h4 text-gray-900 mb-4">KANCCI - Reset password</h1>
     </div>
@@ -39,7 +68,7 @@
             <div class="input-group mb-2">
                 <input type="password" id="password-confirm" class="form-control" name="password_confirmation" required autofocus>
                 <div class="input-group-append">
-                    <span class="input-group-text"><a onclick="ViewPass()" href="#"><i class="fa fa-eye fa-fw" id="iconPassword"></i></a></span>
+                    <span class="input-group-text"><a onclick="ViewConfirmPass()" href="#"><i class="fa fa-eye fa-fw" id="iconConfirmPassword"></i></a></span>
                 </div>
                 @if ($errors->has('password_confirmation'))
                     <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
@@ -50,5 +79,4 @@
             Reset password
         </button>
     </form>
-
 @stop
