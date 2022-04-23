@@ -5,12 +5,20 @@ use App\WorkGroup;
 use App\WorkGroupUser;
 use App\Kanban;
 
+use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class WorkgroupController extends Controller
 {
+    /**
+     * @param $id
+     * @return Application|Factory|RedirectResponse|View
+     */
     public function index($id)
     {
         $user = Auth::user();
@@ -25,28 +33,47 @@ class WorkgroupController extends Controller
         ]);
     }
 
-    public function addKanban(Request $request)
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function addKanban(Request $request): RedirectResponse
     {
         Kanban::create([
             'title' => $request->title,
             'workgroup_id' => $request->workgroup_id,
+            'background' => '/wallpaper/'.$request->background.'.jpg',
             'visibility' => 'visible',
             'created_by' => Auth::user()->id,
         ]);
 
         return back();
     }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
     public function getKanban(Request $request){
 
         $kanban = Kanban::where('workgroup_id',$request->workgroup_id)->get();
         return $kanban;
 
     }
+
+    /**
+     * @return mixed
+     */
     public function getWorkgroup(){
         $user = Auth::user();
         $workGroup = WorkGroupUser::where('user_id',$user->id)->with('user')->with('workgroup')->get();
         return  $workGroup;
     }
+
+    /**
+     * @param $id
+     * @return Application|Factory|View
+     */
     public function getWorkgroupById($id){
         $user = Auth::user();
         $workGroup = WorkGroup::where('created_by',$user->id)->where('id', $id)->with('creator')->get();
@@ -56,21 +83,28 @@ class WorkgroupController extends Controller
     }
 
     /**
-     * @throws \Exception
+     * @param Request $request
+     * @return string
+     * @throws Exception
      */
-    public function UpdateWorkgroupInfos(Request $request)
+    public function UpdateWorkgroupInfos(Request $request): string
     {
         $workgroup = WorkGroup::where('id',$request->id)->where('created_by', Auth::user()->id)->with('creator')->get();
         if($workgroup == null)
         {
-            throw new \Exception("Workgroup was null");
+            throw new Exception("Workgroup was null");
         }
         WorkGroup::where('id', $request->id)->update(['title' => $request->title]);
         return route('WorkgroupInfosGet', ['id' => $request->id]);
 
     }
 
-    public function addWorkgroup(Request $request){
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function addWorkgroup(Request $request): RedirectResponse
+    {
         $firstLetter = $request->title[0];
         $firstLetter = strtolower($firstLetter);
         $workgroup = WorkGroup::create([

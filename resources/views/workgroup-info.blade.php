@@ -10,7 +10,7 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
     <li class="nav-item active" id="manageWorkgroup">
-        <a class="nav-link" href="{{route('WorkgroupInfosGet', $workgroup[0]->id)}}"> <!-- TO DO : Open modal with workgroup settings-->
+        <a class="nav-link" href="{{route('WorkgroupInfosGet', $workgroup[0]->id)}}">
             <i class="fas fa-cog"></i>
             <span>Manage Informations</span></a>
     </li>
@@ -32,45 +32,118 @@
             </div>
             <input class="form-control m-2" type="submit" value="Update"/>
         </form>
-        <div class="" style="border-top: 1px solid #8c8b8b;"></div>
-        <form class="form-group mt-2" action="{{route('WorkgroupInfoPost', ['id' => $workgroup[0]->id])}}" method="post">
-            @csrf
-            <label for="background" class="justify-content-center mx-auto">Background</label>
-            <img class="row img-profile mx-auto ml-4" src="/img/wallpaper/4.jpg" WIDTH="100" HEIGHT="100" alt="background"/>
-            <label for="image" class="label-control ml-2">Choose file</label>
-            <div class="hiddenradio">
-                <label>
-                    <input type="radio" name="back" value="1">
-                    <img src="/img/wallpaper/1.jpg" height="100" width="100">
-                </label>
+        <div class="mb-2" style="width: 100%; border-top: 1px solid #8c8b8b;"></div>
+        <div class="form-group">
+            <input class="form-control mb-1" id="emailToInvite" name="emailToInvite" type="email"/>
+            <input class="form-control mb-1" type="button" onclick="AddInput()" value="Ajouter"/>
+            <div id="invitedUser" class="container">
 
-                <label>
-                    <input type="radio" name="back" value="2">
-                    <img src="/img/wallpaper/2.jpg" height="100" width="100">
-                </label>
-                <label>
-                    <input type="radio" name="back" value="3">
-                    <img src="/img/wallpaper/3.jpg" height="100" width="100">
-                </label>
-
-                <label>
-                    <input type="radio" name="back" value="4">
-                    <img src="/img/wallpaper/4.jpg" height="100" width="100">
-                </label>
-                <label>
-                    <input type="radio" name="back" value="5">
-                    <img src="/img/wallpaper/5.jpg" height="100" width="100">
-                </label>
-                <label>
-                    <input type="radio" name="back" value="6">
-                    <img src="/img/wallpaper/6.jpg" height="100" width="100">
-                </label>
-                <label>
-                    <input type="radio" name="back" value="7">
-                    <img src="/img/wallpaper/7.jpg" height="100" width="100">
-                </label>
             </div>
-            <input type="submit" class="row form-control mt-1 ml-2" value="Change Background"/>
-        </form>
+        </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+
+        let count = 0;
+
+        function RemoveInputs(number)
+        {
+            const newDivInputGroup = document.getElementById('newDivInputGroup' + number);
+            const newDivInputGroupAppend = document.getElementById('newDivInputGroupAppend' + number);
+            const newSpan = document.getElementById('newSpan' + number);
+            const newA = document.getElementById('newA' + number);
+            const newI = document.getElementById('newI' + number);
+            const newInput = document.getElementById('newInput' + number);
+            newI.remove();
+            newA.remove();
+            newSpan.remove();
+            newDivInputGroupAppend.remove();
+            newInput.remove();
+            newDivInputGroup.remove();
+        }
+        function AddInput()
+        {
+            const input = document.getElementById('emailToInvite');
+            if(input.value.includes('@')) {
+                let success = true;
+                if(count !== 0) {
+                    let i = 0;
+                    while(i <= count) {
+                        let inputValue = document.getElementById("newInput" + i);
+                        if(inputValue != null) {
+                            if (inputValue.value === input.value) {
+                                success = false;
+                            }
+                        }
+                        i++;
+                    }
+                }
+                if(success)
+                {
+                    count++;
+                    const div = document.getElementById('invitedUser');
+                    const newDivInputGroup = document.createElement('div');
+                    const newDivInputGroupAppend = document.createElement('div');
+                    const newSpan = document.createElement('span');
+                    const newA = document.createElement('a');
+                    const newI = document.createElement('i');
+                    const newHiddenInput = document.createElement('input');
+                    const newInput = document.createElement('input');
+                    // Hidden Input
+                    newHiddenInput.type = "hidden";
+                    newHiddenInput.value = count;
+
+                    // Div 1
+                    newDivInputGroup.className = "input-group  mb-1";
+                    newDivInputGroup.id = 'newDivInputGroup' + count;
+
+                    div.appendChild(newDivInputGroup);
+
+                    // Input
+                    newInput.className = "form-control";
+                    newInput.type = "email";
+                    newInput.id = 'newInput' + count;
+                    newInput.name = "invitedEmail";
+                    newInput.placeholder = "Enter the email to be invited...";
+                    newInput.value = input.value;
+                    input.value = "";
+                    newDivInputGroup.appendChild(newInput);
+
+
+                    newDivInputGroup.appendChild(newHiddenInput);
+
+                    // Div 2
+                    newDivInputGroupAppend.className = "input-group-append";
+                    newDivInputGroupAppend.id = 'newDivInputGroupAppend' + count;
+                    newDivInputGroup.appendChild(newDivInputGroupAppend);
+
+                    // Span
+                    newSpan.className = "input-group-text";
+                    newSpan.id = 'newSpan' + count;
+                    newDivInputGroupAppend.appendChild(newSpan);
+
+                    // a
+                    newA.onclick = function () {
+                        RemoveInputs(newHiddenInput.value);
+                    };
+                    newA.id = "newA" + count;
+                    newA.href = "#";
+                    newSpan.appendChild(newA);
+
+                    // i
+                    newI.className = "fa fa-times fa-fw";
+                    newI.id = "newI" + count;
+                    newA.appendChild(newI);
+                }
+                else
+                {
+                    alert("Cet e-mail a déjà été saisie !");
+                }
+            }
+            else {
+                alert("Vous devez saisir une adresse e-mail");
+            }
+        }
+    </script>
 @endsection

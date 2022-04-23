@@ -18,17 +18,23 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 @endsection
+
 @section('content')
 
+    <style>
+        .kanban-container {
+            width : max-content !important;
+        }
+        .border-4 {
+            border-width:4px !important;
+        }
+    </style>
     <div id="myKanban" style="overflow: auto;" class="mb-3"></div>
     <div id="modal-container"></div>
 
 @stop
-@section("scripts")
-    @php
+@section('scripts')
 
-        $count = 0;
-    @endphp
     <script>
         /**
          * function to save all boards and card in database
@@ -67,7 +73,6 @@
                 data: {
                 },
                 success: function(result){
-                    console.log(result)
                     board = [
                         {
                             id: parseInt(result)+1,
@@ -76,7 +81,6 @@
                             ]
                         }
                     ];
-                    console.log(board);
                     $.ajax({ // Ajax to save kanban in DB.
                         url: "{{ route('saveBoard') }}",
                         method: 'post',
@@ -96,15 +100,33 @@
         /**
          * function to remove board from kanban
          */
-        let removeBoard = function(eid) {
-            Kanban.removeBoard(eid.toString());
+        let archiveBoard = function(eid) {
+            $.ajax({
+                url: "{{ route('archiveBoard') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    board_id:eid
+                },
+                success: function(result){
+                }
+            });
             saveKanban()
         };
         /**
          * function to remove card from board
          */
-        let removeCard = function(eid) {
-            Kanban.removeElement(eid.toString());
+        let archiveCard = function(eid) {
+            $.ajax({
+                url: "{{ route('archiveCard') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    card_id:eid
+                },
+                success: function(result){
+                }
+            });
             saveKanban()
         };
         /**
@@ -118,7 +140,6 @@
                     id:eid
                 },
                 success: function(result){
-                    console.log(result[0].title)
                     $('#modal-container').append (`
                             <div class="modal edit-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -130,14 +151,14 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <input type="hidden" id="id" name="id" value="`+eid+`">
+                                        <input type="hidden" id="board_id" name="board_id" value="`+eid+`">
                                         <label for="title">Title:</label>
-                                        <input type="text" id="title" name="title" value="`+result[0].title+`"><br>
-                                        <button class="btn btn-danger mt-5" onclick="removeBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove board</button>
+                                        <input class="form-control" type="text" id="title" name="title" value="`+result[0].title+`"><br>
                                     </div>
                                     <div class="modal-footer">
+<button class="btn btn-danger" onclick="archiveBoard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive board</button>
                                         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`','{{route('editBoard')}}')">Save changes</button>
+                                        <button type="button" class="btn btn-success" onclick="saveChanges()">Save changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -156,52 +177,183 @@
                     id:eid
                 },
                 success: function(result){
-                    console.log("============Debug result=============")
-                    console.log(result.checklistitems)
-                    console.log("============END debug result=============")
                     $('#modal-container').append (`
                     <div class="modal edit-card-modal" id="edit`+eid+`" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result.title+`</h5><br>
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit card: `+result.card.title+`</h5><br>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#edit`+eid+`').modal('hide');">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <input type="hidden" id="id" name="id" value="`+result.id+`">
+<div class="datepicker date input-group">
+ <label for="start_date">Start date : </label>
+    <input type="date" placeholder="Start date" class="form-control" id="start_date" `+(result.card.startDate != null ? "value='"+result.card.startDate+"'" : '')+`>
+    <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
+</div><br>
+<div class="datepicker date input-group">
+    <label for="end_date">End date : </label>
+    <input type="date" placeholder="End date" class="form-control" id="end_date" `+(result.card.endDate != null ? "value='"+result.card.endDate+"'" : '')+`>
+    <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
+</div>
+ <hr class="sidebar-divider">
+                                                <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
                                                 <label for="title">Title:</label>
-                                                <input type="text" id="title" name="title" value="`+result.title+`"><br>
-                                                <button class="btn btn-danger mt-5" onclick="removeCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Remove card</button>
+                                                <input class="form-control" type="text" id="title" name="title" value="`+result.card.title+`">
+<hr class="sidebar-divider">
+                                                <label for="description">Description:</label>
+    <textarea class="form-control" id="description" name="description" rows="3">`+(result.card.description !== "null" && result.card.description !== null ? result.card.description : '')+`</textarea>
+                                                <hr class="sidebar-divider">
+<button class='btn btn-primary' id='addChecklist' onclick='addChecklist("`+result.card.id+`"); $("#editCardDynamic").removeAttr("hidden"); $(this).hide();' `+(result.checklist === null ? '' : 'hidden')+`>Add checklist</button>
+                                            <div id="editCardDynamic" class="mb-2" `+(result.checklist === null ? 'hidden' : '')+`>
+                <label for="checklisttitle" >Checklist :</label>
+                <input  class='form-control' type='text' placeholder="Checklist title" id='checklisttitle' name='checklisttitle' value='`+(result.checklist === null ? 'New checklist' : result.checklist.title)+`'>
+                <br><div id='checklistitems'></div>
+<div class="input-group">
+                                              <input class="form-control" type="text" id="item_title" name="item_title" placeholder="Item title" value="">
+                                              <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-success" onclick="addChecklistItem(`+result.card.id+`)">Add</button>
+                                              </div>
+                                            </div>
+</div>
+                                            <div id="checklist-form"></div>
+<hr class="sidebar-divider">
+<div id="card_users"></div>
                                             </div>
                                             <div class="modal-footer">
+                                            <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button>
                                                 <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit`+eid+`').modal('hide');">Close</button>
-                                                <button type="button" class="btn btn-success" onclick="saveChanges('`+eid+`','{{route('editCard')}}')">Save changes</button>
+                                                <button type="button" class="btn btn-success" onclick="saveCardChanges()">Save changes</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                     `);
+                    addEditFunctions(result)
                     $('#edit'+eid+'').modal('show');
                 }});
         }
-        /**
-         * Function to save changes from cards or boards
-         */
-        let saveChanges = function(eid, route) {
-            let title = $("#title").val()
-            console.log(title)
+        let addEditFunctions = function(result){
+            if(Object.keys(result.checklistitems).length !== 0) {
+                result.checklistitems.map(x => {
+                    $('#checklistitems').append(`
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" onchange="saveChecklist(this.id)" id="`+x.id+`" `+(x.isChecked === 1 ? 'checked' : '')+`/>
+                              <label class="form-check-label" for="`+x.id+`">`+x.label+`</label>
+                            </div>
+                        `)
+                })
+            }
+            if(Object.keys(result.workgroupuser).length !== 0) {
+                result.workgroupuser.map(x => {
+                    $('#card_users').append(`
+                            <img id="user`+x.id+`" class="img-profile rounded-circle `+(x.card_user === 1 ? 'border border-success border-4' : '')+`" style="width:50px;"
+                                 src="`+ '{{asset('img/')}}/'+x.picture +`" onclick="joinCard(`+x.id+`,`+result.card.id+`)">
+                        `)
+                })
+            }
+        }
+        let joinCard = function(user_id, card_id){
             $.ajax({
-                url:  route,
+                url:  '{{route('joinCard')}}',
                 method: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    id:eid,
-                    title:title
+                    card_id:card_id,
+                    user_id:user_id,
                 },
                 success: function(result){
-                    $('#edit'+eid).modal('hide');
+                    if(result === "1"){
+                        $("#user"+user_id).addClass("border border-success border-4")
+                    }else if(result === "0"){
+                        $("#user"+user_id).removeClass("border border-success border-4")
+                    }
+                }});
+        }
+        let saveChecklist = function(id){
+            $.ajax({
+                url:  '{{route('saveChecklist')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id:id,
+                },
+                success: function(result){
+                }});
+        }
+        let addChecklistItem = function(cardId){
+            let item = $('#item_title').val()
+            $('#item_title').val("")
+            $.ajax({
+                url: "{{ route('addChecklistItem') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    card_id: cardId,
+                    item:item,
+                },
+                success: function(result){
+                    $('#checklistitems').append(`
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" onchange="saveChecklist(`+result.id+`)" id="`+result.id+`"/>
+                              <label class="form-check-label" for="`+result.id+`">`+result.label+`</label>
+                            </div>
+                        `)
+                }});
+        }
+        let addChecklist = function(id){
+            $.ajax({
+                url: "{{ route('addChecklist') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    card_id:id,
+                },
+                success: function(result){
+                }});
+        }
+        let saveCardChanges = function() {
+            let title = $("#title").val()
+            let description = $("#description").val()
+            let checklisttitle = $("#checklisttitle").val()
+            let startDate = $("#start_date").val()
+            let endDate = $("#end_date").val()
+            let card_id = $("#card_id").val()
+            $.ajax({
+                url:  '{{route('editCard')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id:card_id,
+                    title:title,
+                    description:description,
+                    checklisttitle:checklisttitle,
+                    startDate:startDate,
+                    endDate:endDate,
+                },
+                success: function(result){
+                    $('#edit'+card_id).modal('hide');
+                    getBoards()
+                }});
+        }
+        /**
+         * Function to save changes from boards
+         */
+        let saveChanges = function() {
+            let title = $("#title").val()
+            let board_id = $("#board_id").val()
+            $.ajax({
+                url:  '{{route('editBoard')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id:board_id,
+                    title:title,
+                },
+                success: function(result){
+                    $('#edit'+board_id).modal('hide');
                     getBoards()
                 }});
         }
@@ -259,20 +411,20 @@
             dropEl           : function (el, target, source, sibling) {},    // callback when any board's item drop in a board
             dragBoard        : function (el, source) {},                     // callback when any board stop drag
             dragendBoard     : function (el) {saveKanban()},                             // callback when any board stop drag
-            buttonClick      : function(el, boardId) {  /*removeBoard(boardId); */ addCard(boardId)},                     // callback when the board's button is clicked
+            buttonClick      : function(el, boardId) {  addCard(boardId)},                     // callback when the board's button is clicked
             propagationHandlers: [],
         })
-
         $(document).ready(function() {
             getBoards(); // fetch boards from database after page load
             $(document).on('hide.bs.modal','.edit-modal', function () {
+                saveChanges()
                 $('.edit-modal').remove(); // Remove edit board modal on close event
             });
             $(document).on('hide.bs.modal','.edit-card-modal', function () {
+                saveCardChanges()
                 $('.edit-card-modal').remove(); // Remove edit card modal on close event
             });
         });
-
         /**
          * Fetch boards from DB and add them
          */
@@ -288,7 +440,6 @@
                     result = JSON.parse(result)
                     var boardsList = [];
                     $.each(result, function (board) {
-                        console.log(result[board])
                         var taskList = [];
                         $.each(result[board].item, function (task) { // build cards array
                             taskList.push({
@@ -302,7 +453,6 @@
                             item: taskList
                         });
                     });
-                    console.log(boardsList)
                     Kanban.addBoards(boardsList); // Add boards to kanban
                     let elements = $('.kanban-board');
                     elements = Array.from(elements); //convert to array
@@ -310,7 +460,7 @@
                         {
                             let settingsBtn = document.createElement("button")
                             settingsBtn.innerHTML = "📝";
-                            settingsBtn.setAttribute('onclick',"showEdit("+element.dataset.id+"); /*removeBoard("+element.dataset.id+")*/")
+                            settingsBtn.setAttribute('onclick',"showEdit("+element.dataset.id+"); /*archiveBoard("+element.dataset.id+")*/")
                             settingsBtn.classList = "btn float-right";
                             element.children[0].append(settingsBtn)
                         }

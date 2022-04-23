@@ -24,7 +24,7 @@
          * function to add a new kanban
          */
 
-        let newKanban = function(title){
+        let newKanban = function(title, background){
             $.ajax({
                 url: "{{ route('addKanban') }}",
                 method: 'post',
@@ -32,6 +32,7 @@
                     "_token": "{{ csrf_token() }}",
                     "workgroup_id" :  {{$workgroup->id}},
                     "title" : title,
+                    "background" : background
                 },
                 success: function(result){
                     $('#edit').modal('hide');
@@ -53,15 +54,53 @@
                                     </div>
                                     <div class="modal-body">
                                         <label for="title">Title:</label>
-                                        <input type="text" id="title" name="title"><br>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit').modal('hide');">Close</button>
-                                        <button type="button" class="btn btn-success" onclick="newKanban($('#title').val())">Save changes</button>
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-tag fa-fw" id="iconTitle"></i></span>
+                                            </div>
+                                            <input class="form-control" type="text" id="title" name="title" placeholder="Your title...">
+                                        </div>
+                                    <label for="back" class="justify-content-center mx-auto">Background :</label>
+                                    <div class="hiddenradio">
+                                        <label>
+                                            <input type="radio" id="background" name="background" value="1">
+                                            <img src="/img/wallpaper/1.jpg" height="100" width="100">
+                                        </label>
+
+                                        <label>
+                                            <input type="radio" id="background" name="background" value="2">
+                                            <img src="/img/wallpaper/2.jpg" height="100" width="100">
+                                        </label>
+                                        <label>
+                                            <input type="radio" id="background" name="background" value="3">
+                                            <img src="/img/wallpaper/3.jpg" height="100" width="100">
+                                        </label>
+
+                                        <label>
+                                            <input type="radio" id="background" name="background" value="4">
+                                            <img src="/img/wallpaper/4.jpg" height="100" width="100">
+                                        </label>
+                                        <label>
+                                            <input type="radio" id="background" name="background" value="5">
+                                            <img src="/img/wallpaper/5.jpg" height="100" width="100">
+                                        </label>
+                                        <label>
+                                            <input type="radio" id="background" name="background" value="6">
+                                            <img src="/img/wallpaper/6.jpg" height="100" width="100">
+                                        </label>
+                                        <label>
+                                            <input type="radio" id="background" name="background" value="7">
+                                            <img src="/img/wallpaper/7.jpg" height="100" width="100">
+                                        </label>
                                     </div>
                                 </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit').modal('hide');">Close</button>
+                                    <button type="button" class="btn btn-success" onclick="newKanban($('#title').val(), $('#background').val())">Save changes</button>
+                                </div>
                             </div>
-                        </div>`);
+                        </div>
+                    </div>`);
             $('#edit').modal('show');
         });
         $(document).ready(function() {
@@ -83,7 +122,7 @@
                         $('.kanbans').append(`
                             <div class="">
                                 <div class="card m-2" style="width: 20rem;">
-                                    <img class="card-img-top" src="../img/wallpaper/4.jpg" alt="Card image cap">
+                                    <img class="card-img-top" src="../img`+x.background+`" alt="Card image cap">
                                     <div class="card-body text-center">
                                         <h5 class="card-title"> `+x.title+`</h5>
                                         <a href="/kanban/`+x.id+`" class="btn btn-primary">Go to kanban !</a>

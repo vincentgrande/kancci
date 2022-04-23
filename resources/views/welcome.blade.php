@@ -69,11 +69,8 @@
             </div>
         </div>
         <!-- End of Main Content -->
-        <!--<div id="cookie_consent_bar" style="height: 10%; display:none;" class="cookie_consent_bar fixed-bottom  bg-warning text-primary text-center font-weight-bold vh-10 d-flex justify-content-center align-items-center hidden">
-            <h4 class="m-2">cookie blabla </h4>
-            <button id="cookie_consent" type="button" class="btn btn-danger">Got it!</button>
-        </div>-->
-        <div class="cookiebar" style="height: 10%;display: none;">
+
+        <div class="cookiebar" style="height: 10%;display: none; z-index:10;">
             <div class="fixed-bottom  bg-warning text-primary text-center font-weight-bold   justify-content-center align-items-center">
                 <div class="cookiebar-content">
                     <span>We use cookies on this website.<br>
@@ -86,7 +83,7 @@ Necessary cookies help make this website usable by enabling basic functions.<br>
             </div>
         </div>
         <!-- Footer -->
-        <footer class="sticky-footer bg-primary fixed-bottom">
+        <footer class="sticky-footer bg-primary" style="z-index: 1;">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
                     <span>Copyright &copy; KANCCI - 2022</span>
