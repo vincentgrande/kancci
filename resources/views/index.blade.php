@@ -4,8 +4,8 @@
 
 @section('actions')
     <li class="nav-item active">
-        <a class="nav-link" id="addWorkgroup">
-            <i class="fas fa-cog"></i>
+        <a class="nav-link" id="addWorkgroup" href="#">
+            <i class="fas fa-plus-square"></i>
             <span>Create workgroup</span></a>
     </li>
     <!-- Divider -->

@@ -30,6 +30,13 @@ class KanbanController extends Controller
     {
     }
 
+    public function Search(Request $result)
+    {
+        $workgroups = WorkGroup::where('title','LIKE','%'.$result->search.'%')->get();
+        $kanbans = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->get();
+        return $workgroups;
+    }
+
     /**
      * @return Application|Factory|View
      */

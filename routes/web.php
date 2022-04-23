@@ -27,6 +27,7 @@ Route::get('/', 'KanbanController@index')->name("index");
  * Protected routes
  */
 Route::middleware('auth')->group(function () {
+    Route::get('/search', 'KanbanController@Search')->name("Search");
     Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup")->where('id', '[0-9]+');
     Route::get('/kanban/{id}', 'KanbanController@kanban')->name("kanban")->where('id', '[0-9]+');
     Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");

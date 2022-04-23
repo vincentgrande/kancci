@@ -76,14 +76,15 @@
                 <form
                     class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                     <div class="input-group">
-                        <input type="text" class="form-control bg-light border-0 small text-dark" placeholder="Search for..."
-                               aria-label="Search" aria-describedby="basic-addon2">
+                        <input id="searchTextField" name="searchTextField" type="text" class="form-control bg-light border-0 small text-dark" placeholder="Search for..."
+                               aria-label="Search" aria-describedby="basic-addon2" onkeyup="SearchFieldEvent()">
                         <div class="input-group-append">
                             <button class="btn btn-dark" type="button">
                                 <i class="fas fa-search fa-sm"></i>
                             </button>
                         </div>
                     </div>
+                    <ul id="searchResult"></ul>
                 </form>
 
                 <!-- Topbar Navbar -->
@@ -230,6 +231,24 @@
 <script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
 <script src='{{asset('js/jkanban.min.js')}}'></script>
 <script src="{{asset('js/sb-admin-2.min.js')}}"></script>
+<script>
+    function SearchFieldEvent() {
+        let search = $("#searchTextField").val();
+        $("#searchResult").empty();
+        if (search !== "") {
+            $.ajax({
+                url: '{{ route('Search') }}',
+                method: 'get',
+                data: {'search': search},
+                success: function(result) {
+                    result.forEach(x => {
+                        $("#searchResult").append('<li value="' + x.id + '">' + x.title + '</li>');
+                    });
+                }
+            });
+        }
+    }
+    </script>
 @yield('scripts')
 </body>
 </html>
