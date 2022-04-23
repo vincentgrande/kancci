@@ -193,7 +193,21 @@ class KanbanController extends Controller
     }
 
     public function debug(){
-        dd(KanbanUser::where('kanban_id',1)->get());
+        $board = Board::where('id',4)->first();
+        $kanban = Kanban::where('id',$board->kanban_id)->first();
+        $order = json_decode($kanban->order, true);
+        $cards = Card::where('id','=',1)->first();
+        $json = [];
+        foreach($order as $ord){
+            if(isset($ord['items']) && "$cards->board_id" == $ord['id']){
+                array_push($ord['items'],"$cards->id");
+            }else if(!isset($ord['items']) &&"$cards->board_id" == $ord['id']){
+                $ord['items']="$cards->id";
+            }
+            array_push($json,$ord);
+        }
+
+dd($json);
     }
 
     public function joinCard(Request $request)
@@ -660,5 +674,83 @@ class KanbanController extends Controller
             }
         }
         return 'Nok';
+    }
+
+    public function archived($id)
+    {
+        if($this->allowedKanbanAccess($id) == 'True') {
+            return view('archive', [
+                'kanban' => $id,
+            ]);
+        }
+        return back();
+    }
+    public function getArchived(Request $request)
+    {
+        $cards = [];
+        $archivedBoards = [];
+        $boards = Board::where('kanban_id',$request->kanban_id)->get();
+        foreach($boards as $board){
+            if($board->isActive == true){
+                array_push($cards,Card::where('board_id',$board->id)->where('isActive',false)->get());
+            }
+        }
+
+        foreach($boards as $board){
+            if($board->isActive == false){
+                array_push($archivedBoards,$board);
+            }
+        }
+        return [
+            'cards'=> $cards,
+            'boards' => $archivedBoards
+            ];
+    }
+    public function unarchiveCard(Request $request)
+    {
+        $card = Card::where('id','=',$request->id)->first();
+        if ($this->allowedBoardAccess($card->board_id) == 'True') {
+            $card->isActive = true;
+            $card->save();
+
+            $board = Board::where('id',$card->board_id)->first();
+            $kanban = Kanban::where('id',$board->kanban_id)->first();
+            $order = json_decode($kanban->order, true);
+            $cards = Card::where('id','=',$request->id)->where('isActive',true)->first();
+            $json = [];
+            foreach($order as $ord){
+                if(isset($ord['items']) && "$cards->board_id" == $ord['id']){
+                    array_push($ord['items'],"$cards->id");
+                }else if(!isset($ord['items']) &&"$cards->board_id" == $ord['id']){
+                    $ord['items']=["$cards->id"];
+                }
+                array_push($json,$ord);
+            }
+            $kanban->order = $json;
+            $kanban->save();
+
+            return "Ok";
+        }
+        return "Nok";
+    }
+
+    public function unarchiveBoard(Request $request)
+    {
+        if ($this->allowedBoardAccess($request->id) == 'True') {
+            Board::where('id',$request->id)->update(['isActive'=> true]);
+            $board = Board::where('id',$request->id)->first();
+            $kanban = Kanban::where('id',$board->kanban_id)->first();
+            $order = json_decode($kanban->order, true);
+            $cards = Card::where('board_id',$board->id)->where('isActive',true)->get();
+            $items=[];
+            foreach($cards as $card){
+                array_push($items,$card->id);
+            }
+            array_push($order,["id"=>$board->id,"items"=>$items]);
+            $kanban->order = $order;
+            $kanban->save();
+            return "Ok";
+        }
+        return "Nok";
     }
 }

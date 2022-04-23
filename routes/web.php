@@ -78,9 +78,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('showFile/{id}','KanbanController@showFile')->name('showFile');
 
+    Route::get('archived/{id}','KanbanController@archived')->name('archived');
+    Route::get('getArchived','KanbanController@getArchived')->name('getArchived');
+
     Route::post('addComment','KanbanController@addComment')->name('addComment');
     Route::post('deleteComment','KanbanController@deleteComment')->name('deleteComment');
 
+    Route::post('unarchiveBoard','KanbanController@unarchiveBoard')->name('unarchiveBoard');
+    Route::post('unarchiveCard','KanbanController@unarchiveCard')->name('unarchiveCard');
 
 });
 Route::get('debug', 'KanbanController@debug')->name("debug");

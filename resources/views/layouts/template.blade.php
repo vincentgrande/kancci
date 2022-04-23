@@ -230,8 +230,6 @@
             success: function (result) {
                 if(result !== "0"){
                     document.getElementById('badge').innerHTML = result.length + "+"
-                    console.log(result)
-
                     result.map(x => {
                         $('#alertList').append(`
                                         <a class="dropdown-item d-flex align-items-center alerte" href="#">

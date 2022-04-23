@@ -17,6 +17,13 @@
     </li>
     <!-- Divider -->
     <hr class="sidebar-divider">
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ route('archived', ['id' => $kanban]) }}"> <!-- TO DO : Open modal with kanban settings-->
+            <i class="fas fa-archive"></i>
+            <span>Archived items</span></a>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 @endsection
 
 @section('content')
@@ -171,6 +178,7 @@
                 return { id:x.dataset.id, items: kanbanids }; // Create an array with boards ID's and cards ID's
             }).get();
             board.push(kanbanBoard);
+            console.log(kanbanBoard)
             $.ajax({ // Ajax to save kanban in DB.
                 url: "{{ route('saveToDB') }}",
                 method: 'post',
@@ -231,9 +239,10 @@
                     board_id:eid
                 },
                 success: function(result){
+                     $("div[data-id=" + eid + "]").remove();
+                    saveKanban()
                 }
             });
-            saveKanban()
         };
         /**
          * function to remove card from board
@@ -247,9 +256,11 @@
                     card_id:eid
                 },
                 success: function(result){
+                    $("div[data-eid=" + eid + "]").remove();
+                    saveKanban()
                 }
             });
-            saveKanban()
+
         };
         /**
          * function to show modal to edit board
