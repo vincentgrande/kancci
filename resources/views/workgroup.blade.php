@@ -119,17 +119,34 @@
                 },
                 success: function(result){
                     result.forEach(x => {
-                        $('.kanbans').append(`
+                        if(x.created_by === {{\Illuminate\Support\Facades\Auth::user()->id}}) {
+                            $('.kanbans').append(`
                             <div class="">
                                 <div class="card m-2" style="width: 20rem;">
-                                    <img class="card-img-top" src="../img`+x.background+`" alt="Card image cap">
+                                    <img class="card-img-top" src="../img` + x.background + `" alt="Card image cap" width="200" height="200">
                                     <div class="card-body text-center">
-                                        <h5 class="card-title"> `+x.title+`</h5>
-                                        <a href="/kanban/`+x.id+`" class="btn btn-primary">Go to kanban !</a>
+                                        <h5 class="card-title">` + x.title + `
+                                            <i class="fas fa-crown text-warning" id="iconCrown"></i>
+                                        </h5>
+                                        <a href="/kanban/` + x.id + `" class="btn btn-primary">Go to kanban !</a>
                                     </div>
                                 </div>
                             </div>
-                        `)
+                        `);
+                        }
+                        else {
+                            $('.kanbans').append(`
+                            <div class="">
+                                <div class="card m-2" style="width: 20rem;">
+                                    <img class="card-img-top" src="../img` + x.background + `" alt="Card image cap" width="200" height="200">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">` + x.title + `</h5>
+                                        <a href="/kanban/` + x.id + `" class="btn btn-primary">Go to kanban !</a>
+                                    </div>
+                                </div>
+                            </div>
+                            `);
+                        }
                     })
                 }});
         }
