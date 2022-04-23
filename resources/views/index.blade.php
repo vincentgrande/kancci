@@ -47,7 +47,7 @@
                 success: function(result){
                     $('#edit').modal('hide');
                     console.log(result)
-                    getWorkgroupFromUser()
+                    getWorkGroup()
                 }});
         }
         var addWorkgroup = document.getElementById("addWorkgroup");
@@ -86,40 +86,12 @@
             $('#invitedWorkgroups').hide(100)
             $('#labelownerWorkgroups').hide(100)
             $('#labelinvitedWorkgroups').hide(100)
-            getWorkgroupFromUser()
-            getWorkGroupInvited()
+            getWorkGroup()
             $(document).on('hide.bs.modal','.edit-modal', function () {
                 $('.edit-modal').remove(); // Remove edit board modal on close event
             });
         });
-        let getWorkgroupFromUser = function(){
-            $('#ownerWorkgroups').empty()
-            $.ajax({
-                url: "{{ route('getWorkgroupFromUser') }}",
-                method: 'get',
-                data: {
-                },
-                success: function(result){
-                    result.forEach(x => {
-                        $('#ownerWorkgroups').append(`
-                            <div class="mt-2">
-                              <div class="card m-2" style="width: 20rem;">
-                                <div class="card-body text-center">
-                                    <img class="img-thumbnail mb-3 mx-auto" src="../img/`+ x.logo+`" width="100" height="100"/>
-                                  <h5 class="card-title">`+ x.title+`<i class="fas fa-crown text-warning"></i>
-                                  </h5>
-                                  <a href="/workgroup/`+x.id+`" class="btn btn-primary">Go to workgroup !</a>
-                                </div>
-                              </div>
-                           </div>
-                        `)
-                        $('#ownerWorkgroups').show(100)
-                        $('#labelownerWorkgroups').show(100)
-                    })
-                }});
-        }
-        let getWorkGroupInvited = function() {
-            $('#invitedWorkgroups').empty()
+        let getWorkGroup = function() {
             $.ajax({
                 url: "{{ route('getWorkGroupInvited') }}",
                 method: 'get',
@@ -128,6 +100,7 @@
                 success: function(result){
                     result.forEach(x => {
                         if(x.workgroup.created_by !== x.user_id) {
+                            $('#invitedWorkgroups').empty()
                             $('#invitedWorkgroups').append(`
                             <div class="mt-2">
                               <div class="card m-2" style="width: 20rem;">
@@ -141,6 +114,24 @@
                             `)
                             $('#invitedWorkgroups').show(100)
                             $('#labelinvitedWorkgroups').show(100)
+                        }
+                        else
+                        {
+                            $('#ownerWorkgroups').empty()
+                            $('#ownerWorkgroups').append(`
+                            <div class="mt-2">
+                              <div class="card m-2" style="width: 20rem;">
+                                <div class="card-body text-center">
+                                    <img class="img-thumbnail mb-3 mx-auto" src="../img/`+ x.workgroup.logo+`" width="100" height="100"/>
+                                  <h5 class="card-title">`+ x.workgroup.title+`<i class="fas fa-crown text-warning"></i>
+                                  </h5>
+                                  <a href="/workgroup/`+x.workgroup.id+`" class="btn btn-primary">Go to workgroup !</a>
+                                </div>
+                              </div>
+                           </div>
+                        `)
+                            $('#ownerWorkgroups').show(100)
+                            $('#labelownerWorkgroups').show(100)
                         }
                     })
                 }});
