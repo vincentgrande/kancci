@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -65,6 +66,24 @@ class WorkgroupController extends Controller
      * @return mixed
      */
     public function getWorkgroup(){
+        $user = Auth::user();
+        $workGroup = WorkGroupUser::where('user_id',$user->id)->with('user')->with('workgroup')->get();
+        return  $workGroup;
+    }
+
+    /**
+     * @return WorkGroup | null
+     */
+    public function getWorkgroupFromUser(){
+        $user = Auth::user();
+        $workGroup = WorkGroup::where('created_by',$user->id)->with('creator')->get();
+        return  $workGroup;
+    }
+
+    /**
+     * @return WorkGroupUser | null
+     */
+    public function getWorkGroupInvited() {
         $user = Auth::user();
         $workGroup = WorkGroupUser::where('user_id',$user->id)->with('user')->with('workgroup')->get();
         return  $workGroup;

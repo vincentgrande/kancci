@@ -34,7 +34,8 @@ Route::middleware('auth')->group(function () {
     Route::get('getboard', 'KanbanController@getBoard')->name("getboard");
     Route::get('boardmaxid', 'KanbanController@boardMaxId')->name("boardMaxId");
     Route::get('getkanban', 'WorkgroupController@getKanban')->name("getKanban");
-    Route::get('getworkgroup', 'WorkgroupController@getWorkgroup')->name("getWorkgroup");
+    Route::get('getworkgroupfromuser', 'WorkgroupController@getWorkgroupFromUser')->name("getWorkgroupFromUser");
+    Route::get('getworkgroupinvited', 'WorkgroupController@getWorkGroupInvited')->name("getWorkGroupInvited");
 
     Route::post('verifycardid', 'KanbanController@verifyCardId')->name("verifyCardId");
     Route::post('savetodb', 'KanbanController@saveToDB')->name("saveToDB");
