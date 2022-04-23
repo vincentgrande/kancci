@@ -70,8 +70,8 @@
         </div>
         <!-- End of Main Content -->
 
-        <div class="cookiebar" style="height: 10%;display: none; z-index:10;">
-            <div class="fixed-bottom  bg-warning text-primary text-center font-weight-bold   justify-content-center align-items-center">
+        <div class="cookiebar" style="height: 10%;display: none; z-index:10; position: absolute; top: 45rem; width: 100%;">
+            <div class="bg-warning text-primary text-center font-weight-bold   justify-content-center align-items-center">
                 <div class="cookiebar-content">
                     <span>We use cookies on this website.<br>
 Necessary cookies help make this website usable by enabling basic functions.<br>
@@ -83,7 +83,7 @@ Necessary cookies help make this website usable by enabling basic functions.<br>
             </div>
         </div>
         <!-- Footer -->
-        <footer class="sticky-footer bg-primary" style="z-index: 1;">
+        <footer class="sticky-footer bg-primary" style="z-index: 1; margin-top: 8rem;">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
                     <span>Copyright &copy; KANCCI - 2022</span>

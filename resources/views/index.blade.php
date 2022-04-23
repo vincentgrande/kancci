@@ -15,15 +15,13 @@
 
 @section('content')
     <div>
-        <label id="labelownerWorkgroups" for="ownerWorkgroups" style="margin-left: 15px;
-                                 margin-top: -12px; position: absolute;
-                                 background-color: #f8f9fc; border: 2px solid #f8f9fc;">Your Workgroups</label>
+        <label class="bg-light" id="labelownerWorkgroups" for="ownerWorkgroups" style="margin-left: 15px;
+                                 margin-top: -12px; position: absolute; border: 2px solid #f8f9fc;">Your Workgroups</label>
         <div class="row justify-content-center ml-1 mr-2 mb-3 border border-primary rounded" id="ownerWorkgroups">
 
         </div>
-        <label id="labelinvitedWorkgroups" for="invitedWorkgroups" style="margin-left: 15px;
-                                 margin-top: -12px; position: absolute;
-                                 background-color: #f8f9fc; border: 2px solid #f8f9fc;">Invited Workgroups</label>
+        <label class="bg-light" id="labelinvitedWorkgroups" for="invitedWorkgroups" style="margin-left: 15px;
+                                 margin-top: -12px; position: absolute; border: 2px solid #f8f9fc;">Invited Workgroups</label>
         <div class="row justify-content-center ml-1 mr-2 mb-3 border border-primary rounded" id="invitedWorkgroups">
 
         </div>

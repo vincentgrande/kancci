@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+    use('Illuminate\Support\Facades\URL');
+?>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -8,6 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>KANCCI - @yield('title')</title>
+    <link rel="icon" href="{{ \Illuminate\Support\Facades\URL::asset('favicon.ico') }}" type="image/x-icon"/>
     <link href="{{asset('css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{asset('css/app.css')}}" rel="stylesheet" type="text/css">
     <link href="{{asset('css/jkanban.min.css')}}" rel="stylesheet" type="text/css">

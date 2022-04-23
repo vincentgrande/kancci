@@ -22,7 +22,7 @@
         <form class="form-group" action="{{route('WorkgroupInfoPost', ['id' => $workgroup[0]->id])}}" method="post">
             @csrf
             <div class="row">
-                <label class="mx-auto" for="title">Titre</label>
+                <label class="mx-auto" for="title">Title</label>
             </div>
             <div class="input-group mb-2">
                 <div class="input-group-prepend">
@@ -33,6 +33,9 @@
             <input class="form-control mb-2" type="submit" value="Update"/>
         </form>
         <div class="mb-2" style="width: 100%; border-top: 1px solid #8c8b8b;"></div>
+        <div class="row">
+            <label class="mx-auto" for="title">Invited Users</label>
+        </div>
         <div class="form-group">
             <div class="input-group mb-1">
                 <div class="input-group-prepend">
