@@ -23,14 +23,14 @@ class WorkgroupController extends Controller
     public function index($id)
     {
         $user = Auth::user();
-        $workGroup = WorkGroup::where('created_by',$user->id)->where('id', $id)->with('creator')->first();
+        $workGroup = WorkGroup::where('created_by', $user->id)->where('id', $id)->with('creator')->first();
         $workgroupUser = WorkGroupUser::where('workgroup_id', $id)->with('user')->get();
-        if ($workGroup == null & $workgroupUser == null){
+        if ($workGroup == null & $workgroupUser == null) {
             return redirect()->route('index');
         }
-        return view('workgroup',[
+        return view('workgroup', [
             'workgroup' => $workGroup,
-            'workgroup_users' => $workgroupUser
+            'workgroup_users' => $workgroupUser,
         ]);
     }
 
@@ -43,7 +43,7 @@ class WorkgroupController extends Controller
         Kanban::create([
             'title' => $request->title,
             'workgroup_id' => $request->workgroup_id,
-            'background' => '/wallpaper/'.$request->background.'.jpg',
+            'background' => '/wallpaper/' . $request->background . '.jpg',
             'visibility' => 'visible',
             'created_by' => Auth::user()->id,
         ]);
@@ -55,9 +55,10 @@ class WorkgroupController extends Controller
      * @param Request $request
      * @return Kanban | null
      */
-    public function getKanban(Request $request){
+    public function getKanban(Request $request)
+    {
 
-        $kanban = Kanban::where('workgroup_id',$request->workgroup_id)->get();
+        $kanban = Kanban::where('workgroup_id', $request->workgroup_id)->get();
         return $kanban;
 
     }
@@ -65,21 +66,25 @@ class WorkgroupController extends Controller
     /**
      * @return WorkGroupUser | null
      */
-    public function getWorkgroup(){
+    public function getWorkgroup()
+    {
         $user = Auth::user();
-        $workGroup = WorkGroupUser::where('user_id',$user->id)->with('user')->with('workgroup')->get();
-        return  $workGroup;
+        $workGroup = WorkGroupUser::where('user_id', $user->id)->with('user')->with('workgroup')->get();
+        return $workGroup;
     }
 
     /**
      * @param $id
      * @return Application|Factory|View
      */
-    public function getWorkgroupById($id){
+    public function getWorkgroupById($id)
+    {
         $user = Auth::user();
-        $workGroup = WorkGroup::where('created_by',$user->id)->where('id', $id)->with('creator')->get();
-        return  view('workgroup-info', [
-            'workgroup' => $workGroup
+        $workGroup = WorkGroup::where('created_by', $user->id)->where('id', $id)->with('creator')->get();
+        $invited_users = WorkGroupUser::where('workgroup_id', $id)->with('user')->with('workgroup')->get();
+        return view('workgroup-info', [
+            'workgroup' => $workGroup,
+            'invited_users' => $invited_users
         ]);
     }
 
@@ -90,14 +95,14 @@ class WorkgroupController extends Controller
      */
     public function UpdateWorkgroupInfos(Request $request): string
     {
-        $workgroup = WorkGroup::where('id',$request->id)->where('created_by', Auth::user()->id)->with('creator')->get();
-        if($workgroup == null)
-        {
+        $workgroup = WorkGroup::where('id', $request->id)->where('created_by', Auth::user()->id)->with('creator')->get();
+        if ($workgroup == null) {
             throw new Exception("Workgroup was null");
         }
-        WorkGroup::where('id', $request->id)->update(['title' => $request->title]);
-        return route('WorkgroupInfosGet', ['id' => $request->id]);
-
+        $firstLetter = $request->title[0];
+        $firstLetter = strtolower($firstLetter);
+        WorkGroup::where('id', $request->id)->update(['title' => $request->title, 'logo' => "logos/" . $firstLetter . "_blue.png"]);
+        return redirect()->route('WorkgroupInfosGet', ['id' => $request->id]);
     }
 
     /**
@@ -110,7 +115,7 @@ class WorkgroupController extends Controller
         $firstLetter = strtolower($firstLetter);
         $workgroup = WorkGroup::create([
             'title' => $request->title,
-            'logo' => "logos/".$firstLetter."_blue.png",
+            'logo' => "logos/" . $firstLetter . "_blue.png",
             'created_by' => Auth::user()->id,
         ]);
         WorkGroupUser::create([
