@@ -7,6 +7,7 @@ use App\Attachement;
 use App\CardUser;
 use App\Checklist;
 use App\ChecklistItem;
+use App\Comment;
 use App\KanbanUser;
 use App\WorkGroup;
 use Illuminate\Contracts\Foundation\Application;
@@ -241,12 +242,14 @@ class KanbanController extends Controller
             $checklist = Checklist::where('card_id', $request->id)->first();
             $checklistitems = ChecklistItem::where('card_id', $request->id)->get();
             $attachments = Attachement::where('card_id', $request->id)->get();
+            $comments = Comment::where('card_id', $request->id)->get();
             $cardInfos = [
                 'card' => $card,
                 'checklist' => $checklist,
                 'checklistitems' => $checklistitems,
                 'workgroupuser' => $users,
                 'attachments' => $attachments,
+                'comments' => $comments,
             ];
             return $cardInfos;
         }
@@ -625,6 +628,36 @@ class KanbanController extends Controller
             $alert->is_read = true;
             $alert->save();
             return 'Ok';
+        }
+        return 'Nok';
+    }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function addComment(Request $request)
+    {
+        $card = Card::where('id','=',$request->card_id)->first();
+        if ($this->allowedBoardAccess($card->board_id) == 'True') {
+            $comment = Comment::create([
+                'message' => $request->comment,
+                'created_by' => Auth::user()->id,
+                'card_id' => $request->card_id
+            ]);
+            return $comment;
+        }
+        return 'Nok';
+    }
+    public function deleteComment(Request $request)
+    {
+        $comment = Comment::where('id',$request->id)->first();
+        $card = Card::where('id','=',$comment->card_id)->first();
+        if ($this->allowedBoardAccess($card->board_id) == 'True') {
+            if($comment){
+                $comment->delete();
+                return 'Ok';
+            }
         }
         return 'Nok';
     }

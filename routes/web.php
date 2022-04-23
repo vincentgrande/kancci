@@ -78,6 +78,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('showFile/{id}','KanbanController@showFile')->name('showFile');
 
+    Route::post('addComment','KanbanController@addComment')->name('addComment');
+    Route::post('deleteComment','KanbanController@deleteComment')->name('deleteComment');
+
+
 });
 Route::get('debug', 'KanbanController@debug')->name("debug");
 

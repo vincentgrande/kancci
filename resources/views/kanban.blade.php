@@ -349,6 +349,7 @@
                 success: function(result){
                 }});
         }
+
         let saveCardChanges = function() {
             let title = $("#title").val()
             let description = $("#description").val()
@@ -423,6 +424,69 @@
             }
             uidVerif()
         }
+        let deleteItem = function(id){
+            $.ajax({
+                url: "{{ route('deleteItem') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id: id
+                },
+                success: function (result) {
+                    $("#item"+id).remove()
+                    console.log(result)
+                }
+            })
+        }
+        let deleteFile = function(id){
+            $.ajax({
+                url: "{{ route('deleteFile') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id: id
+                },
+                success: function (result) {
+                    $("#file"+id).remove()
+                    console.log(result)
+                }
+            })
+        }
+        let addComment = function(cardId){
+            let comment = $('#comment').val()
+            $('#comment').val("")
+            $.ajax({
+                url: "{{ route('addComment') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    card_id: cardId,
+                    comment:comment,
+                },
+                success: function(result){
+                    $('#comments').append(`
+                            <div id='comment`+result.id+`'>
+                            <p class="border border-dark rounded p-2">`+result.message+` <button class="btn btn-danger btn-sm" onclick='deleteComment(`+result.id+`)'><i class="fas fa-times"></i></button></p>
+
+                        </div>
+`)
+                }});
+        }
+        let deleteComment = function(id){
+            $.ajax({
+                url: "{{ route('deleteComment') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id: id
+                },
+                success: function (result) {
+                    $("#comment"+id).remove()
+                    console.log(result)
+                }
+            })
+        }
+
         @endif
         const convertToDate = (d) => {
             const [year, month, day] = d.split("-");
@@ -495,9 +559,11 @@
 </div>
                                             <div id="checklist-form"></div>
 <hr class="sidebar-divider">
+<label  for="files">Attachements :</label>
+
 <div id="files"></div>
  @if(!isset($visibility))
-    <form action="{{ route('uploadFile') }}" id="upload" method="post" enctype="multipart/form-data">
+<form action="{{ route('uploadFile') }}" id="upload" method="post" enctype="multipart/form-data">
         @csrf
         <input type="hidden" id="card_id" name="card_id" value="`+result.card.id+`">
         <div class="input-group mt-2">
@@ -515,6 +581,15 @@
 
 
 <div id="card_users"></div>
+    <hr class="sidebar-divider">
+    <label  for="comments">Comments :</label>
+    <div id="comments"></div>
+     @if(!isset($visibility))
+    <div class="input-group mb-2">
+    <input class="form-control" type="text" id="comment" name="comment" placeholder="Comment" value="">
+                                              <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-success" onclick="addComment(`+result.card.id+`)">Add</button>
+                                              </div>@endif
                                         </div>
                                         <div class="modal-footer">
 @if(!isset($visibility)) <button class="btn btn-danger" onclick="archiveCard('`+eid+`'); $('#edit`+eid+`').modal('hide');">Archive card</button> @endif
@@ -554,40 +629,23 @@
                     $('#files').append(`
                         <li id='file`+x.id+`'>
                             <a href='/showFile/`+x.id+`' target='_blank'>`+x.original_name+`</a>
-                            <button class="btn btn-danger btn-sm" onclick='deleteFile(`+x.id+`)'><i class="fas fa-times"></i></button>
+                             @if(!isset($visibility))<button class="btn btn-danger btn-sm" onclick='deleteFile(`+x.id+`)'><i class="fas fa-times"></i></button>@endif
                         </li>
                     `)
                 })
             }
+            if(Object.keys(result.comments).length !== 0) {
+                result.comments.map(x => {
+                    $('#comments').append(`
+                        <div id='comment`+x.id+`'>
+                            <p class="border border-dark rounded p-2">`+x.message+`@if(!isset($visibility)) <button class="btn btn-danger btn-sm" onclick='deleteComment(`+x.id+`)'><i class="fas fa-times"></i></button>@endif</p>
+
+                        </div>
+                    `)
+                })
+            }
         }
-        let deleteItem = function(id){
-            $.ajax({
-                url: "{{ route('deleteItem') }}",
-                method: 'post',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    id: id
-                },
-                success: function (result) {
-                    $("#item"+id).remove()
-                    console.log(result)
-                }
-            })
-        }
-        let deleteFile = function(id){
-            $.ajax({
-                url: "{{ route('deleteFile') }}",
-                method: 'post',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    id: id
-                },
-                success: function (result) {
-                    $("#file"+id).remove()
-                    console.log(result)
-                }
-            })
-        }
+
         /**
          * Create the kanban
          */
