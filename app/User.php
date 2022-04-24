@@ -65,4 +65,8 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\CardUser');
     }
+    public function kanbanUser()
+    {
+        return $this->hasMany('App\KanbanUser');
+    }
 }

@@ -54,4 +54,8 @@ class Kanban extends Model
     {
         return $this->hasMany('App\KanbanLabel');
     }
+    public function kanbanUser()
+    {
+        return $this->hasMany('App\User');
+    }
 }

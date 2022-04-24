@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('boardmaxid', 'KanbanController@boardMaxId')->name("boardMaxId");
     Route::get('getkanban', 'WorkgroupController@getKanban')->name("getKanban");
     Route::get('getworkgroup', 'WorkgroupController@getWorkgroup')->name("getWorkgroup");
+    Route::get('kanbanInfos', 'KanbanController@kanbanInfos')->name("kanbanInfos");
 
     Route::post('verifycardid', 'KanbanController@verifyCardId')->name("verifyCardId");
     Route::post('savetodb', 'KanbanController@saveToDB')->name("saveToDB");
@@ -63,6 +64,27 @@ Route::middleware('auth')->group(function () {
     Route::post('archiveCard','KanbanController@archiveCard')->name('archiveCard');
     Route::post('archiveBoard','KanbanController@archiveBoard')->name('archiveBoard');
     Route::post('joinCard','KanbanController@joinCard')->name('joinCard');
+
+    Route::post('editKanban','KanbanController@editKanban')->name('editKanban');
+    Route::post('joinKanban','KanbanController@joinKanban')->name('joinKanban');
+    Route::post('uploadFile','KanbanController@uploadFile')->name('uploadFile');
+
+    Route::post('deleteFile','KanbanController@deleteFile')->name('deleteFile');
+    Route::post('deleteItem','KanbanController@deleteItem')->name('deleteItem');
+
+    Route::post('readAlert','KanbanController@readAlert')->name('readAlert');
+    Route::get('getAlert','KanbanController@getAlert')->name('getAlert');
+
+    Route::get('showFile/{id}','KanbanController@showFile')->name('showFile');
+
+    Route::get('archived/{id}','KanbanController@archived')->name('archived');
+    Route::get('getArchived','KanbanController@getArchived')->name('getArchived');
+
+    Route::post('addComment','KanbanController@addComment')->name('addComment');
+    Route::post('deleteComment','KanbanController@deleteComment')->name('deleteComment');
+
+    Route::post('unarchiveBoard','KanbanController@unarchiveBoard')->name('unarchiveBoard');
+    Route::post('unarchiveCard','KanbanController@unarchiveCard')->name('unarchiveCard');
 
 });
 Route::get('debug', 'KanbanController@debug')->name("debug");
