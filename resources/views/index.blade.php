@@ -90,6 +90,8 @@
             });
         });
         let getWorkGroup = function() {
+            $('#invitedWorkgroups').empty()
+            $('#ownerWorkgroups').empty()
             $.ajax({
                 url: "{{ route('getWorkgroup') }}",
                 method: 'get',
@@ -98,7 +100,6 @@
                 success: function(result){
                     result.forEach(x => {
                         if(x.workgroup.created_by !== x.user_id) {
-                            $('#invitedWorkgroups').empty()
                             $('#invitedWorkgroups').append(`
                             <div class="mt-2">
                               <div class="card m-2" style="width: 20rem;">
@@ -115,7 +116,6 @@
                         }
                         else
                         {
-                            $('#ownerWorkgroups').empty()
                             $('#ownerWorkgroups').append(`
                             <div class="mt-2">
                               <div class="card m-2" style="width: 20rem;">
