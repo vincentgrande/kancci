@@ -498,7 +498,24 @@
                 }
             })
         }
-
+        let useLabel = function(id,card_id){
+            $.ajax({
+                url: "{{ route('useLabel') }}",
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id: id,
+                    card_id:card_id
+                },
+                success: function (result) {
+                    if(result === "1"){
+                        $("#label"+id).addClass("border border-success border-4")
+                    }else if(result === "0"){
+                        $("#label"+id).removeClass("border border-success border-4")
+                    }
+                }
+            })
+        }
         @endif
         const convertToDate = (d) => {
             const [year, month, day] = d.split("-");
@@ -533,6 +550,10 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
+ <label for="labels">Card's labels :</label>
+ <div id="labels">
+ </div>
+ <hr class="sidebar-divider">
 
 
 <div class="datepicker date input-group">
@@ -618,6 +639,7 @@
         }
 
         let addEditFunctions = function(result){
+            console.log("laaa",result)
             if(Object.keys(result.checklistitems).length !== 0) {
                 result.checklistitems.map(x => {
                     $('#checklistitems').append(`
@@ -652,6 +674,15 @@
                         <div id='comment`+x.id+`'>
                             <p class="border border-dark rounded p-2">`+x.message+`@if(!isset($visibility)) <button class="btn btn-danger btn-sm" onclick='deleteComment(`+x.id+`)'><i class="fas fa-times"></i></button>@endif</p>
 
+                        </div>
+                    `)
+                })
+            }
+            if(Object.keys(result.labels).length !== 0) {
+                result.labels.map(x => {
+                    $('#labels').append(`
+                        <div id='label`+x[0].id+`' class="btn `+( x[1]  ? 'border border-success border-4' : '')+`" style="background-color: `+x[0].color+`" @if(!isset($visibility))onclick='useLabel(`+x[0].id+`,`+result.card.id+`)'@endif>
+                           `+x[0].label+`
                         </div>
                     `)
                 })

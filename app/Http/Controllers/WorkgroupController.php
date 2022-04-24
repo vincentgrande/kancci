@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\KanbanLabel;
 use App\WorkGroup;
 use App\WorkGroupUser;
 use App\Kanban;
@@ -47,7 +48,18 @@ class WorkgroupController extends Controller
             'visibility' => 'visible',
             'created_by' => Auth::user()->id,
         ]);
-
+        KanbanLabel::create([
+            'kanban_id' => Kanban::where('title',$request->title)->where('workgroup_id',$request->workgroup_id)->select('id')->first()->id,
+            'label_id' => 1
+        ]);
+        KanbanLabel::create([
+            'kanban_id' => Kanban::where('title',$request->title)->where('workgroup_id',$request->workgroup_id)->select('id')->first()->id,
+            'label_id' => 2
+        ]);
+        KanbanLabel::create([
+            'kanban_id' => Kanban::where('title',$request->title)->where('workgroup_id',$request->workgroup_id)->select('id')->first()->id,
+            'label_id' => 3
+        ]);
         return back();
     }
 

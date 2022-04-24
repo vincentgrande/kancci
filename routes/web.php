@@ -86,6 +86,9 @@ Route::middleware('auth')->group(function () {
     Route::post('unarchiveBoard','KanbanController@unarchiveBoard')->name('unarchiveBoard');
     Route::post('unarchiveCard','KanbanController@unarchiveCard')->name('unarchiveCard');
 
+    Route::post('useLabel','KanbanController@useLabel')->name('useLabel');
+
+
 });
 Route::get('debug', 'KanbanController@debug')->name("debug");
 

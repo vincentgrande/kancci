@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Alert;
 use App\Attachement;
+use App\CardLabel;
 use App\CardUser;
 use App\Checklist;
 use App\ChecklistItem;
 use App\Comment;
+use App\KanbanLabel;
 use App\KanbanUser;
+use App\Label;
 use App\WorkGroup;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -202,7 +205,7 @@ class KanbanController extends Controller
     }
 
     public function debug(){
-
+dd(Kanban::select('id')->first());
     }
 
     public function joinCard(Request $request)
@@ -252,6 +255,11 @@ class KanbanController extends Controller
             $checklistitems = ChecklistItem::where('card_id', $request->id)->get();
             $attachments = Attachement::where('card_id', $request->id)->get();
             $comments = Comment::where('card_id', $request->id)->get();
+            $labels = KanbanLabel::where('kanban_id', $kanban->id)->get();
+            $cardlabel = [];
+            foreach($labels as $label){
+                array_push($cardlabel,[Label::where('id',$label->label_id)->first(),CardLabel::where('card_id',$card->id)->where('label_id',$label->label_id)->first()]);
+            }
             $cardInfos = [
                 'card' => $card,
                 'checklist' => $checklist,
@@ -259,6 +267,7 @@ class KanbanController extends Controller
                 'workgroupuser' => $users,
                 'attachments' => $attachments,
                 'comments' => $comments,
+                'labels' => $cardlabel,
             ];
             return $cardInfos;
         }
@@ -747,5 +756,17 @@ class KanbanController extends Controller
             return "Ok";
         }
         return "Nok";
+    }
+
+    public function useLabel(Request $request)
+    {
+        $cardlabel = CardLabel::where(['label_id' => $request->id, 'card_id' => $request->card_id])->first();
+        if ($cardlabel !== null) {
+            $cardlabel->delete();
+            return 0;
+        }else{
+            $cardlabel = CardLabel::create(['label_id' => $request->id, 'card_id' => $request->card_id]);
+            return 1;
+        }
     }
 }
