@@ -54,7 +54,6 @@
                 },
                 success: function(result){
                     console.log(result)
-                    console.log('oui garcon', result)
                     $('#modal-container').append (`
                             <div class="modal manage-modal" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -75,6 +74,20 @@
                                             <input id="title" type="text" class="form-control" name="title" value="`+result.kanban.title+`">
                                         </div>
  <hr class="sidebar-divider">
+<label for="kanbanlabels">Labels :</label>
+ <div class="mb-2" id="kanbanlabels">
+ </div>
+<label for="label_title">New label :</label>
+<input class="form-control mb-2" type="text" id="label_title" name="label_title" placeholder="Label title" value="">
+<label for="label_color">Color :</label>
+<input class="form-control mb-2" type="color" id="label_color" name="label_color">
+<button type="button" class="btn btn-outline-success mb-2" onclick="addLabel()">Add</button>
+<select class="custom-select mb-2"  id="deletelabel" name="deletelabel" aria-label="Delete label">
+  <option selected>Choose a label to delete it</option>
+</select>
+<button type="button" class="btn btn-outline-danger mb-2" onclick="deleteLabel()">Delete label</button>
+
+ <hr class="sidebar-divider">
  <label for="visibility" class="label-control">Kanban visibility :</label>
 
 <select class="custom-select" id="visibility" name="visibility" onchange="saveKanbanChanges()">
@@ -83,16 +96,6 @@
 `+(result.kanban.visibility != "private" ? '  <option value="private">private</option>' : '')+`
 `+(result.kanban.visibility != "public" ? '  <option value="public">public</option>' : '')+`
 </select>
- <hr class="sidebar-divider">
-<label for="kanbanlabels">Labels :</label>
- <div class="mb-2" id="kanbanlabels">
- </div>
-<label for="label_title">New label :</label>
-<input class="form-control mb-2" type="text" id="label_title" name="label_title" placeholder="Label title" value="">
-<label for="label_color">Color :</label>
-<input class="form-control mb-2" type="color" id="label_color" name="label_color">
-<button type="button" class="btn btn-outline-success" onclick="addLabel()">Add</button>
-
  <hr class="sidebar-divider">
 
 <div id="workgroup_users"></div>
@@ -109,6 +112,24 @@
                     $('#edit').modal('show');
                 }});
         });
+        let deleteLabel = function(){
+            let id = $("#deletelabel").val()
+            $.ajax({
+                url: '{{route('deleteLabel')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id:id,
+                    kanban: {{ $kanban }}
+                },
+                success: function (result) {
+                    $("#deletelabel").val("")
+                    $("#label"+id).remove()
+                    $("#remove"+id).remove()
+
+                }
+            })
+        }
         let addLabel = function(){
             let label = $("#label_title").val()
             let color = $("#label_color").val()
@@ -125,9 +146,12 @@
                     $("#label_title").val("")
                     $("#label_color").val("")
                     $('#kanbanlabels').append(`
-                     <div   class="btn" style="background-color: `+color+`">
+                     <div id="label`+result.id+`"  class="btn mb-2" style="background-color: `+color+`">
                            `+label+`
                         </div>
+                    `)
+                    $('#deletelabel').append(`
+                                       <option id="remove`+result.id+`" value="`+result.id+`">`+label+`</option>
                     `)
                 }
             })
@@ -146,7 +170,6 @@
                     visibility:visibility,
                 },
                 success: function(result){
-                    console.log(result)
                     let elements = $('.kanban-user');
                     elements = Array.from(elements); //convert to array
                     elements.map(element => // map on kanban-boards to add edit button
@@ -182,11 +205,13 @@
             }
             if(Object.keys(result.labels).length !== 0) {
                 result.labels.map(x => {
-                    console.log("bibii", x.label)
                    $('#kanbanlabels').append(`
-                     <div id='label`+x.label.id+`'  class="btn" style="background-color: `+x.label.color+`">
+                     <div id='label`+x.label.id+`'  class="btn mb-2" style="background-color: `+x.label.color+`">
                            `+x.label.label+`
                         </div>
+                    `)
+                    $('#deletelabel').append(`
+                                       <option id="remove`+result.id+`" value="`+x.label.id+`">`+x.label.label+`</option>
                     `)
 
                 })
@@ -223,7 +248,6 @@
                 return { id:x.dataset.id, items: kanbanids }; // Create an array with boards ID's and cards ID's
             }).get();
             board.push(kanbanBoard);
-            console.log(kanbanBoard)
             $.ajax({ // Ajax to save kanban in DB.
                 url: "{{ route('saveToDB') }}",
                 method: 'post',
@@ -386,7 +410,6 @@
                     item:item,
                 },
                 success: function(result){
-                    console.log(typeof result)
                     $('#checklistitems').append(`
                             <div class="form-check m-2" id="item`+result.id+`">
                               <input class="form-check-input" type="checkbox" onchange="saveChecklist(`+result.id+`)" id="`+result.id+`"/>
@@ -491,7 +514,6 @@
                 },
                 success: function (result) {
                     $("#item"+id).remove()
-                    console.log(result)
                 }
             })
         }
@@ -505,7 +527,6 @@
                 },
                 success: function (result) {
                     $("#file"+id).remove()
-                    console.log(result)
                 }
             })
         }
@@ -539,7 +560,6 @@
                 },
                 success: function (result) {
                     $("#comment"+id).remove()
-                    console.log(result)
                 }
             })
         }
@@ -577,7 +597,6 @@
                     id:eid
                 },
                 success: function(result){
-                    console.log(result)
                     const today = new Date();
                     const yyyy = today.getFullYear();
                     let mm = today.getMonth() + 1; // Months start at 0!
@@ -684,7 +703,6 @@
         }
 
         let addEditFunctions = function(result){
-            console.log("laaa",result)
             if(Object.keys(result.checklistitems).length !== 0) {
                 result.checklistitems.map(x => {
                     $('#checklistitems').append(`

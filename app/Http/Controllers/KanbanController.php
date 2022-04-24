@@ -786,5 +786,17 @@ dd(Kanban::select('id')->first());
                 'created_by' => Auth::user()->id,
             ])->first()->id,
         ]);
+        return Label::where([
+            'label' => $request->label,
+            'color' => $request->color,
+            'created_by' => Auth::user()->id,
+        ])->first();
+    }
+    public function deleteLabel(Request $request)
+    {
+        CardLabel::where('label_id',$request->id)->delete();
+        KanbanLabel::where('label_id',$request->id)->where('kanban_id',$request->kanban)->delete();
+        Label::where('id', $request->id)->delete();
+        return 'Ok';
     }
 }

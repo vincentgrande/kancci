@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('useLabel','KanbanController@useLabel')->name('useLabel');
     Route::post('addLabel','KanbanController@addLabel')->name('addLabel');
+    Route::post('deleteLabel','KanbanController@deleteLabel')->name('deleteLabel');
 
 
 });
