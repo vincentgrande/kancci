@@ -341,6 +341,7 @@
                     item:item,
                 },
                 success: function(result){
+                    console.log(typeof result)
                     $('#checklistitems').append(`
                             <div class="form-check m-2" id="item`+result.id+`">
                               <input class="form-check-input" type="checkbox" onchange="saveChecklist(`+result.id+`)" id="`+result.id+`"/>

@@ -336,9 +336,9 @@ class KanbanController extends Controller
 
     /**
      * @param Request $request
-     * @return string
+     * @return mixed
      */
-    public function addChecklistItem(Request $request): string
+    public function addChecklistItem(Request $request)
     {
         $card = Card::where('id',$request->card_id)->first();
         if($this->allowedBoardAccess($card->board_id)) {
