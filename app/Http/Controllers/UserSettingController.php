@@ -171,8 +171,19 @@ class UserSettingController extends Controller
      */
     public function changeEmail(Request $request)
     {
-        $user = User::where(['id' => Auth::user()->id])->first();
-        $user->update(['email' => $request->mail]);
-        return redirect(route('settingsEmailGet'))->with('message', 'Your E-mail have been changed successfully !');
+        try {
+            $request->validate([
+
+                'mail' => 'required|email',
+
+            ]);
+            $user = User::where(['id' => Auth::user()->id])->first();
+            $user->update(['email' => $request->mail]);
+            return redirect(route('settingsEmailGet'))->with('message', 'Your E-mail have been changed successfully !');
+        }
+        catch (\Exception $ex)
+        {
+            return redirect(route('settingsEmailGet'))->with('error', 'An error occurred.');
+        }
     }
 }

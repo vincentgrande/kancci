@@ -7,6 +7,8 @@ use App\Checklist;
 use App\ChecklistItem;
 use App\WorkGroup;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Card;
 use App\User;
@@ -14,7 +16,8 @@ use App\Board;
 use App\Kanban;
 use App\WorkGroupUser;
 use Illuminate\Support\Facades\Auth;
-use phpDocumentor\Reflection\Types\Integer;
+
+use Illuminate\View\View;
 
 
 class KanbanController extends Controller
@@ -27,8 +30,15 @@ class KanbanController extends Controller
     {
     }
 
+    public function Search(Request $result)
+    {
+        $workgroups = WorkGroup::where('title','LIKE','%'.$result->search.'%')->get();
+        $kanbans = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->get();
+        return $workgroups;
+    }
+
     /**
-     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Application|Factory|View
      */
     public function index()
     {
@@ -46,7 +56,7 @@ class KanbanController extends Controller
 
     /**
      * @param $id
-     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     * @return Application|Factory|RedirectResponse|View
      */
     public function kanban($id)
     {
@@ -108,9 +118,9 @@ class KanbanController extends Controller
      * @param Request $request
      * @return string
      */
-    public function verifyCardId(Request $request)
+    public function verifyCardId(Request $request): string
     {
-        if ($this->allowedBoardAccess($request->board) == True) {
+        if ($this->allowedBoardAccess($request->board)) {
             $card = Card::create([
                     'title' => $request->title,
                     'description' => '',
@@ -127,9 +137,9 @@ class KanbanController extends Controller
      * @param Request $request
      * @return string
      */
-    public function saveToDB(Request $request)
+    public function saveToDB(Request $request): string
     {
-        if($this->allowedKanbanAccess($request->kanbanId) == True) {
+        if($this->allowedKanbanAccess($request->kanbanId)) {
             $boards = json_encode($request->boards);
             if ($request->boards != null) {
                 foreach ($request->boards as $b) {
@@ -157,7 +167,7 @@ class KanbanController extends Controller
      * @param Request $request
      * @return int
      */
-    public function boardMaxId(Request $request)
+    public function boardMaxId(Request $request): int
     {
         return Board::max('id') ?? 0;
     }
@@ -166,9 +176,9 @@ class KanbanController extends Controller
      * @param Request $request
      * @return string
      */
-    public function saveBoard(Request $request)
+    public function saveBoard(Request $request): string
     {
-        if($this->allowedKanbanAccess($request->kanbanId) == True){
+        if($this->allowedKanbanAccess($request->kanbanId)){
             Board::create([
                 'id' => $request->board[0]['id'],
                 'title' => $request->board[0]['title'],
@@ -205,7 +215,7 @@ class KanbanController extends Controller
     public function joinCard(Request $request)
     {
         $card = Card::where('id',$request->card_id)->first();
-        if ($this->allowedBoardAccess($card->board_id) == True) {
+        if ($this->allowedBoardAccess($card->board_id)) {
             $carduser = CardUser::where('card_id',$request->card_id)->where('user_id',$request->user_id)->first();
             if ($carduser !== null) {
                 $carduser->delete();
@@ -224,7 +234,7 @@ class KanbanController extends Controller
     public function getCard(Request $request)
     {
         $card = Card::where('id',$request->id)->first();
-        if ($this->allowedBoardAccess($card->board_id) == True) {
+        if ($this->allowedBoardAccess($card->board_id)) {
             $board = Board::where('id',$card->board_id)->first();
             $kanban = Kanban::where('id',$board->kanban_id)->first();
             $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
@@ -261,7 +271,7 @@ class KanbanController extends Controller
      */
     public function getBoard(Request $request)
     {
-        if ($this->allowedBoardAccess($request->id) == True) {
+        if ($this->allowedBoardAccess($request->id)) {
             return Board::select('title')->where('id', $request->id)->get();
         }
     }
@@ -270,10 +280,10 @@ class KanbanController extends Controller
      * @param Request $request
      * @return string
      */
-    public function editCard(Request $request)
+    public function editCard(Request $request): string
     {
         $card = Card::where('id','=',$request->id)->first();
-        if ($this->allowedBoardAccess($card->board_id) == True){
+        if ($this->allowedBoardAccess($card->board_id)){
                 if (isset($request->id) && isset($request->title)){
                     if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'startDate' => $request->startDate, 'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
                     {
@@ -290,7 +300,7 @@ class KanbanController extends Controller
      */
     public function editBoard(Request $request): string
     {
-        if ($this->allowedBoardAccess($request->id) == True){
+        if ($this->allowedBoardAccess($request->id)){
             if (isset($request->id) && isset($request->title)){
                 if(Board::where('id', $request->id)->update(['title' => $request->title]))
                 {
@@ -305,10 +315,11 @@ class KanbanController extends Controller
      * @param Request $request
      * @return string
      */
-    public function addChecklist(Request $request)
+
+    public function addChecklist(Request $request): string
     {
         $card = Card::where('id','=',$request->card_id)->first();
-        if($this->allowedBoardAccess($card->board_id) == True){
+        if($this->allowedBoardAccess($card->board_id)){
             $checklist = Checklist::create([
                 'title' => 'New checklist',
                 'card_id' => $request->card_id,
@@ -327,10 +338,10 @@ class KanbanController extends Controller
      * @param Request $request
      * @return string
      */
-    public function addChecklistItem(Request $request)
+    public function addChecklistItem(Request $request): string
     {
         $card = Card::where('id',$request->card_id)->first();
-        if($this->allowedBoardAccess($card->board_id) == True) {
+        if($this->allowedBoardAccess($card->board_id)) {
             $checklistitem = ChecklistItem::create([
                 'label' => $request->item,
                 'isChecked' => False,
@@ -350,11 +361,11 @@ class KanbanController extends Controller
      * @param Request $request
      * @return string
      */
-    public function saveChecklist(Request $request)
+    public function saveChecklist(Request $request): string
     {
         $item = ChecklistItem::where('id',$request->id)->first();
         $card = Card::where('id',$item->card_id)->first();
-        if($this->allowedBoardAccess($card->board_id) == True) {
+        if($this->allowedBoardAccess($card->board_id)) {
             ChecklistItem::where('id', $request->id)->update(['isChecked' => !$item->isChecked]);
             return 'Ok';
         }
@@ -395,7 +406,12 @@ class KanbanController extends Controller
         }
         return False;
     }
-    public function archiveCard(Request $request)
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function archiveCard(Request $request): string
     {
         $card = Card::where('id','=',$request->card_id)->first();
         if ($this->allowedBoardAccess($card->board_id) == True){
@@ -406,10 +422,15 @@ class KanbanController extends Controller
         }
         return 'Nok';
     }
-    public function archiveBoard(Request $request)
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function archiveBoard(Request $request): string
     {
         $board = Board::where('id', $request->board_id)->first();
-        if ($this->allowedBoardAccess($board->id) == True){
+        if ($this->allowedBoardAccess($board->id)){
             if(Board::where('id', $board->id)->update(['isActive' => !$board->isActive]))
             {
                 return 'Ok';

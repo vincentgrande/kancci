@@ -88,7 +88,6 @@
         <div class="row justify-content-center mx-auto w-50" aria-label="Mot de passe">
             <div class="container-fluid mx-auto">
                 <div class="panel panel-default">
-                    <div class="panel-heading mb-3">Changement de mot de passe</div>
                     <div class="panel-body">
                         <form class="form-group" action="{{route('settingsSecurityPost')}}" method="post">
                             @csrf

@@ -27,6 +27,7 @@ Route::get('/', 'KanbanController@index')->name("index");
  * Protected routes
  */
 Route::middleware('auth')->group(function () {
+    Route::get('/search', 'KanbanController@Search')->name("Search");
     Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup")->where('id', '[0-9]+');
     Route::get('/kanban/{id}', 'KanbanController@kanban')->name("kanban")->where('id', '[0-9]+');
     Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");
@@ -48,8 +49,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/workgroup/infos/{id}', 'WorkgroupController@getWorkgroupById')->name("WorkgroupInfosGet");
     Route::get('/workgroup/infos', function() { return view('workgroup-info');})->name("WorkgroupInfos");
     Route::post('/workgroup/infos/{id}', 'WorkgroupController@UpdateWorkgroupInfos')->name('WorkgroupInfoPost');
-    //Route::post('/workgroup/infos/{id}', 'WorkgroupController@UpdateWorkgroupBackground')->name('WorkgroupBackgroundPost');
-    //Route::post('/workgroup/infos/{id}', 'WorkgroupController@UpdateWorkgroupBackground')->name('WorkgroupBackgroundPost');
 
     Route::get('/settings/profile', function() { return view('auth.settings-profile');})->name("settingsProfileGet");
     Route::post('/settings/profile', 'UserSettingController@changePicture')->name("settingsProfilePost");

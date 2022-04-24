@@ -4,8 +4,8 @@
 
 @section('actions')
     <li class="nav-item active">
-        <a class="nav-link" id="addWorkgroup">
-            <i class="fas fa-cog"></i>
+        <a class="nav-link" id="addWorkgroup" href="#">
+            <i class="fas fa-plus-square"></i>
             <span>Create workgroup</span></a>
     </li>
     <!-- Divider -->
@@ -14,17 +14,17 @@
 @endsection
 
 @section('content')
-    <label for="ownerWorkgroups" style="margin-left: 15px;
-                             margin-top: -12px; position: absolute;
-                             background-color: #f8f9fc; border: 2px solid #f8f9fc;">Your Workgroups</label>
-    <div class="row justify-content-center ml-1 mr-2 mb-2 border border-primary rounded" id="ownerWorkgroups">
+    <div>
+        <label class="bg-light" id="labelownerWorkgroups" for="ownerWorkgroups" style="margin-left: 15px;
+                                 margin-top: -12px; position: absolute; border: 2px solid #f8f9fc;">Your Workgroups</label>
+        <div class="row justify-content-center ml-1 mr-2 mb-3 border border-primary rounded" id="ownerWorkgroups">
 
-    </div>
-    <label for="invitedWorkgroups" style="margin-left: 15px;
-                             margin-top: -12px; position: absolute;
-                             background-color: #f8f9fc; border: 2px solid #f8f9fc;" hidden="hidden">Invited Workgroups</label>
-    <div class="row justify-content-center mr-2" id="invitedWorkgroups" hidden="hidden">
+        </div>
+        <label class="bg-light" id="labelinvitedWorkgroups" for="invitedWorkgroups" style="margin-left: 15px;
+                                 margin-top: -12px; position: absolute; border: 2px solid #f8f9fc;">Invited Workgroups</label>
+        <div class="row justify-content-center ml-1 mr-2 mb-3 border border-primary rounded" id="invitedWorkgroups">
 
+        </div>
     </div>
     <div id="modal-container"></div>
 @stop
@@ -45,12 +45,12 @@
                 success: function(result){
                     $('#edit').modal('hide');
                     console.log(result)
-                    getWorkgroup()
+                    getWorkGroup()
                 }});
         }
         var addWorkgroup = document.getElementById("addWorkgroup");
         addWorkgroup.addEventListener("click", function() {
-            $('#ownerWorkgroups').append (`
+            $('#modal-container').append (`
                             <div class="modal edit-modal" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -80,13 +80,16 @@
             $('#edit').modal('show');
         });
         $(document).ready(function() {
-            getWorkgroup()
+            $('#ownerWorkgroups').hide(100)
+            $('#invitedWorkgroups').hide(100)
+            $('#labelownerWorkgroups').hide(100)
+            $('#labelinvitedWorkgroups').hide(100)
+            getWorkGroup()
             $(document).on('hide.bs.modal','.edit-modal', function () {
                 $('.edit-modal').remove(); // Remove edit board modal on close event
             });
         });
-        let getWorkgroup = function(){
-            $('#ownerWorkgroups').empty()
+        let getWorkGroup = function() {
             $.ajax({
                 url: "{{ route('getWorkgroup') }}",
                 method: 'get',
@@ -94,21 +97,40 @@
                 },
                 success: function(result){
                     result.forEach(x => {
-                        $('#ownerWorkgroups').append(`
+                        if(x.workgroup.created_by !== x.user_id) {
+                            $('#invitedWorkgroups').empty()
+                            $('#invitedWorkgroups').append(`
+                            <div class="mt-2">
+                              <div class="card m-2" style="width: 20rem;">
+                                <div class="card-body text-center">
+                                    <img class="img-thumbnail mb-3 mx-auto" src="../img/` + x.workgroup.logo + `" width="100" height="100"/>
+                                  <h5 class="card-title">` + x.workgroup.title + `</h5>
+                                  <a href="/workgroup/` + x.workgroup.id + `" class="btn btn-primary">Go to workgroup !</a>
+                                </div>
+                              </div>
+                            </div>
+                            `)
+                            $('#invitedWorkgroups').show(100)
+                            $('#labelinvitedWorkgroups').show(100)
+                        }
+                        else
+                        {
+                            $('#ownerWorkgroups').empty()
+                            $('#ownerWorkgroups').append(`
                             <div class="mt-2">
                               <div class="card m-2" style="width: 20rem;">
                                 <div class="card-body text-center">
                                     <img class="img-thumbnail mb-3 mx-auto" src="../img/`+ x.workgroup.logo+`" width="100" height="100"/>
-                                  <h5 class="card-title">`+ x.workgroup.title+` `+
-                        (x.workgroup.created_by === x.user_id ? '<i class="fas fa-crown text-warning"></i>' : '')
-                            +`
-                           </h5>
+                                  <h5 class="card-title">`+ x.workgroup.title+`<i class="fas fa-crown text-warning"></i>
+                                  </h5>
                                   <a href="/workgroup/`+x.workgroup.id+`" class="btn btn-primary">Go to workgroup !</a>
                                 </div>
                               </div>
                            </div>
                         `)
-
+                            $('#ownerWorkgroups').show(100)
+                            $('#labelownerWorkgroups').show(100)
+                        }
                     })
                 }});
         }

@@ -47,8 +47,13 @@ use Illuminate\Support\Facades\Auth;
             <form class="form-group" action="{{route('settingsEmailPost')}}" method="post">
                 @csrf
                 <label for="mail" class="label-control">E-mail :</label>
-                <input type="email" id="mail" name="mail" class="form-control-" placeholder="<?php echo Auth::user()->email;?>"/>
-                <input type="submit" value="Changer mon adresse"/>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-at fa-fw" id="iconactualPassword"></i></span>
+                    </div>
+                    <input type="email" id="mail" name="mail" class="form-control" placeholder="<?php echo Auth::user()->email;?>" required="required"/>
+                </div>
+                <input class="form-control" type="submit" value="Changer mon adresse"/>
             </form>
         </div>
     </div>
