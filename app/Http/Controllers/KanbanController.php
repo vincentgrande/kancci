@@ -522,6 +522,7 @@ dd(Kanban::select('id')->first());
        $kanbanInfos = [
            'kanban'=>$kanban,
            'workgroupuser'=>$users,
+           'labels' => KanbanLabel::where('kanban_id',$request->id)->with('label')->get(),
        ];
        return $kanbanInfos;
     }
@@ -768,5 +769,22 @@ dd(Kanban::select('id')->first());
             $cardlabel = CardLabel::create(['label_id' => $request->id, 'card_id' => $request->card_id]);
             return 1;
         }
+    }
+
+    public function addLabel(Request $request)
+    {
+        Label::create([
+            'label' => $request->label,
+            'color' => $request->color,
+            'created_by' => Auth::user()->id,
+        ]);
+        KanbanLabel::create([
+            'kanban_id' => $request->kanban,
+            'label_id' => Label::where([
+                'label' => $request->label,
+                'color' => $request->color,
+                'created_by' => Auth::user()->id,
+            ])->first()->id,
+        ]);
     }
 }

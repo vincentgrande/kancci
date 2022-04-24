@@ -87,6 +87,7 @@ Route::middleware('auth')->group(function () {
     Route::post('unarchiveCard','KanbanController@unarchiveCard')->name('unarchiveCard');
 
     Route::post('useLabel','KanbanController@useLabel')->name('useLabel');
+    Route::post('addLabel','KanbanController@addLabel')->name('addLabel');
 
 
 });

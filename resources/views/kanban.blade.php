@@ -54,6 +54,7 @@
                 },
                 success: function(result){
                     console.log(result)
+                    console.log('oui garcon', result)
                     $('#modal-container').append (`
                             <div class="modal manage-modal" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -83,6 +84,16 @@
 `+(result.kanban.visibility != "public" ? '  <option value="public">public</option>' : '')+`
 </select>
  <hr class="sidebar-divider">
+<label for="kanbanlabels">Labels :</label>
+ <div class="mb-2" id="kanbanlabels">
+ </div>
+<label for="label_title">New label :</label>
+<input class="form-control mb-2" type="text" id="label_title" name="label_title" placeholder="Label title" value="">
+<label for="label_color">Color :</label>
+<input class="form-control mb-2" type="color" id="label_color" name="label_color">
+<button type="button" class="btn btn-outline-success" onclick="addLabel()">Add</button>
+
+ <hr class="sidebar-divider">
 
 <div id="workgroup_users"></div>
                                 </div>
@@ -98,6 +109,29 @@
                     $('#edit').modal('show');
                 }});
         });
+        let addLabel = function(){
+            let label = $("#label_title").val()
+            let color = $("#label_color").val()
+            $.ajax({
+                url: '{{route('addLabel')}}',
+                method: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    label: label,
+                    color: color,
+                    kanban: {{ $kanban }}
+                },
+                success: function (result) {
+                    $("#label_title").val("")
+                    $("#label_color").val("")
+                    $('#kanbanlabels').append(`
+                     <div   class="btn" style="background-color: `+color+`">
+                           `+label+`
+                        </div>
+                    `)
+                }
+            })
+        }
         let saveKanbanChanges = function() {
             let id = $("#id").val()
             let title = $("#title").val()
@@ -144,6 +178,17 @@
                     }else{
                         $("#user"+x.id).attr('onclick','addKanbanUser("'+result.kanban.id+'","'+x.id+'")')
                     }
+                })
+            }
+            if(Object.keys(result.labels).length !== 0) {
+                result.labels.map(x => {
+                    console.log("bibii", x.label)
+                   $('#kanbanlabels').append(`
+                     <div id='label`+x.label.id+`'  class="btn" style="background-color: `+x.label.color+`">
+                           `+x.label.label+`
+                        </div>
+                    `)
+
                 })
 
             }
