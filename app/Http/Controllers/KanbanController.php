@@ -193,21 +193,7 @@ class KanbanController extends Controller
     }
 
     public function debug(){
-        $board = Board::where('id',4)->first();
-        $kanban = Kanban::where('id',$board->kanban_id)->first();
-        $order = json_decode($kanban->order, true);
-        $cards = Card::where('id','=',1)->first();
-        $json = [];
-        foreach($order as $ord){
-            if(isset($ord['items']) && "$cards->board_id" == $ord['id']){
-                array_push($ord['items'],"$cards->id");
-            }else if(!isset($ord['items']) &&"$cards->board_id" == $ord['id']){
-                $ord['items']="$cards->id";
-            }
-            array_push($json,$ord);
-        }
 
-dd($json);
     }
 
     public function joinCard(Request $request)
@@ -695,7 +681,6 @@ dd($json);
                 array_push($cards,Card::where('board_id',$board->id)->where('isActive',false)->get());
             }
         }
-
         foreach($boards as $board){
             if($board->isActive == false){
                 array_push($archivedBoards,$board);

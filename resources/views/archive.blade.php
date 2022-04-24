@@ -61,19 +61,14 @@
                             $('#boards').append(`
 <li class="mb-2">`+x.title+` <button class="btn btn-success btn-sm " onclick='unarchiveBoard(`+x.id+`)'><i class="fas fa-check"></i></button></li>
 `)
-
                     })
                   result.cards.map( x => {
                       for (const [key, value] of Object.entries(x)) {
-                          console.log(x[key]);
                           $('#cards').append(`
 <li class="mb-2">`+x[key].title+` <button class="btn btn-success btn-sm " onclick='unarchiveCard(`+x[key].id+`)'><i class="fas fa-check"></i></button></li>
 `)
                       }
-
                   })
-
-
               }
           });
       }
