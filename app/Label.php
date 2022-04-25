@@ -54,6 +54,10 @@ class Label extends Model
     {
         return $this->hasMany(Kanban::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function kanban_label()
     {
         return $this->hasMany('App\KanbanLabel');

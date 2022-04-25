@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Card extends Model
 {
     protected $fillable = ['title', 'description',  'startDate', 'endDate', 'isActive', 'updated_at','board_id', 'created_by', 'checklist_id'];
+
     protected $cast = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
@@ -18,7 +19,7 @@ class Card extends Model
      */
     public function board()
     {
-        return $this->belongsTo(Board::class,'id','board_id');
+        return $this->belongsTo(Board::class,'board_id','id');
     }
 
     /**

@@ -44,6 +44,10 @@ class WorkGroup extends Model
     {
         return $this->hasMany(Kanban::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function workgroup_user()
     {
         return $this->hasMany('App\WorkGroupUser');
