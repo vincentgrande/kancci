@@ -87,6 +87,9 @@ class KanbanController extends Controller
      */
     public function getBoards(Request $request)
     {
+        $request->validate([
+            'id' =>'required|string',
+        ]);
         if($this->allowedKanbanAccess($request->id) == "True" || $this->allowedKanbanAccess($request->id) == "public") {
             $kanban = Kanban::where('id', $request->id)->first();
             $boards = Board::where('kanban_id', $kanban['id'])->get();
@@ -133,6 +136,11 @@ class KanbanController extends Controller
      */
     public function verifyCardId(Request $request): string
     {
+        $request->validate([
+            'title' =>'required|string',
+            'board' =>'required|int',
+            'title' => 'required|string'
+        ]);
         if ($this->allowedBoardAccess($request->board)) {
             $card = Card::create([
                     'title' => $request->title,
@@ -152,6 +160,10 @@ class KanbanController extends Controller
      */
     public function saveToDB(Request $request): string
     {
+        $request->validate([
+            'kanbanId' =>'required|int',
+            'boards' =>'required|array',
+        ]);
         if($this->allowedKanbanAccess($request->kanbanId) == "True") {
             $boards = json_encode($request->boards);
             if ($request->boards != null) {
@@ -191,6 +203,10 @@ class KanbanController extends Controller
      */
     public function saveBoard(Request $request): string
     {
+        $request->validate([
+            'kanbanId' =>'required|int',
+            'board' =>'required|array',
+        ]);
         if($this->allowedKanbanAccess($request->kanbanId) == "True"){
             Board::create([
                 'id' => $request->board[0]['id'],
@@ -204,12 +220,16 @@ class KanbanController extends Controller
         return 'false';
     }
 
-    public function debug(){
-dd(Kanban::select('id')->first());
-    }
-
+    /**
+     * @param Request $request
+     * @return int|string
+     */
     public function joinCard(Request $request)
     {
+        $request->validate([
+            'card_id' =>'required|int',
+            'user_id' =>'required|int',
+        ]);
         $card = Card::where('id',$request->card_id)->first();
         if ($this->allowedBoardAccess($card->board_id)) {
             $carduser = CardUser::where('card_id',$request->card_id)->where('user_id',$request->user_id)->first();
@@ -226,10 +246,14 @@ dd(Kanban::select('id')->first());
 
     /**
      * @param Request $request
-     * @return mixed
+     * @return array
      */
     public function getCard(Request $request)
     {
+        $request->validate([
+            'id' =>'required|int',
+        ]);
+
         $card = Card::where('id',$request->id)->first();
         $board = Board::where('id', $card->board_id)->first();
 
@@ -271,7 +295,7 @@ dd(Kanban::select('id')->first());
             ];
             return $cardInfos;
         }
-        return '';
+        return [];
     }
 
     /**
@@ -280,6 +304,9 @@ dd(Kanban::select('id')->first());
      */
     public function getBoard(Request $request)
     {
+        $request->validate([
+            'id' =>'required|int',
+        ]);
         if ($this->allowedBoardAccess($request->id)) {
             return Board::select('title')->where('id', $request->id)->get();
         }
@@ -291,6 +318,11 @@ dd(Kanban::select('id')->first());
      */
     public function editCard(Request $request): string
     {
+        $request->validate([
+            'id' =>'required|int',
+            'title' => 'required|string',
+            'checklisttitle' => 'required|string',
+        ]);
         $card = Card::where('id','=',$request->id)->first();
         if ($this->allowedBoardAccess($card->board_id)){
                 if (isset($request->id) && isset($request->title)){
@@ -309,6 +341,10 @@ dd(Kanban::select('id')->first());
      */
     public function editBoard(Request $request): string
     {
+        $request->validate([
+            'id' =>'required|int',
+            'title' => 'required|string',
+        ]);
         if ($this->allowedBoardAccess($request->id)){
             if (isset($request->id) && isset($request->title)){
                 if(Board::where('id', $request->id)->update(['title' => $request->title]))
@@ -327,6 +363,9 @@ dd(Kanban::select('id')->first());
 
     public function addChecklist(Request $request): string
     {
+        $request->validate([
+            'card_id' =>'required|int',
+        ]);
         $card = Card::where('id','=',$request->card_id)->first();
         if($this->allowedBoardAccess($card->board_id)){
             $checklist = Checklist::create([
@@ -345,10 +384,14 @@ dd(Kanban::select('id')->first());
 
     /**
      * @param Request $request
-     * @return mixed
+     * @return array
      */
     public function addChecklistItem(Request $request)
     {
+        $request->validate([
+            'card_id' =>'required|int',
+            'item' => 'required|string',
+        ]);
         $card = Card::where('id',$request->card_id)->first();
         if($this->allowedBoardAccess($card->board_id)) {
             $checklistitem = ChecklistItem::create([
@@ -360,10 +403,10 @@ dd(Kanban::select('id')->first());
             if ($checklistitem) {
                 return $checklistitem;
             } else {
-                return 'Nok';
+                return [];
             }
         }
-        return 'Nok';
+        return [];
     }
 
     /**
@@ -372,6 +415,9 @@ dd(Kanban::select('id')->first());
      */
     public function saveChecklist(Request $request): string
     {
+        $request->validate([
+            'id' =>'required|int',
+        ]);
         $item = ChecklistItem::where('id',$request->id)->first();
         $card = Card::where('id',$item->card_id)->first();
         if($this->allowedBoardAccess($card->board_id)) {
@@ -466,6 +512,9 @@ dd(Kanban::select('id')->first());
      */
     public function archiveCard(Request $request): string
     {
+        $request->validate([
+            'card_id' =>'required|int',
+        ]);
         $card = Card::where('id','=',$request->card_id)->first();
         if ($this->allowedBoardAccess($card->board_id) == 'True'){
             if(Card::where('id', $card->id)->update(['isActive' => !$card->isActive]))
@@ -482,6 +531,9 @@ dd(Kanban::select('id')->first());
      */
     public function archiveBoard(Request $request)
     {
+        $request->validate([
+            'board_id' =>'required|int',
+        ]);
         $board = Board::where('id', $request->board_id)->first();
         if ($this->allowedBoardAccess($board->id) == 'True'){
             if(Board::where('id', $board->id)->update(['isActive' => !$board->isActive]))
@@ -498,6 +550,9 @@ dd(Kanban::select('id')->first());
      */
     public function kanbanInfos(Request $request)
     {
+        $request->validate([
+            'id' =>'required|int',
+        ]);
         $kanban = Kanban::where('id', $request->id)->first();
         $workgroupuser = WorkGroupUser::where('workgroup_id',$kanban->workgroup_id)->get();
         $users = [];
@@ -533,6 +588,11 @@ dd(Kanban::select('id')->first());
      */
     public function editKanban(Request $request)
     {
+        $request->validate([
+            'title' => 'required|string',
+            'visibility' => 'required|string',
+            'id' =>'required|int',
+        ]);
         if(isset($request->title) && isset($request->visibility) && ($request->visibility == "visible" || $request->visibility == "private" || $request->visibility == "public")){
             Kanban::where('id',$request->id)->update(['title'=>$request->title,'visibility'=>$request->visibility]);
 
@@ -545,8 +605,16 @@ dd(Kanban::select('id')->first());
         return 'Nok';
     }
 
+    /**
+     * @param Request $request
+     * @return int
+     */
     public function joinKanban(Request $request)
     {
+        $request->validate([
+            'kanban_id' => 'required|int',
+            'user_id' => 'required|int',
+        ]);
         $kanbanuser = KanbanUser::where('kanban_id',$request->kanban_id)->where('user_id',$request->user_id)->first();
         if ($kanbanuser != null) {
             $kanbanuser->delete();
@@ -556,10 +624,16 @@ dd(Kanban::select('id')->first());
             return 1;
         }
     }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
     public function uploadFile(Request $request)
     {
         $request->validate([
-            'image.*' => 'mimes:doc,pdf,docx,zip,jpeg,png,jpg,gif,svg',
+            'file' => 'required|mimes:doc,pdf,docx,zip,jpeg,png,jpg,gif,svg',
+            'card_id' => 'required|int',
         ]);
         if($file = $request->hasFile('file')) {
 
@@ -582,8 +656,15 @@ dd(Kanban::select('id')->first());
         return back();
     }
 
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function deleteFile(Request $request)
     {
+        $request->validate([
+            'id' => 'required|int',
+        ]);
         $attachement = Attachement::where('id',$request->id)->first();
         $card = Card::where('id','=',$attachement->card_id)->first();
         if ($this->allowedBoardAccess($card->board_id) == 'True') {
@@ -596,6 +677,10 @@ dd(Kanban::select('id')->first());
         return "Nok";
     }
 
+    /**
+     * @param $id
+     * @return Application|RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function showFile($id){
         $attachement = Attachement::where('id',$id)->first();
         $card = Card::where('id','=',$attachement->card_id)->first();
@@ -604,8 +689,16 @@ dd(Kanban::select('id')->first());
         }
         return back();
     }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function deleteItem(Request $request)
     {
+        $request->validate([
+            'id' => 'required|int',
+        ]);
         $checklistitem = ChecklistItem::where('id',$request->id)->first();
         $card = Card::where('id','=',$checklistitem->card_id)->first();
         if ($this->allowedBoardAccess($card->board_id) == 'True') {
@@ -615,6 +708,9 @@ dd(Kanban::select('id')->first());
         return "Nok";
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
     public function getAlert()
     {
         setlocale(LC_TIME, ['fr', 'fra', 'fr_FR']);
@@ -641,8 +737,16 @@ dd(Kanban::select('id')->first());
         }
         return(Alert::with('card')->where('is_read',false)->where('user_id', Auth::user()->id)->get());
     }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function readAlert(Request $request)
     {
+        $request->validate([
+            'id' => 'required|int',
+        ]);
         $alert = Alert::where('id',$request->id)->where('user_id', Auth::user()->id)->first();
         if($alert){
             $alert->is_read = true;
@@ -658,6 +762,10 @@ dd(Kanban::select('id')->first());
      */
     public function addComment(Request $request)
     {
+        $request->validate([
+            'card_id' => 'required|int',
+            'comment' => 'required|string'
+        ]);
         $card = Card::where('id','=',$request->card_id)->first();
         if ($this->allowedBoardAccess($card->board_id) == 'True') {
             $comment = Comment::create([
@@ -669,8 +777,16 @@ dd(Kanban::select('id')->first());
         }
         return 'Nok';
     }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function deleteComment(Request $request)
     {
+        $request->validate([
+            'id' => 'required|int',
+        ]);
         $comment = Comment::where('id',$request->id)->first();
         $card = Card::where('id','=',$comment->card_id)->first();
         if ($this->allowedBoardAccess($card->board_id) == 'True') {
@@ -682,6 +798,10 @@ dd(Kanban::select('id')->first());
         return 'Nok';
     }
 
+    /**
+     * @param int $id
+     * @return Application|Factory|RedirectResponse|View
+     */
     public function archived($id)
     {
         if($this->allowedKanbanAccess($id) == 'True') {
@@ -691,8 +811,16 @@ dd(Kanban::select('id')->first());
         }
         return back();
     }
+
+    /**
+     * @param Request $request
+     * @return array[]
+     */
     public function getArchived(Request $request)
     {
+        $request->validate([
+            'kanban_id' => 'required|int',
+        ]);
         $cards = [];
         $archivedBoards = [];
         $boards = Board::where('kanban_id',$request->kanban_id)->get();
@@ -711,8 +839,16 @@ dd(Kanban::select('id')->first());
             'boards' => $archivedBoards
             ];
     }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function unarchiveCard(Request $request)
     {
+        $request->validate([
+            'id' => 'required|int',
+        ]);
         $card = Card::where('id','=',$request->id)->first();
         if ($this->allowedBoardAccess($card->board_id) == 'True') {
             $card->isActive = true;
@@ -739,13 +875,24 @@ dd(Kanban::select('id')->first());
         return "Nok";
     }
 
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function unarchiveBoard(Request $request)
     {
+        $request->validate([
+            'id' => 'required|int',
+        ]);
         if ($this->allowedBoardAccess($request->id) == 'True') {
             Board::where('id',$request->id)->update(['isActive'=> true]);
             $board = Board::where('id',$request->id)->first();
             $kanban = Kanban::where('id',$board->kanban_id)->first();
-            $order = json_decode($kanban->order, true);
+            if($kanban->order != "null"){
+                $order = json_decode($kanban->order, true);
+            }else{
+                $order = [];
+            }
             $cards = Card::where('board_id',$board->id)->where('isActive',true)->get();
             $items=[];
             foreach($cards as $card){
@@ -759,8 +906,24 @@ dd(Kanban::select('id')->first());
         return "Nok";
     }
 
+    /**
+     *
+     */
+    public function debug(){
+
+    }
+
+    /**
+     * @param Request $request
+     * @return int
+     */
     public function useLabel(Request $request)
     {
+        $request->validate([
+            'id' => 'required|int',
+            'card_id' => 'required|int',
+
+        ]);
         $cardlabel = CardLabel::where(['label_id' => $request->id, 'card_id' => $request->card_id])->first();
         if ($cardlabel !== null) {
             $cardlabel->delete();
@@ -771,8 +934,17 @@ dd(Kanban::select('id')->first());
         }
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
     public function addLabel(Request $request)
     {
+        $request->validate([
+            'label' => 'required|string',
+            'color' => 'required|string',
+            'kanban' => 'required|int',
+        ]);
         Label::create([
             'label' => $request->label,
             'color' => $request->color,
@@ -792,8 +964,17 @@ dd(Kanban::select('id')->first());
             'created_by' => Auth::user()->id,
         ])->first();
     }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function deleteLabel(Request $request)
     {
+        $request->validate([
+            'id' => 'required|int',
+            'kanban' => 'required|int',
+        ]);
         CardLabel::where('label_id',$request->id)->delete();
         KanbanLabel::where('label_id',$request->id)->where('kanban_id',$request->kanban)->delete();
         Label::where('id', $request->id)->delete();
