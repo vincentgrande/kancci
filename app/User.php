@@ -57,14 +57,26 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(WorkGroup::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function workgroup_user()
     {
         return $this->hasMany('App\WorkGroupUser');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function card_user()
     {
         return $this->hasMany('App\CardUser');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function kanbanUser()
     {
         return $this->hasMany('App\KanbanUser');

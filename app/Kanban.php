@@ -50,10 +50,17 @@ class Kanban extends Model
         return $this->belongsToMany(Label::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function kanban_label()
     {
         return $this->hasMany('App\KanbanLabel');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function kanbanUser()
     {
         return $this->hasMany('App\User');

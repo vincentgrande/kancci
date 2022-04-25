@@ -83,9 +83,9 @@ class KanbanController extends Controller
 
     /**
      * @param Request $request
-     * @return false|string
+     * @return string
      */
-    public function getBoards(Request $request)
+    public function getBoards(Request $request): string
     {
         $request->validate([
             'id' =>'required|string',
@@ -127,7 +127,7 @@ class KanbanController extends Controller
                 return json_encode(null);
             }
         }
-        return '';
+        return json_encode(null);
     }
 
     /**
@@ -304,7 +304,7 @@ class KanbanController extends Controller
 
     /**
      * @param Request $request
-     * @return mixed
+     * @return array
      */
     public function getBoard(Request $request)
     {
@@ -314,6 +314,7 @@ class KanbanController extends Controller
         if ($this->allowedBoardAccess($request->id)) {
             return Board::select('title')->where('id', $request->id)->get();
         }
+        return [];
     }
 
     /**
@@ -724,10 +725,7 @@ class KanbanController extends Controller
      */
     public function getAlert()
     {
-        setlocale(LC_TIME, ['fr', 'fra', 'fr_FR']);
         $carduser = CardUser::where('user_id', 1)->with('card')->get();
-        $alerts = [];
-
         foreach($carduser as $cu){
             $card = Card::where('id', $cu->card_id)->whereDate('endDate','<=', date("Y-m-d"))->first();
             $card2 = Card::where('id', $cu->card_id)->whereDate('endDate','>', date("Y-m-d"))->get();
@@ -736,7 +734,6 @@ class KanbanController extends Controller
             }
             if($card != []) {
                 $alerte = Alert::with('card')->where('user_id', Auth::user()->id)->where('card_id', $card->id)->first();
-
                 if ($alerte == []) {
                     $alerte = Alert::create([
                         'card_id' => $cu->card->id,
@@ -917,9 +914,6 @@ class KanbanController extends Controller
         return "Nok";
     }
 
-    /**
-     *
-     */
     public function debug(){
 
     }
@@ -947,7 +941,7 @@ class KanbanController extends Controller
 
     /**
      * @param Request $request
-     * @return mixed
+     * @return array
      */
     public function addLabel(Request $request)
     {
@@ -973,7 +967,7 @@ class KanbanController extends Controller
             'label' => $request->label,
             'color' => $request->color,
             'created_by' => Auth::user()->id,
-        ])->first();
+        ])->first() ?? [];
     }
 
     /**
