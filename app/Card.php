@@ -18,7 +18,7 @@ class Card extends Model
      */
     public function board()
     {
-        return $this->belongsTo(Board::class,'id','board_id');
+        return $this->belongsTo(Board::class,'board_id','id');
     }
 
     /**

@@ -261,7 +261,11 @@ class KanbanController extends Controller
             $board = Board::where('id',$card->board_id)->first();
             $kanban = Kanban::where('id',$board->kanban_id)->first();
             $workgroup = WorkGroup::where('id',$kanban->workgroup_id)->first();
-            $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get('user_id');
+            if($kanban->visibility == "private"){
+                $workgroupuser = KanbanUser::where('kanban_id',$kanban->id)->get('user_id');
+            }else{
+                $workgroupuser = WorkGroupUser::where('workgroup_id',$workgroup->id)->get('user_id');
+            }
             $users = [];
             foreach($workgroupuser as $wku)
             {
@@ -617,6 +621,13 @@ class KanbanController extends Controller
         ]);
         $kanbanuser = KanbanUser::where('kanban_id',$request->kanban_id)->where('user_id',$request->user_id)->first();
         if ($kanbanuser != null) {
+            $cardusers = CardUser::where('user_id',$request->user_id)->get();
+            foreach ($cardusers as $carduser){
+                $card = Card::where('id',$carduser->card_id)->with('board')->first();
+                if($card->board->kanban_id == $request->kanban_id){
+                    $carduser->delete();
+                }
+            }
             $kanbanuser->delete();
             return 0;
         }else{
