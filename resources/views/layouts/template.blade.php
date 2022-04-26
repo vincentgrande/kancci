@@ -79,14 +79,14 @@
                     class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                     <div class="input-group">
                         <input id="searchTextField" name="searchTextField" type="text" class="form-control bg-light border-0 small text-dark" placeholder="Search for..."
-                               aria-label="Search" aria-describedby="basic-addon2" onkeyup="SearchFieldEvent()">
+                               aria-label="Search" aria-describedby="basic-addon2" onfocusout="hide()" onfocusin="show()" onkeyup="SearchFieldEvent()" autocomplete="off">
                         <div class="input-group-append">
                             <button class="btn btn-dark" type="button">
                                 <i class="fas fa-search fa-sm"></i>
                             </button>
                         </div>
                     </div>
-                    <ul id="searchResult"></ul>
+                    <ul class="bg-light text-dark" style="padding-left: 0;" id="searchResult" onfocusout="hide()"></ul>
                 </form>
 
                 <!-- Topbar Navbar -->
@@ -280,19 +280,41 @@
 <script>
     function SearchFieldEvent() {
         let search = $("#searchTextField").val();
-        $("#searchResult").empty();
+        let ul = $("#searchResult");
         if (search !== "") {
             $.ajax({
                 url: '{{ route('Search') }}',
                 method: 'get',
                 data: {'search': search},
                 success: function(result) {
-                    result.forEach(x => {
-                        $("#searchResult").append('<li value="' + x.id + '">' + x.title + '</li>');
+                    ul.empty();
+                    ul.show(100);
+                    ul.append('<a style="padding-left: 10rem">Workgroups</a>');
+                    ul.append('<br/>');
+                    result['workgroups'].forEach(x => {
+                        ul.append('<a href="/workgroup/'+ x.id +'"><input type="button" class="form-control bg-light w-100 mb-1" value="'+ x.title +'"/></a>');
                     });
+                    ul.append('<hr>');
+                    ul.append('<a style="padding-left: 11rem">Kanbans</a>');
+                    ul.append('<br/>');
+                    result['kanbans'].forEach(x => {
+                        ul.append('<li value="' + x.id + '"><a href="/kanban/'+ x.id +'"><input type="button" class="form-control bg-light w-100 mb-1" value="'+ x.title +'"/></a></li>');
+                    });
+
                 }
             });
         }
+    }
+
+    function setUpLink(nid)
+    {
+        window.location.href= "/workgroup/" + nid;
+    }
+    function hide() {
+        setTimeout(() => {$("#searchResult").hide(100); }, 500);
+    }
+    function show() {
+        $("#searchResult").show(100);
     }
     </script>
 @yield('scripts')

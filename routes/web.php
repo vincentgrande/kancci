@@ -28,6 +28,7 @@ Route::get('/', 'KanbanController@index')->name("index");
  */
 Route::middleware('auth')->group(function () {
     Route::get('/search', 'KanbanController@Search')->name("Search");
+    Route::get('/searchView', 'KanbanController@SearchView')->name("SearchView");
     Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup")->where('id', '[0-9]+');
     Route::get('/kanban/{id}', 'KanbanController@kanban')->name("kanban")->where('id', '[0-9]+');
     Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");
