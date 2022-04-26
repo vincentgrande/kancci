@@ -289,6 +289,7 @@
                 success: function(result) {
                     ul.empty();
                     ul.show(100);
+                    ul.append('<br/>');
                     ul.append('<a style="padding-left: 10rem">Workgroups</a>');
                     ul.append('<br/>');
                     result['workgroups'].forEach(x => {
@@ -298,7 +299,7 @@
                     ul.append('<a style="padding-left: 11rem">Kanbans</a>');
                     ul.append('<br/>');
                     result['kanbans'].forEach(x => {
-                        ul.append('<li value="' + x.id + '"><a href="/kanban/'+ x.id +'"><input type="button" class="form-control bg-light w-100 mb-1" value="'+ x.title +'"/></a></li>');
+                        ul.append('<a href="/kanban/'+ x.id +'"><input type="button" class="form-control bg-light w-100 mb-1" value="'+ x.title +'"/></a>');
                     });
 
                 }
@@ -311,7 +312,7 @@
         window.location.href= "/workgroup/" + nid;
     }
     function hide() {
-        setTimeout(() => {$("#searchResult").hide(100); }, 500);
+        setTimeout(() => {$("#searchResult").hide(100); }, 200);
     }
     function show() {
         $("#searchResult").show(100);
