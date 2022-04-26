@@ -65,12 +65,13 @@
 
                 <!-- Topbar Search -->
                 <form
-                    class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="{{route('SearchResult')}}" method="post">
+                    @csrf
                     <div class="input-group">
                         <input id="searchTextField" name="searchTextField" type="text" class="form-control bg-light border-0 small text-dark" placeholder="Search for..."
                                aria-label="Search" aria-describedby="basic-addon2" onfocusout="hide()" onfocusin="show()" onkeyup="SearchFieldEvent()" autocomplete="off">
                         <div class="input-group-append">
-                            <button class="btn btn-dark" type="button">
+                            <button class="btn btn-dark" type="submit">
                                 <i class="fas fa-search fa-sm"></i>
                             </button>
                         </div>
@@ -276,20 +277,23 @@
                 data: {'search': search},
                 success: function(result) {
                     ul.empty();
-                    ul.show(100);
-                    ul.append('<br/>');
-                    ul.append('<a style="padding-left: 10rem">Workgroups</a>');
-                    ul.append('<br/>');
-                    result['workgroups'].forEach(x => {
-                        ul.append('<a href="/workgroup/'+ x.id +'"><input type="button" class="form-control bg-light w-100 mb-1" value="'+ x.title +'"/></a>');
-                    });
-                    ul.append('<hr>');
-                    ul.append('<a style="padding-left: 11rem">Kanbans</a>');
-                    ul.append('<br/>');
-                    result['kanbans'].forEach(x => {
-                        ul.append('<a href="/kanban/'+ x.id +'"><input type="button" class="form-control bg-light w-100 mb-1" value="'+ x.title +'"/></a>');
-                    });
-
+                    if(result['workgroups'] !== undefined) {
+                        ul.show(100);
+                        ul.append('<br/>');
+                        ul.append('<a style="padding-left: 10rem">Workgroups</a>');
+                        ul.append('<br/>');
+                        result['workgroups'].forEach(x => {
+                            ul.append('<a href="/workgroup/' + x.id + '"><input type="button" class="form-control bg-light w-100 mb-1" value="' + x.title + '"/></a>');
+                        });
+                        if(result['kanbans'] !== undefined) {
+                            ul.append('<hr>');
+                            ul.append('<a style="padding-left: 11rem">Kanbans</a>');
+                            ul.append('<br/>');
+                            result['kanbans'].forEach(x => {
+                                ul.append('<a href="/kanban/' + x.id + '"><input type="button" class="form-control bg-light w-100 mb-1" value="' + x.title + '"/></a>');
+                            });
+                        }
+                    }
                 }
             });
         }
