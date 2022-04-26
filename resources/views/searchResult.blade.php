@@ -3,13 +3,7 @@
 @section('title', 'Home')
 
 @section('actions')
-    <li class="nav-item active">
-        <a class="nav-link" id="addWorkgroup" href="#">
-            <i class="fas fa-plus-square"></i>
-            <span>Create workgroup</span></a>
-    </li>
-    <!-- Divider -->
-    <hr class="sidebar-divider">
+
 @endsection
 @section('content')
     <div>
