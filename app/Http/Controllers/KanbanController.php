@@ -124,6 +124,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Search result matches for Workgroups and Kanbans in the searchResultView
      * @param Request $result
      * @return Application|Factory|View
      */

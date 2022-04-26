@@ -12,15 +12,14 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
-use Mail;
 
 class UserSettingController extends Controller
 {
     /**
-     * Write code on Method
-     *
+     * Function to get auth.forgot-password View
      * @return Application|Factory|View
      */
     public function showForgetPasswordForm()
@@ -29,11 +28,11 @@ class UserSettingController extends Controller
     }
 
     /**
-     * Write code on Method
-     *
+     * Function to send Mail to the User when he forgot his password
+     * @param Request $request
      * @return RedirectResponse()
      */
-    public function submitForgetPasswordForm(Request $request)
+    public function submitForgetPasswordForm(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => 'required|email|exists:users',
@@ -55,8 +54,8 @@ class UserSettingController extends Controller
         return back()->with('message', 'We have e-mailed your password reset link!');
     }
     /**
-     * Write code on Method
-     *
+     * Function to see the auth.forgetPasswordLink View
+     * @param $token
      * @return Application|Factory|View
      */
     public function showResetPasswordForm($token) {
@@ -64,11 +63,11 @@ class UserSettingController extends Controller
     }
 
     /**
-     * Write code on Method
-     *
+     * Function to change User's password with email
+     * @param Request $request
      * @return RedirectResponse()
      */
-    public function submitResetPasswordForm(Request $request)
+    public function submitResetPasswordForm(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => 'required|email|exists:users',
@@ -96,10 +95,11 @@ class UserSettingController extends Controller
     }
 
     /**
+     * Function to change the password of the User with old password confirmation
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
      */
-    public function changePassword(Request $request)
+    public function changePassword(Request $request) : Redirector
     {
         try {
             $request->validate([
@@ -129,10 +129,11 @@ class UserSettingController extends Controller
     }
 
     /**
+     * Function to Upload an change the User Profile Picture
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
      */
-    public function changePicture(Request $request)
+    public function changePicture(Request $request) : Redirector
     {
         try {
             // Validation de la photo
@@ -166,10 +167,11 @@ class UserSettingController extends Controller
     }
 
     /**
+     * Function to change the Email adresse from the User
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
      */
-    public function changeEmail(Request $request)
+    public function changeEmail(Request $request) : Redirector
     {
         try {
             $request->validate([

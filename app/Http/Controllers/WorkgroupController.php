@@ -18,6 +18,7 @@ use Illuminate\View\View;
 class WorkgroupController extends Controller
 {
     /**
+     * Initialize index View
      * @param $id
      * @return Application|Factory|RedirectResponse|View
      */
@@ -36,6 +37,7 @@ class WorkgroupController extends Controller
     }
 
     /**
+     * Create a new Kanban
      * @param Request $request
      * @return RedirectResponse
      */
@@ -64,6 +66,7 @@ class WorkgroupController extends Controller
     }
 
     /**
+     * Get all the Kanban from a Workgroup
      * @param Request $request
      * @return Kanban | null
      */
@@ -76,6 +79,7 @@ class WorkgroupController extends Controller
     }
 
     /**
+     * Get WorkGroupUser by User id
      * @return WorkGroupUser | null
      */
     public function getWorkgroup()
@@ -86,6 +90,7 @@ class WorkgroupController extends Controller
     }
 
     /**
+     * Get Workgroup and WorkgroupUser by User id
      * @param $id
      * @return Application|Factory|View
      */
@@ -101,6 +106,7 @@ class WorkgroupController extends Controller
     }
 
     /**
+     * Update Workgroup data like title or logo
      * @param Request $request
      * @return string
      * @throws Exception
@@ -118,6 +124,7 @@ class WorkgroupController extends Controller
     }
 
     /**
+     * Add a new Workgroup
      * @param Request $request
      * @return RedirectResponse
      */
