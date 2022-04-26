@@ -45,6 +45,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to show workgroup page if current user logged or welcome page if not logged
      * @return Application|Factory|View
      */
     public function index()
@@ -62,6 +63,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to display kanban page
      * @param $id
      * @return Application|Factory|RedirectResponse|View
      */
@@ -82,6 +84,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to get boards & cards from a specific kanban
      * @param Request $request
      * @return string
      */
@@ -131,6 +134,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to create a card
      * @param Request $request
      * @return string
      */
@@ -155,6 +159,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to save board and card order from a kanban
      * @param Request $request
      * @return string
      */
@@ -188,6 +193,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to get board max id
      * @param Request $request
      * @return int
      */
@@ -197,6 +203,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to create a new board
      * @param Request $request
      * @return string
      */
@@ -220,6 +227,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to make user working on a card
      * @param Request $request
      * @return int|string
      */
@@ -244,6 +252,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to get infos from a specific card
      * @param Request $request
      * @return array
      */
@@ -302,6 +311,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to get infos from a specific board
      * @param Request $request
      * @return array
      */
@@ -317,6 +327,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to edit a card
      * @param Request $request
      * @return string
      */
@@ -340,6 +351,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to edit boards settings
      * @param Request $request
      * @return string
      */
@@ -361,6 +373,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to add checklist
      * @param Request $request
      * @return string
      */
@@ -387,6 +400,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to add checklist item
      * @param Request $request
      * @return array
      */
@@ -414,6 +428,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to save checklist
      * @param Request $request
      * @return string
      */
@@ -432,6 +447,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to check if current user is allowed to access to a board
      * @param $boardId
      * @return string
      */
@@ -472,6 +488,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to allow check if current user is allowed to access on a kanban
      * @param $kanbanId
      * @return string
      */
@@ -511,6 +528,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to archive a card
      * @param Request $request
      * @return string
      */
@@ -530,6 +548,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to archive a board
      * @param Request $request
      * @return string
      */
@@ -549,6 +568,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to get kanban infos
      * @param Request $request
      * @return array
      */
@@ -587,6 +607,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to edit kanban settings
      * @param Request $request
      * @return string
      */
@@ -610,6 +631,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to make a user working on a private kanban
      * @param Request $request
      * @return int
      */
@@ -637,6 +659,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to upload an attachment on a card
      * @param Request $request
      * @return RedirectResponse
      */
@@ -668,6 +691,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to delete an attachment
      * @param Request $request
      * @return string
      */
@@ -689,6 +713,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to show an attachment
      * @param $id
      * @return Application|RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -702,6 +727,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to delete a chcklist item
      * @param Request $request
      * @return string
      */
@@ -720,6 +746,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to get unread alerts
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function getAlert()
@@ -746,6 +773,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to set an alert read
      * @param Request $request
      * @return string
      */
@@ -764,6 +792,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to add a comment on a card
      * @param Request $request
      * @return string
      */
@@ -786,6 +815,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to delete a comment
      * @param Request $request
      * @return string
      */
@@ -806,6 +836,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to display the page to see the archived items
      * @param int $id
      * @return Application|Factory|RedirectResponse|View
      */
@@ -820,6 +851,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to get archived items from a specific kanban
      * @param Request $request
      * @return array[]
      */
@@ -830,24 +862,28 @@ class KanbanController extends Controller
         ]);
         $cards = [];
         $archivedBoards = [];
-        $boards = Board::where('kanban_id',$request->kanban_id)->get();
-        foreach($boards as $board){
-            if($board->isActive == true){
-                array_push($cards,Card::where('board_id',$board->id)->where('isActive',false)->get());
+        if($this->allowedKanbanAccess($request->kanban_id) == 'True') {
+            $boards = Board::where('kanban_id', $request->kanban_id)->get();
+            foreach ($boards as $board) {
+                if ($board->isActive == true) {
+                    array_push($cards, Card::where('board_id', $board->id)->where('isActive', false)->get());
+                }
             }
-        }
-        foreach($boards as $board){
-            if($board->isActive == false){
-                array_push($archivedBoards,$board);
+            foreach ($boards as $board) {
+                if ($board->isActive == false) {
+                    array_push($archivedBoards, $board);
+                }
             }
-        }
-        return [
-            'cards'=> $cards,
-            'boards' => $archivedBoards
+            return [
+                'cards' => $cards,
+                'boards' => $archivedBoards
             ];
+        }
+        return [];
     }
 
     /**
+     * Function to unarchive a card
      * @param Request $request
      * @return string
      */
@@ -883,6 +919,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to unarchive a board
      * @param Request $request
      * @return string
      */
@@ -918,6 +955,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to assign a label on a card
      * @param Request $request
      * @return int
      */
@@ -939,6 +977,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to add a label
      * @param Request $request
      * @return array
      */
@@ -970,6 +1009,7 @@ class KanbanController extends Controller
     }
 
     /**
+     * Function to delete a label
      * @param Request $request
      * @return string
      */

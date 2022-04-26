@@ -44,6 +44,9 @@
 
     <script>
         @if(!isset($visibility))
+        /**
+         * Create and open manage kanban modal
+         */
         var manageKanban = document.getElementById("manageKanban");
         manageKanban.addEventListener("click", function() {
             $.ajax({
@@ -112,6 +115,9 @@
                     $('#edit').modal('show');
                 }});
         });
+        /**
+         * Function to delete a kanban label
+         */
         let deleteLabel = function(){
             let id = $("#deletelabel").val()
             $.ajax({
@@ -130,6 +136,9 @@
                 }
             })
         }
+        /**
+         * Function to create a kanban label
+         */
         let addLabel = function(){
             let label = $("#label_title").val()
             let color = $("#label_color").val()
@@ -156,6 +165,9 @@
                 }
             })
         }
+        /**
+         * Function to save kanban settings
+         */
         let saveKanbanChanges = function() {
             let id = $("#id").val()
             let title = $("#title").val()
@@ -190,6 +202,9 @@
                     );
                 }});
         }
+        /**
+         * Function to display workgroup users
+         */
         let addWorkgroupUsers = function(result){
             if(Object.keys(result.workgroupuser).length !== 0) {
                 result.workgroupuser.map(x => {
@@ -218,6 +233,9 @@
 
             }
         }
+        /**
+         * Function to add a user on a private kanban
+         */
         let addKanbanUser = function(kanban_id, user_id){
             $.ajax({
                 url:  '{{route('joinKanban')}}',
@@ -369,7 +387,9 @@
                 }});
         };
 
-
+        /**
+         * Function to make user working on a card
+         */
         let joinCard = function(user_id, card_id){
             $.ajax({
                 url:  '{{route('joinCard')}}',
@@ -387,6 +407,9 @@
                     }
                 }});
         }
+        /**
+         * Function to save checklist
+         */
         let saveChecklist = function(id){
             $.ajax({
                 url:  '{{route('saveChecklist')}}',
@@ -398,6 +421,9 @@
                 success: function(result){
                 }});
         }
+        /**
+         * Function to add checklist items on a specific card checklist
+         */
         let addChecklistItem = function(cardId){
             let item = $('#item_title').val()
             $('#item_title').val("")
@@ -418,6 +444,9 @@
                         `)
                 }});
         }
+        /**
+         * Function to add checklist to cart
+         */
         let addChecklist = function(id){
             $.ajax({
                 url: "{{ route('addChecklist') }}",
@@ -429,7 +458,9 @@
                 success: function(result){
                 }});
         }
-
+        /**
+         * Function to save changes from card
+         */
         let saveCardChanges = function() {
             let title = $("#title").val()
             let description = $("#description").val()
@@ -504,6 +535,9 @@
             }
             uidVerif()
         }
+        /**
+         * Function to delete item from a specific card checklist
+         */
         let deleteItem = function(id){
             $.ajax({
                 url: "{{ route('deleteItem') }}",
@@ -517,6 +551,10 @@
                 }
             })
         }
+
+        /**
+         * Function to delete an attachement from a specific card
+         */
         let deleteFile = function(id){
             $.ajax({
                 url: "{{ route('deleteFile') }}",
@@ -530,6 +568,9 @@
                 }
             })
         }
+        /**
+         * Function to add a comment on a card
+         */
         let addComment = function(cardId){
             let comment = $('#comment').val()
             $('#comment').val("")
@@ -550,6 +591,9 @@
 `)
                 }});
         }
+        /**
+         * Function to delete a comment from a specific card
+         */
         let deleteComment = function(id){
             $.ajax({
                 url: "{{ route('deleteComment') }}",
@@ -563,6 +607,9 @@
                 }
             })
         }
+        /**
+         * Function to assign a label on a card
+         */
         let useLabel = function(id,card_id){
             $.ajax({
                 url: "{{ route('useLabel') }}",
@@ -701,7 +748,9 @@
                     $('#edit'+eid+'').modal('show');
                 }});
         }
-
+        /**
+         * Function to display edit functions in card edit modal
+         */
         let addEditFunctions = function(result){
             if(Object.keys(result.checklistitems).length !== 0) {
                 result.checklistitems.map(x => {
@@ -797,15 +846,7 @@
                 saveKanbanChanges()
                 $('.manage-modal').remove(); // Remove edit board modal on close event
             });
-            $("#upload").submit(function(e) {
-                e.preventDefault(); // <==stop page refresh==>
-                let formData = new FormData();
-                formData.append("file", fileupload.files[0]);
-                fetch('{{route('uploadFile')}}', {
-                    method: "POST",
-                    body: formData
-                });
-            });
+
         });
         /**
          * Fetch boards from DB and add them

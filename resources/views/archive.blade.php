@@ -18,6 +18,9 @@
 @endsection
 @section('scripts')
     <script>
+        /**
+         * Function to unarchive a board
+         */
         let unarchiveBoard = function(id){
             $.ajax({
                 url: "{{ route('unarchiveBoard') }}",
@@ -32,6 +35,9 @@
                 }
             })
         }
+        /**
+         * Function to unarchive a card
+         */
         let unarchiveCard = function(id){
             $.ajax({
                 url: "{{ route('unarchiveCard') }}",
@@ -46,6 +52,9 @@
                 }
             })
         }
+        /**
+         * Function to get archived items from a specific kanban
+         */
       let getArchived = function(){
           $.ajax({ // Ajax to save kanban in DB.
               url: "{{ route('getArchived') }}",
