@@ -46,17 +46,6 @@
         <hr class="sidebar-divider">
 
         @yield('actions')
-
-
-        <div class="fixed-bottom">
-             <!-- Divider -->
-            <hr class="sidebar-divider">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Documentation</span></a>
-            </li>
-        </div>
     </ul>
     <!-- End of Sidebar -->
 
@@ -64,7 +53,7 @@
     <div id="content-wrapper" class="d-flex flex-column">
 
         <!-- Main Content -->
-        <div id="content" class="bg-gray">
+        <div id="content" class="bg-gray" style="background-repeat: no-repeat;background-size: cover;">
 
             <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-primary topbar mb-4 static-top shadow">
@@ -79,14 +68,14 @@
                     class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                     <div class="input-group">
                         <input id="searchTextField" name="searchTextField" type="text" class="form-control bg-light border-0 small text-dark" placeholder="Search for..."
-                               aria-label="Search" aria-describedby="basic-addon2" onkeyup="SearchFieldEvent()">
+                               aria-label="Search" aria-describedby="basic-addon2" onfocusout="hide()" onfocusin="show()" onkeyup="SearchFieldEvent()" autocomplete="off">
                         <div class="input-group-append">
                             <button class="btn btn-dark" type="button">
                                 <i class="fas fa-search fa-sm"></i>
                             </button>
                         </div>
                     </div>
-                    <ul id="searchResult"></ul>
+                    <ul class="bg-light text-dark" style="padding-left: 0;" id="searchResult" onfocusout="hide()"></ul>
                 </form>
 
                 <!-- Topbar Navbar -->
@@ -166,9 +155,8 @@
 
             </nav>
             <!-- End of Topbar -->
-
             <!-- Begin Page Content -->
-            <div class="container-fluid">
+            <div id="container-body" class="container-fluid">
                 <!-- Content Row -->
                 <div class="row text-dark">
                     @yield('content')
@@ -280,19 +268,109 @@
 <script>
     function SearchFieldEvent() {
         let search = $("#searchTextField").val();
-        $("#searchResult").empty();
+        let ul = $("#searchResult");
         if (search !== "") {
             $.ajax({
                 url: '{{ route('Search') }}',
                 method: 'get',
                 data: {'search': search},
                 success: function(result) {
-                    result.forEach(x => {
-                        $("#searchResult").append('<li value="' + x.id + '">' + x.title + '</li>');
+                    ul.empty();
+                    ul.show(100);
+                    ul.append('<br/>');
+                    ul.append('<a style="padding-left: 10rem">Workgroups</a>');
+                    ul.append('<br/>');
+                    result['workgroups'].forEach(x => {
+                        ul.append('<a href="/workgroup/'+ x.id +'"><input type="button" class="form-control bg-light w-100 mb-1" value="'+ x.title +'"/></a>');
                     });
+                    ul.append('<hr>');
+                    ul.append('<a style="padding-left: 11rem">Kanbans</a>');
+                    ul.append('<br/>');
+                    result['kanbans'].forEach(x => {
+                        ul.append('<a href="/kanban/'+ x.id +'"><input type="button" class="form-control bg-light w-100 mb-1" value="'+ x.title +'"/></a>');
+                    });
+
                 }
             });
         }
+    }
+
+    function setUpLink(nid)
+    {
+        window.location.href= "/workgroup/" + nid;
+    }
+    function actuValRadio(number)
+    {
+        let rad1 = document.getElementById('background1');
+        let rad2 = document.getElementById('background2');
+        let rad3 = document.getElementById('background3');
+        let rad4 = document.getElementById('background4');
+        let rad5 = document.getElementById('background5');
+        let rad6 = document.getElementById('background6');
+        let rad7 = document.getElementById('background7');
+        let inputValue = document.getElementById('backId');
+        if(number !== 1)
+        {
+            rad1.checked = false;
+        }
+        else {
+            rad1.checked = true;
+            inputValue.value = rad1.value;
+        }
+        if(number !== 2)
+        {
+            rad2.checked = false;
+        }
+        else {
+            rad2.checked = true;
+            inputValue.value = rad2.value;
+        }
+        if(number !== 3)
+        {
+            rad3.checked = false;
+        }
+        else {
+            rad3.checked = true;
+            inputValue.value = rad3.value;
+        }
+        if(number !== 4)
+        {
+            rad4.checked = false;
+        }
+        else {
+            rad4.checked = true;
+            inputValue.value = rad4.value;
+        }
+        if(number !== 5)
+        {
+            rad5.checked = false;
+        }
+        else {
+            rad5.checked = true;
+            inputValue.value = rad5.value;
+        }
+        if(number !== 6)
+        {
+            rad6.checked = false;
+        }
+        else {
+            rad6.checked = true;
+            inputValue.value = rad6.value;
+        }
+        if(number !== 7)
+        {
+            rad7.checked = false;
+        }
+        else {
+            rad7.checked = true;
+            inputValue.value = rad7.value;
+        }
+    }
+    function hide() {
+        setTimeout(() => {$("#searchResult").hide(100); }, 200);
+    }
+    function show() {
+        $("#searchResult").show(100);
     }
     </script>
 @yield('scripts')

@@ -1,4 +1,7 @@
 @extends('layouts.template')
+<?php
+
+    ?>
 
 @section('title', 'Home')
 
@@ -14,6 +17,20 @@
 @endsection
 
 @section('content')
+    @if (Session::has('message'))
+        <div class="row justify-content-center w-auto">
+            <div class="alert alert-success text-justify w-100" role="alert">
+                {{ Session::get('message') }}
+            </div>
+        </div>
+    @endif
+    @if (Session::has('error'))
+        <div class="row justify-content-center w-auto">
+            <div class="alert alert-danger text-justify w-100" role="alert">
+                {{ Session::get('error') }}
+            </div>
+        </div>
+    @endif
     <div>
         <label class="bg-light" id="labelownerWorkgroups" for="ownerWorkgroups" style="margin-left: 15px;
                                  margin-top: -12px; position: absolute; border: 2px solid #f8f9fc;">Your Workgroups</label>
@@ -48,6 +65,10 @@
                     getWorkGroup()
                 }});
         }
+        /**
+         * Return Modal container visible
+         * @type {HTMLElement}
+         */
         var addWorkgroup = document.getElementById("addWorkgroup");
         addWorkgroup.addEventListener("click", function() {
             $('#modal-container').append (`
@@ -79,6 +100,9 @@
 `);
             $('#edit').modal('show');
         });
+        /**
+         * On Page Ready
+         */
         $(document).ready(function() {
             $('#ownerWorkgroups').hide(100)
             $('#invitedWorkgroups').hide(100)
@@ -89,6 +113,9 @@
                 $('.edit-modal').remove(); // Remove edit board modal on close event
             });
         });
+        /**
+         *  Get all Workgroups (Own and Invited)
+         */
         let getWorkGroup = function() {
             $('#invitedWorkgroups').empty()
             $('#ownerWorkgroups').empty()
@@ -99,8 +126,9 @@
                 },
                 success: function(result){
                     result.forEach(x => {
-                        if(x.workgroup.created_by !== x.user_id) {
-                            $('#invitedWorkgroups').append(`
+                        if(x.workgroup !== null) {
+                            if (x.workgroup.created_by !== x.user_id) {
+                                $('#invitedWorkgroups').append(`
                             <div class="mt-2">
                               <div class="card m-2" style="width: 20rem;">
                                 <div class="card-body text-center">
@@ -111,25 +139,24 @@
                               </div>
                             </div>
                             `)
-                            $('#invitedWorkgroups').show(100)
-                            $('#labelinvitedWorkgroups').show(100)
-                        }
-                        else
-                        {
-                            $('#ownerWorkgroups').append(`
+                                $('#invitedWorkgroups').show(100)
+                                $('#labelinvitedWorkgroups').show(100)
+                            } else {
+                                $('#ownerWorkgroups').append(`
                             <div class="mt-2">
                               <div class="card m-2" style="width: 20rem;">
                                 <div class="card-body text-center">
-                                    <img class="img-thumbnail mb-3 mx-auto" src="../img/`+ x.workgroup.logo+`" width="100" height="100"/>
-                                  <h5 class="card-title">`+ x.workgroup.title+`<i class="fas fa-crown text-warning"></i>
+                                    <img class="img-thumbnail mb-3 mx-auto" src="../img/` + x.workgroup.logo + `" width="100" height="100"/>
+                                  <h5 class="card-title">` + x.workgroup.title + `<i class="fas fa-crown text-warning"></i>
                                   </h5>
-                                  <a href="/workgroup/`+x.workgroup.id+`" class="btn btn-primary">Go to workgroup !</a>
+                                  <a href="/workgroup/` + x.workgroup.id + `" class="btn btn-primary">Go to workgroup !</a>
                                 </div>
                               </div>
                            </div>
                         `)
-                            $('#ownerWorkgroups').show(100)
-                            $('#labelownerWorkgroups').show(100)
+                                $('#ownerWorkgroups').show(100)
+                                $('#labelownerWorkgroups').show(100)
+                            }
                         }
                     })
                 }});

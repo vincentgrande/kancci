@@ -27,74 +27,6 @@
 @endsection
 @section('scripts')
     <script>
-        function actuValRadio(number)
-        {
-            let rad1 = document.getElementById('background1');
-            let rad2 = document.getElementById('background2');
-            let rad3 = document.getElementById('background3');
-            let rad4 = document.getElementById('background4');
-            let rad5 = document.getElementById('background5');
-            let rad6 = document.getElementById('background6');
-            let rad7 = document.getElementById('background7');
-            let inputValue = document.getElementById('backId');
-            if(number !== 1)
-            {
-                rad1.checked = false;
-            }
-            else {
-                rad1.checked = true;
-                inputValue.value = rad1.value;
-            }
-            if(number !== 2)
-            {
-                rad2.checked = false;
-            }
-            else {
-                rad2.checked = true;
-                inputValue.value = rad2.value;
-            }
-            if(number !== 3)
-            {
-                rad3.checked = false;
-            }
-            else {
-                rad3.checked = true;
-                inputValue.value = rad3.value;
-            }
-            if(number !== 4)
-            {
-                rad4.checked = false;
-            }
-            else {
-                rad4.checked = true;
-                inputValue.value = rad4.value;
-            }
-            if(number !== 5)
-            {
-                rad5.checked = false;
-            }
-            else {
-                rad5.checked = true;
-                inputValue.value = rad5.value;
-            }
-            if(number !== 6)
-            {
-                rad6.checked = false;
-            }
-            else {
-                rad6.checked = true;
-                inputValue.value = rad6.value;
-            }
-            if(number !== 7)
-            {
-                rad7.checked = false;
-            }
-            else {
-                rad7.checked = true;
-                inputValue.value = rad7.value;
-            }
-
-        }
         /**
          * function to add a new kanban
          */
@@ -230,7 +162,20 @@
 @endsection
 
 @section('content')
-
+    @if (Session::has('message'))
+        <div class="row justify-content-center w-auto">
+            <div class="alert alert-success text-justify w-100" role="alert">
+                {{ Session::get('message') }}
+            </div>
+        </div>
+    @endif
+    @if (Session::has('error'))
+        <div class="row justify-content-center w-auto">
+            <div class="alert alert-danger text-justify w-100" role="alert">
+                {{ Session::get('error') }}
+            </div>
+        </div>
+    @endif
    <div class="row kanbans mb-3 justify-content-center mx-auto w-auto col-auto"></div>
    <div id="modal-container"></div>
 @endsection

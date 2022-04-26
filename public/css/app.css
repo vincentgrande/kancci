@@ -18,3 +18,11 @@
     outline: 2px solid black;
     opacity: 1;
 }
+
+#searchResult {
+    position: absolute;
+    z-index: 2;
+    width: 25rem;
+    border-bottom-left-radius: 5px 5px;
+    border-bottom-right-radius: 5px 5px;
+}

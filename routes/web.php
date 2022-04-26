@@ -25,6 +25,7 @@ Route::get('/', 'KanbanController@index')->name("index");
  */
 Route::middleware('auth')->middleware('XssSanitizer')->group(function () {
     Route::get('/search', 'KanbanController@Search')->name("Search");
+    Route::get('/searchView', 'KanbanController@SearchView')->name("SearchView");
     Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup")->where('id', '[0-9]+');
     Route::get('/kanban/{id}', 'KanbanController@kanban')->name("kanban")->where('id', '[0-9]+');
     Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");
@@ -44,9 +45,9 @@ Route::middleware('auth')->middleware('XssSanitizer')->group(function () {
     Route::post('addworkgroup', 'WorkgroupController@addWorkgroup')->name("addWorkgroup");
 
     Route::get('getworkgroup', 'WorkgroupController@getWorkgroup')->name("getWorkgroup");
-    Route::get('/workgroup/infos/{id}', 'WorkgroupController@getWorkgroupById')->name("WorkgroupInfosGet");
+    Route::get('/workgroup/infos/{id}', 'WorkgroupController@getWorkgroupById')->name("WorkgroupInfosGet")->where('id', '[0-9]+');
     Route::get('/workgroup/infos', function() { return view('workgroup-info');})->name("WorkgroupInfos");
-    Route::post('/workgroup/infos/{id}', 'WorkgroupController@UpdateWorkgroupInfos')->name('WorkgroupInfoPost');
+    Route::post('/workgroup/infos/{id}', 'WorkgroupController@UpdateWorkgroupInfos')->name('WorkgroupInfoPost')->where('id', '[0-9]+');
 
     Route::get('/settings/profile', function() { return view('auth.settings-profile');})->name("settingsProfileGet");
     Route::post('/settings/profile', 'UserSettingController@changePicture')->name("settingsProfilePost");
@@ -72,7 +73,7 @@ Route::middleware('auth')->middleware('XssSanitizer')->group(function () {
     Route::post('readAlert','KanbanController@readAlert')->name('readAlert');
     Route::get('getAlert','KanbanController@getAlert')->name('getAlert');
 
-    Route::get('showFile/{id}','KanbanController@showFile')->name('showFile');
+    Route::get('showFile/{id}','KanbanController@showFile')->name('showFile')->where('id', '[0-9]+');
 
     Route::get('archived/{id}','KanbanController@archived')->name('archived');
     Route::get('getArchived','KanbanController@getArchived')->name('getArchived');

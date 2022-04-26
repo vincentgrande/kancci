@@ -4,21 +4,21 @@
 
 @section('actions')
     <li class="nav-item active">
-        <a class="nav-link" id="addBoard">
+        <a class="nav-link" id="addBoard" href="#">
             <i class="fas fa-plus-square"></i>
             <span>Add board</span></a>
     </li>
     <!-- Divider -->
     <hr class="sidebar-divider">
     <li class="nav-item active">
-        <a class="nav-link" id="manageKanban"> <!-- TO DO : Open modal with kanban settings-->
+        <a class="nav-link" id="manageKanban" href="#"> <!-- TO DO : Open modal with kanban settings-->
             <i class="fas fa-cog"></i>
             <span>Manage kanban</span></a>
     </li>
     <!-- Divider -->
     <hr class="sidebar-divider">
     <li class="nav-item active">
-        <a class="nav-link" href="{{ route('archived', ['id' => $kanban]) }}"> <!-- TO DO : Open modal with kanban settings-->
+        <a class="nav-link" @if(!isset($visibility)) href="{{ route('archived', ['id' => $kanban]) }}" @endif> <!-- TO DO : Open modal with kanban settings-->
             <i class="fas fa-archive"></i>
             <span>Archived items</span></a>
     </li>
@@ -102,6 +102,41 @@
  <hr class="sidebar-divider">
 
 <div id="workgroup_users"></div>
+ <hr class="sidebar-divider">
+<label for="back" class="justify-content-center mx-auto">Background :</label>
+<div class="hiddenradio">
+    <label>
+        <input type="radio" id="background1" name="background1" value="1" onclick="actuValRadio(1)">
+        <img src="/img/wallpaper/1.jpg" height="100" width="100">
+    </label>
+
+    <label>
+        <input type="radio" id="background2" name="background2" value="2" onclick="actuValRadio(2)">
+        <img src="/img/wallpaper/2.jpg" height="100" width="100">
+    </label>
+    <label>
+        <input type="radio" id="background3" name="background3" value="3" onclick="actuValRadio(3)">
+        <img src="/img/wallpaper/3.jpg" height="100" width="100">
+    </label>
+
+    <label>
+        <input type="radio" id="background4" name="background4" value="4" onclick="actuValRadio(4)">
+        <img src="/img/wallpaper/4.jpg" height="100" width="100">
+    </label>
+    <label>
+        <input type="radio" id="background5" name="background5" value="5" onclick="actuValRadio(5)">
+        <img src="/img/wallpaper/5.jpg" height="100" width="100">
+    </label>
+    <label>
+        <input type="radio" id="background6" name="background6" value="6" onclick="actuValRadio(6)">
+        <img src="/img/wallpaper/6.jpg" height="100" width="100">
+    </label>
+    <label>
+        <input type="radio" id="background7" name="background7" value="7" onclick="actuValRadio(7)">
+        <img src="/img/wallpaper/7.jpg" height="100" width="100">
+    </label>
+    <input type="hidden" id="backId" name="backId" value="`+result.kanban.background.replace('/wallpaper/','').replace('.jpg','')+`"/>
+</div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit').modal('hide');">Close</button>
@@ -172,6 +207,7 @@
             let id = $("#id").val()
             let title = $("#title").val()
             let visibility = $("#visibility").val()
+            let backId = $("#backId").val()
             $.ajax({
                 url:  '{{route('editKanban')}}',
                 method: 'post',
@@ -180,6 +216,7 @@
                     id:id,
                     title:title,
                     visibility:visibility,
+                    backId:backId,
                 },
                 success: function(result){
                     let elements = $('.kanban-user');
@@ -200,6 +237,7 @@
                             })
                         }
                     );
+                    $('#content').css("background-image", "url(/img/wallpaper/"+backId+".jpg)");
                 }});
         }
         /**
@@ -468,7 +506,6 @@
             let startDate = $("#start_date").val()
             let endDate = $("#end_date").val()
             let card_id = $("#card_id").val()
-
             $.ajax({
                 url:  '{{route('editCard')}}',
                 method: 'post',
@@ -829,6 +866,7 @@
             propagationHandlers: [],
         })
         $(document).ready(function(e) {
+            actualBackground();
             getBoards(); // fetch boards from database after page load
             $(document).on('hide.bs.modal','.edit-modal', function () {
                 @if(!isset($visibility))
@@ -848,6 +886,16 @@
             });
 
         });
+        /**
+         *  Change Background and use the background from the Kanban
+         */
+        let actualBackground = function() {
+            let div = document.getElementById('content');
+            if(div !== null)
+            {
+                div.style.backgroundImage = "url('/img{{ $background }}')";
+            }
+        }
         /**
          * Fetch boards from DB and add them
          */

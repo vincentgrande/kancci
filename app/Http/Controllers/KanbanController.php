@@ -25,6 +25,7 @@ use App\WorkGroupUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
+use SebastianBergmann\Environment\Console;
 
 
 class KanbanController extends Controller
@@ -37,10 +38,88 @@ class KanbanController extends Controller
     {
     }
 
-    public function Search(Request $result)
+    /**
+     * Search result matches for Workgroups and Kanbans
+     * @param Request $result
+     * @return array
+     */
+    public function Search(Request $result): array
+    {
+        $workgroups = WorkGroup::where('title','LIKE','%'.$result->search.'%')->where('created_by', Auth::user()->id)->get()->toArray();
+        if($workgroups == null)
+        {
+            $workgroups = Array();
+        }
+        $workgroups_user = WorkGroupUser::where('user_id', Auth::user()->id)->with('workgroup')->with('user')->get();
+        if($workgroups_user != null)
+        {
+            foreach ($workgroups_user as $item) {
+                $toPush = true;
+                foreach ($workgroups as $workgroup)
+                {
+                    if(!str_contains($workgroup['title'],$result->search)) {
+                        $toPush = false;
+                    }
+                    if ($workgroup['id'] == $item->workgroup->id) {
+                            $toPush = false;
+                    }
+                }
+                if($toPush) {
+                    $workgroups[] = $item->workgroup;
+                }
+            }
+        }
+        $kanbans = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->where('created_by', Auth::user()->id)->get()->toArray();
+        $kanbansPublics = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->where('visibility', 'public')->get();
+        if($kanbans == null)
+        {
+            $kanbans = Array();
+        }
+        $kanbans_invited = KanbanUser::where('user_id', Auth::user()->id)->with('kanban')->with('user')->get();
+        if($kanbansPublics != null)
+        {
+            foreach ($kanbansPublics as $item) {
+                $toPush = true;
+                foreach ($kanbans as $kanban)
+                {
+                    if(!str_contains($kanban['title'],$result->search)) {
+                        $toPush = false;
+                    }
+                    if ($kanban['id'] == $item->id) {
+                        $toPush = false;
+                    }
+                }
+                if($toPush) {
+                    $kanbans[] = $item;
+                }
+            }
+        }
+        if($kanbans_invited != null)
+        {
+            foreach ($kanbans_invited as $item) {
+                $toPush = true;
+                foreach ($kanbans as $kanban)
+                {
+                    if(!str_contains($kanban['title'],$result->search)) {
+                        $toPush = false;
+                    }
+                    if ($kanban['id'] == $item->kanban->id) {
+                        $toPush = false;
+                    }
+                }
+                if($toPush) {
+                    $kanbans[] = $item->kanban;
+                }
+            }
+        }
+        return ['workgroups' => $workgroups,
+                'kanbans' => $kanbans
+        ];
+    }
+    public function SearchView(Request $result)
     {
         $workgroups = WorkGroup::where('title','LIKE','%'.$result->search.'%')->get();
-        $kanbans = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->get();
+        $kanbans = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->where('')->get();
         return $workgroups;
     }
 
@@ -69,18 +148,54 @@ class KanbanController extends Controller
      */
     public function kanban($id)
     {
+        $kanban = Kanban::where('id', $id)->first();
         if($this->allowedKanbanAccess($id) == 'True' && $this->allowedKanbanAccess($id) != 'public') {
             return view('kanban', [
                 'kanban' => $id,
+                'background' => $kanban->background,
+                'title' => $kanban->title,
             ]);
         }
         if($this->allowedKanbanAccess($id) == 'public') {
             return view('kanban', [
                 'kanban' => $id,
                 'visibility' => 'public',
+                'background' => $kanban->background,
+                'title' => $kanban->title,
             ]);
         }
         return redirect()->route('index');
+    }
+
+    /**
+     * Function to update kanban
+     * @param $id
+     * @return RedirectResponse | array
+     */
+    public function updateKanban(Request $request)
+    {
+        try {
+            $kanban = Kanban::where('id', $request->id)->first();
+            $kanban->update(['title' => $request->title, 'background' => $request->background]);
+            if ($this->allowedKanbanAccess($request->id) == 'True' && $this->allowedKanbanAccess($request->id) != 'public') {
+                return [
+                    'kanban' => $request->id,
+                    'background' => $kanban->background,
+                    'title' => $kanban->title,
+                ];
+            }
+            if ($this->allowedKanbanAccess($request->id) == 'public') {
+                return [
+                    'kanban' => $request->id,
+                    'visibility' => 'public',
+                    'background' => $kanban->background,
+                    'title' => $kanban->title,
+                ];
+            }
+            return redirect()->route('index');
+        }catch(\Exception $ex) {
+            return redirect()->route('index')->with('error', $ex->getMessage());
+        }
     }
 
     /**
@@ -333,6 +448,7 @@ class KanbanController extends Controller
      */
     public function editCard(Request $request): string
     {
+
         $request->validate([
             'id' =>'required|int',
             'title' => 'required|string',
@@ -341,10 +457,28 @@ class KanbanController extends Controller
         $card = Card::where('id','=',$request->id)->first();
         if ($this->allowedBoardAccess($card->board_id)){
                 if (isset($request->id) && isset($request->title)){
-                    if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'startDate' => $request->startDate, 'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
-                    {
-                        return 'Ok';
+                    if($request->startDate == null && $request->endDate != null){
+                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                        {
+                            return 'Ok';
+                        }
+                    }else if($request->endDate == null && $request->startDate != null){
+                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'startDate' => $request->startDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                        {
+                            return 'Ok';
+                        }
+                    }else if($request->endDate == null && $request->startDate == null){
+                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                        {
+                            return 'Ok';
+                        }
+                    }else{
+                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'startDate' => $request->startDate,'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                        {
+                            return 'Ok';
+                        }
                     }
+
                 }
             }
         return 'Nok';
@@ -617,10 +751,10 @@ class KanbanController extends Controller
             'title' => 'required|string',
             'visibility' => 'required|string',
             'id' =>'required|int',
+            'backId' =>'int',
         ]);
         if(isset($request->title) && isset($request->visibility) && ($request->visibility == "visible" || $request->visibility == "private" || $request->visibility == "public")){
-            Kanban::where('id',$request->id)->update(['title'=>$request->title,'visibility'=>$request->visibility]);
-
+            Kanban::where('id',$request->id)->update(['title'=>$request->title,'visibility'=>$request->visibility,'background' => '/wallpaper/' . $request->backId . '.jpg']);
             if (KanbanUser::where('kanban_id',$request->id)->where('user_id',Auth::user()->id)->first() == null) {
                 KanbanUser::create(['user_id' => Auth::user()->id, 'kanban_id' => $request->id]);
             }
