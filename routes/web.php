@@ -26,7 +26,7 @@ Route::get('/', 'KanbanController@index')->name("index");
 /**
  * Protected routes
  */
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->middleware('XssSanitizer')->group(function () {
     Route::get('/search', 'KanbanController@Search')->name("Search");
     Route::get('/searchView', 'KanbanController@SearchView')->name("SearchView");
     Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup")->where('id', '[0-9]+');
@@ -107,9 +107,9 @@ Route::get('/login', function () {
 })->name("login");
 
 Route::get('forgot-password', 'UserSettingController@showForgetPasswordForm')->name('forget.password.get');
-Route::post('forgot-password', 'UserSettingController@submitForgetPasswordForm')->name('forget.password.post');
+Route::post('forgot-password', 'UserSettingController@submitForgetPasswordForm')->middleware('XssSanitizer')->name('forget.password.post');
 Route::get('reset-password/{token}', 'UserSettingController@showResetPasswordForm')->name('reset.password.get');
-Route::post('reset-password', 'UserSettingController@submitResetPasswordForm')->name('reset.password.post');
+Route::post('reset-password', 'UserSettingController@submitResetPasswordForm')->middleware('XssSanitizer')->name('reset.password.post');
 
 Auth::routes();
 
