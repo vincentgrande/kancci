@@ -475,7 +475,6 @@
             let startDate = $("#start_date").val()
             let endDate = $("#end_date").val()
             let card_id = $("#card_id").val()
-
             $.ajax({
                 url:  '{{route('editCard')}}',
                 method: 'post',

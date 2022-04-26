@@ -462,7 +462,7 @@ class KanbanController extends Controller
                             return 'Ok';
                         }
                     }else{
-                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'startDate' => $request->startDate,'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
                         {
                             return 'Ok';
                         }
