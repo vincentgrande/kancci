@@ -70,11 +70,30 @@ class KanbanController extends Controller
             }
         }
         $kanbans = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->where('created_by', Auth::user()->id)->get()->toArray();
+        $kanbansPublics = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->where('visibility', 'public')->get();
         if($kanbans == null)
         {
             $kanbans = Array();
         }
         $kanbans_invited = KanbanUser::where('user_id', Auth::user()->id)->with('kanban')->with('user')->get();
+        if($kanbansPublics != null)
+        {
+            foreach ($kanbansPublics as $item) {
+                $toPush = true;
+                foreach ($kanbans as $kanban)
+                {
+                    if(!str_contains($kanban['title'],$result->search)) {
+                        $toPush = false;
+                    }
+                    if ($kanban['id'] == $item->id) {
+                        $toPush = false;
+                    }
+                }
+                if($toPush) {
+                    $kanbans[] = $item;
+                }
+            }
+        }
         if($kanbans_invited != null)
         {
             foreach ($kanbans_invited as $item) {
