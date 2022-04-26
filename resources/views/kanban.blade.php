@@ -4,14 +4,14 @@
 
 @section('actions')
     <li class="nav-item active">
-        <a class="nav-link" id="addBoard">
+        <a class="nav-link" id="addBoard" href="#">
             <i class="fas fa-plus-square"></i>
             <span>Add board</span></a>
     </li>
     <!-- Divider -->
     <hr class="sidebar-divider">
     <li class="nav-item active">
-        <a class="nav-link" id="manageKanban"> <!-- TO DO : Open modal with kanban settings-->
+        <a class="nav-link" id="manageKanban" href="#"> <!-- TO DO : Open modal with kanban settings-->
             <i class="fas fa-cog"></i>
             <span>Manage kanban</span></a>
     </li>
@@ -780,6 +780,7 @@
             propagationHandlers: [],
         })
         $(document).ready(function(e) {
+            actualBackground();
             getBoards(); // fetch boards from database after page load
             $(document).on('hide.bs.modal','.edit-modal', function () {
                 @if(!isset($visibility))
@@ -807,6 +808,16 @@
                 });
             });
         });
+        /**
+         *  Change Background and use the background from the Kanban
+         */
+        let actualBackground = function() {
+            let div = document.getElementById('content');
+            if(div !== null)
+            {
+                div.style.backgroundImage = "url('/img{{ $background }}')";
+            }
+        }
         /**
          * Fetch boards from DB and add them
          */

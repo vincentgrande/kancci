@@ -146,18 +146,53 @@ class KanbanController extends Controller
      */
     public function kanban($id)
     {
+        $kanban = Kanban::where('id', $id)->first();
         if($this->allowedKanbanAccess($id) == 'True' && $this->allowedKanbanAccess($id) != 'public') {
             return view('kanban', [
                 'kanban' => $id,
+                'background' => $kanban->background,
+                'title' => $kanban->title,
             ]);
         }
         if($this->allowedKanbanAccess($id) == 'public') {
             return view('kanban', [
                 'kanban' => $id,
                 'visibility' => 'public',
+                'background' => $kanban->background,
+                'title' => $kanban->title,
             ]);
         }
         return redirect()->route('index');
+    }
+
+    /**
+     * @param $id
+     * @return RedirectResponse | array
+     */
+    public function updateKanban(Request $request)
+    {
+        try {
+            $kanban = Kanban::where('id', $request->id)->first();
+            $kanban->update(['title' => $request->title, 'background' => $request->background]);
+            if ($this->allowedKanbanAccess($request->id) == 'True' && $this->allowedKanbanAccess($request->id) != 'public') {
+                return [
+                    'kanban' => $request->id,
+                    'background' => $kanban->background,
+                    'title' => $kanban->title,
+                ];
+            }
+            if ($this->allowedKanbanAccess($request->id) == 'public') {
+                return [
+                    'kanban' => $request->id,
+                    'visibility' => 'public',
+                    'background' => $kanban->background,
+                    'title' => $kanban->title,
+                ];
+            }
+            return redirect()->route('index');
+        }catch(\Exception $ex) {
+            return redirect()->route('index')->with('error', $ex->getMessage());
+        }
     }
 
     /**

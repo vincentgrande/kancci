@@ -230,7 +230,20 @@
 @endsection
 
 @section('content')
-
+    @if (Session::has('message'))
+        <div class="row justify-content-center w-auto">
+            <div class="alert alert-success text-justify w-100" role="alert">
+                {{ Session::get('message') }}
+            </div>
+        </div>
+    @endif
+    @if (Session::has('error'))
+        <div class="row justify-content-center w-auto">
+            <div class="alert alert-danger text-justify w-100" role="alert">
+                {{ Session::get('error') }}
+            </div>
+        </div>
+    @endif
    <div class="row kanbans mb-3 justify-content-center mx-auto w-auto col-auto"></div>
    <div id="modal-container"></div>
 @endsection

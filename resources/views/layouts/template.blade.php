@@ -166,9 +166,8 @@
 
             </nav>
             <!-- End of Topbar -->
-
             <!-- Begin Page Content -->
-            <div class="container-fluid">
+            <div id="container-body" class="container-fluid">
                 <!-- Content Row -->
                 <div class="row text-dark">
                     @yield('content')

@@ -124,16 +124,22 @@ class WorkgroupController extends Controller
     public function addWorkgroup(Request $request): RedirectResponse
     {
         $firstLetter = $request->title[0];
-        $firstLetter = strtolower($firstLetter);
-        $workgroup = WorkGroup::create([
-            'title' => $request->title,
-            'logo' => "logos/" . $firstLetter . "_blue.png",
-            'created_by' => Auth::user()->id,
-        ]);
-        WorkGroupUser::create([
-            'user_id' => Auth::user()->id,
-            'workgroup_id' => $workgroup->id,
-        ]);
-        return back();
+        if(ctype_alpha($firstLetter)) {
+            $firstLetter = strtolower($firstLetter);
+            $workgroup = WorkGroup::create([
+                'title' => $request->title,
+                'logo' => "logos/" . $firstLetter . "_blue.png",
+                'created_by' => Auth::user()->id,
+            ]);
+            WorkGroupUser::create([
+                'user_id' => Auth::user()->id,
+                'workgroup_id' => $workgroup->id,
+            ]);
+            return redirect()->route('index')->with('message', 'Workgroup created successfully !');
+        }
+        else
+        {
+            return redirect()->route('index')->with('error', 'Your first character must be a letter.');
+        }
     }
 }
