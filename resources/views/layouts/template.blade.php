@@ -46,17 +46,6 @@
         <hr class="sidebar-divider">
 
         @yield('actions')
-
-
-        <div class="fixed-bottom">
-             <!-- Divider -->
-            <hr class="sidebar-divider">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Documentation</span></a>
-            </li>
-        </div>
     </ul>
     <!-- End of Sidebar -->
 
@@ -64,7 +53,7 @@
     <div id="content-wrapper" class="d-flex flex-column">
 
         <!-- Main Content -->
-        <div id="content" class="bg-gray">
+        <div id="content" class="bg-gray" style="background-repeat: no-repeat;background-size: cover;">
 
             <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-primary topbar mb-4 static-top shadow">

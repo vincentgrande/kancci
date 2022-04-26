@@ -730,10 +730,10 @@ class KanbanController extends Controller
             'title' => 'required|string',
             'visibility' => 'required|string',
             'id' =>'required|int',
+            'backId' =>'int',
         ]);
         if(isset($request->title) && isset($request->visibility) && ($request->visibility == "visible" || $request->visibility == "private" || $request->visibility == "public")){
-            Kanban::where('id',$request->id)->update(['title'=>$request->title,'visibility'=>$request->visibility]);
-
+            Kanban::where('id',$request->id)->update(['title'=>$request->title,'visibility'=>$request->visibility,'background' => '/wallpaper/' . $request->backId . '.jpg']);
             if (KanbanUser::where('kanban_id',$request->id)->where('user_id',Auth::user()->id)->first() == null) {
                 KanbanUser::create(['user_id' => Auth::user()->id, 'kanban_id' => $request->id]);
             }

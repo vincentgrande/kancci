@@ -99,6 +99,41 @@
  <hr class="sidebar-divider">
 
 <div id="workgroup_users"></div>
+ <hr class="sidebar-divider">
+<label for="back" class="justify-content-center mx-auto">Background :</label>
+<div class="hiddenradio">
+    <label>
+        <input type="radio" id="background1" name="background1" value="1" onclick="actuValRadio(1)">
+        <img src="/img/wallpaper/1.jpg" height="100" width="100">
+    </label>
+
+    <label>
+        <input type="radio" id="background2" name="background2" value="2" onclick="actuValRadio(2)">
+        <img src="/img/wallpaper/2.jpg" height="100" width="100">
+    </label>
+    <label>
+        <input type="radio" id="background3" name="background3" value="3" onclick="actuValRadio(3)">
+        <img src="/img/wallpaper/3.jpg" height="100" width="100">
+    </label>
+
+    <label>
+        <input type="radio" id="background4" name="background4" value="4" onclick="actuValRadio(4)">
+        <img src="/img/wallpaper/4.jpg" height="100" width="100">
+    </label>
+    <label>
+        <input type="radio" id="background5" name="background5" value="5" onclick="actuValRadio(5)">
+        <img src="/img/wallpaper/5.jpg" height="100" width="100">
+    </label>
+    <label>
+        <input type="radio" id="background6" name="background6" value="6" onclick="actuValRadio(6)">
+        <img src="/img/wallpaper/6.jpg" height="100" width="100">
+    </label>
+    <label>
+        <input type="radio" id="background7" name="background7" value="7" onclick="actuValRadio(7)">
+        <img src="/img/wallpaper/7.jpg" height="100" width="100">
+    </label>
+    <input type="hidden" id="backId" name="backId" value="`+result.kanban.background.replace('/wallpaper/','').replace('.jpg','')+`"/>
+</div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="$('#edit').modal('hide');">Close</button>
@@ -160,6 +195,7 @@
             let id = $("#id").val()
             let title = $("#title").val()
             let visibility = $("#visibility").val()
+            let backId = $("#backId").val()
             $.ajax({
                 url:  '{{route('editKanban')}}',
                 method: 'post',
@@ -168,6 +204,7 @@
                     id:id,
                     title:title,
                     visibility:visibility,
+                    backId:backId,
                 },
                 success: function(result){
                     let elements = $('.kanban-user');
