@@ -225,6 +225,7 @@
                             })
                         }
                     );
+                    $('#content').css("background-image", "url(/img/wallpaper/"+backId+".jpg)");
                 }});
         }
         let addWorkgroupUsers = function(result){
