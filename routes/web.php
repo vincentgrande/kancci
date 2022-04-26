@@ -13,14 +13,11 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Index routes
  */
-Route::get('/', function () {
-    return view('welcome');
-})->name("welcome");
-
 Route::get('/', 'KanbanController@index')->name("index");
 
 /**
@@ -89,7 +86,6 @@ Route::middleware('auth')->middleware('XssSanitizer')->group(function () {
     Route::post('useLabel','KanbanController@useLabel')->name('useLabel');
     Route::post('addLabel','KanbanController@addLabel')->name('addLabel');
     Route::post('deleteLabel','KanbanController@deleteLabel')->name('deleteLabel');
-
 
 });
 Route::get('debug', 'KanbanController@debug')->name("debug");

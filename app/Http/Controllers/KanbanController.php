@@ -162,7 +162,6 @@ class KanbanController extends Controller
     {
         $request->validate([
             'kanbanId' =>'required|int',
-            'boards' =>'required|array',
         ]);
         if($this->allowedKanbanAccess($request->kanbanId) == "True") {
             $boards = json_encode($request->boards);
