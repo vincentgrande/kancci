@@ -383,6 +383,7 @@ class KanbanController extends Controller
      */
     public function editCard(Request $request): string
     {
+
         $request->validate([
             'id' =>'required|int',
             'title' => 'required|string',
@@ -391,10 +392,28 @@ class KanbanController extends Controller
         $card = Card::where('id','=',$request->id)->first();
         if ($this->allowedBoardAccess($card->board_id)){
                 if (isset($request->id) && isset($request->title)){
-                    if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'startDate' => $request->startDate, 'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
-                    {
-                        return 'Ok';
+                    if($request->startDate == null && $request->endDate != null){
+                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'endDate' => $request->endDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                        {
+                            return 'Ok';
+                        }
+                    }else if($request->endDate == null && $request->startDate != null){
+                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description,'startDate' => $request->startDate]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                        {
+                            return 'Ok';
+                        }
+                    }else if($request->endDate == null && $request->startDate == null){
+                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                        {
+                            return 'Ok';
+                        }
+                    }else{
+                        if(Card::where('id', $request->id)->update(['title' => $request->title,'description'=>$request->description]) && Checklist::where('card_id', $request->id)->update(['title' => $request->checklisttitle]))
+                        {
+                            return 'Ok';
+                        }
                     }
+
                 }
             }
         return 'Nok';

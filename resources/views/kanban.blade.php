@@ -18,7 +18,7 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
     <li class="nav-item active">
-        <a class="nav-link" href="{{ route('archived', ['id' => $kanban]) }}"> <!-- TO DO : Open modal with kanban settings-->
+        <a class="nav-link" @if(!isset($visibility)) href="{{ route('archived', ['id' => $kanban]) }}" @endif> <!-- TO DO : Open modal with kanban settings-->
             <i class="fas fa-archive"></i>
             <span>Archived items</span></a>
     </li>
