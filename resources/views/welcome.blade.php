@@ -107,6 +107,10 @@ Necessary cookies help make this website usable by enabling basic functions.<br>
 <script src='{{asset('js/jkanban.min.js')}}'></script>
 <script src="{{asset('js/sb-admin-2.min.js')}}"></script>
 <script>
+    /**
+     * create welcome page test kanban
+     * @type {jKanban}
+     */
     let Kanban = new jKanban({
         element          : '#myKanban',                                           // selector of the kanban container
         gutter           : '15px',                                       // gutter of the board
@@ -131,6 +135,9 @@ Necessary cookies help make this website usable by enabling basic functions.<br>
         buttonClick      : function(el, boardId) {$('#welcome').modal('show');},                     // callback when the board's button is clicked
         propagationHandlers: [],
     })
+    /**
+     * add some dummy data to test kanban
+     */
     let boardsList = [
         {
             "id"    : "1",               // id of the board
@@ -188,6 +195,9 @@ Necessary cookies help make this website usable by enabling basic functions.<br>
         }
     );
 
+    /**
+     * Display cookie bar & set cookie functions
+     */
         const cookieStorage = {
             getItem: (key) => {
                 const cookies = document.cookie
