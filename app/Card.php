@@ -6,8 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Card extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['title', 'description',  'startDate', 'endDate', 'isActive', 'updated_at','board_id', 'created_by', 'checklist_id'];
 
+    /**
+     * @var string[]
+     */
     protected $cast = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime'

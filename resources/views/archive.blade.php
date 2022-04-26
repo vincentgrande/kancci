@@ -10,14 +10,27 @@
     <hr class="sidebar-divider">
 @endsection
 @section('content')
-    <label for="cards">Cards :</label>
-    <div id="cards" class="mb-3 col"></div><br><br><br><br>
-    <label for="boards">Boards :</label>
-    <div id="boards" class="mb-3 col"></div>
+    <label for="cards" class="text-light">Cards :</label>
+    <div id="cards" class="mb-3 col text-light"></div><br><br><br><br>
+    <label for="boards" class="text-light">Boards :</label>
+    <div id="boards" class="mb-3 col text-light"></div>
 
 @endsection
 @section('scripts')
     <script>
+        $(document).ready(function(e) {
+            actualBackground();
+        })
+        /**
+         * Set archive page background image
+         */
+        let actualBackground = function() {
+            let div = document.getElementById('content');
+            if(div !== null)
+            {
+                div.style.backgroundImage = "url('/img{{ $background }}')";
+            }
+        }
         /**
          * Function to unarchive a board
          */

@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Checklist extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['title', 'created_by','card_id'];
+
+    /**
+     * @var string[]
+     */
     protected $cast = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime'

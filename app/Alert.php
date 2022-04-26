@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Alert extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['card_id', 'user_id', 'is_read'];
 
     /**
+     * Get the user associated with the Alert
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
@@ -17,6 +21,7 @@ class Alert extends Model
     }
 
     /**
+     * Get the card associated with the Alert
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function card()
