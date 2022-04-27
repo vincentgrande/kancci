@@ -306,7 +306,9 @@
             var kanbanBoard = $('.kanban-board').map(function(_, x) {
                 let kanbanids = [];
                 Array.prototype.slice.call(x.children[1].children).forEach( (x)=>{
-                    kanbanids.push(x.dataset.eid)
+                    if(!kanbanids.includes(x.dataset.eid)) {
+                        kanbanids.push(x.dataset.eid)
+                    }
                 })
                 return { id:x.dataset.id, items: kanbanids }; // Create an array with boards ID's and cards ID's
             }).get();
