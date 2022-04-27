@@ -983,9 +983,9 @@ class KanbanController extends Controller
      */
     public function getAlert()
     {
-        $carduser = CardUser::where('user_id', 1)->with('card')->get();
+        $carduser = CardUser::where('user_id', Auth::user()->id)->with('card')->get();
         foreach($carduser as $cu){
-            $card = Card::where('id', $cu->card_id)->whereDate('endDate','<=', date("Y-m-d"))->first();
+            $card = Card::where('id', $cu->card_id)->whereDate('endDate','<=', date("Y-m-d"))->get();
             $card2 = Card::where('id', $cu->card_id)->whereDate('endDate','>', date("Y-m-d"))->get();
             foreach($card2 as $c){
                 Alert::where('card_id', $c->id)->where('user_id', Auth::user()->id)->delete();
