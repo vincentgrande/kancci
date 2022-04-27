@@ -99,7 +99,7 @@ class UserSettingController extends Controller
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
      */
-    public function changePassword(Request $request) : Redirector
+    public function changePassword(Request $request)
     {
         try {
             $request->validate([
@@ -133,7 +133,7 @@ class UserSettingController extends Controller
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
      */
-    public function changePicture(Request $request) : Redirector
+    public function changePicture(Request $request)
     {
         try {
             // Validation de la photo
@@ -169,9 +169,9 @@ class UserSettingController extends Controller
     /**
      * Function to change the Email adresse from the User
      * @param Request $request
-     * @return Application|RedirectResponse|Redirector
+     * @return Application|RedirectResponse
      */
-    public function changeEmail(Request $request) : Redirector
+    public function changeEmail(Request $request)
     {
         try {
             $request->validate([
