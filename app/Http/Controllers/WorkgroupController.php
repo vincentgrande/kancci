@@ -197,12 +197,11 @@ class WorkgroupController extends Controller
     }
 
     /**
-     * Update Workgroup data like title or logo
      * @param Request $request
-     * @return string
+     * @return RedirectResponse
      * @throws Exception
      */
-    public function UpdateWorkgroupInfos(Request $request): string
+    public function UpdateWorkgroupInfos(Request $request)
     {
         $workgroup = WorkGroup::where('id', $request->id)->where('created_by', Auth::user()->id)->with('creator')->get();
         if ($workgroup == null) {
@@ -211,7 +210,7 @@ class WorkgroupController extends Controller
         $firstLetter = $request->title[0];
         $firstLetter = strtolower($firstLetter);
         WorkGroup::where('id', $request->id)->update(['title' => $request->title, 'logo' => "logos/" . $firstLetter . "_blue.png"]);
-        return redirect()->route('WorkgroupInfosGet', ['id' => $request->id]);
+        return back();
     }
 
     /**
