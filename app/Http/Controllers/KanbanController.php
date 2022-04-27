@@ -96,9 +96,9 @@ class KanbanController extends Controller
                 }
             }
         }
-        $workgroups_from_User = WorkGroupUser::where('user_id', Auth::user()->id)->get();
+        $workgroups_from_User = WorkGroupUser::where('user_id', Auth::user()->id)->with('workgroup')->get();
         foreach ($workgroups_from_User as $itemWork) {
-            $kanbans_invited = Kanban::where('workgroup_id', $itemWork->id)->where('title', 'LIKE', '%'.$result->search.'%')->get();
+            $kanbans_invited = Kanban::where('workgroup_id', $itemWork->workgroup->id)->where('title', 'LIKE', '%'.$result->search.'%')->get();
             if ($kanbans_invited != null) {
                 foreach ($kanbans_invited as $item) {
                     $toPush = true;
@@ -186,9 +186,9 @@ class KanbanController extends Controller
                     }
                 }
             }
-            $workgroups_from_User = WorkGroupUser::where('user_id', Auth::user()->id)->get();
+            $workgroups_from_User = WorkGroupUser::where('user_id', Auth::user()->id)->with('workgroup')->get();
             foreach ($workgroups_from_User as $itemWork) {
-                $kanbans_invited = Kanban::where('workgroup_id', $itemWork['id'])->where('title', 'LIKE', '%'.$result->search.'%')->get();
+                $kanbans_invited = Kanban::where('workgroup_id', $itemWork->workgroup->id)->where('title', 'LIKE', '%'.$result->search.'%')->get();
                 if ($kanbans_invited != null) {
                     foreach ($kanbans_invited as $item) {
                         $toPush = true;
