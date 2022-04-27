@@ -202,6 +202,7 @@ class KanbanController extends Controller
             return redirect(route('index'))->with('error', $ex->getMessage());
         }
     }
+    /**
      * Function to return search results
      * @param Request $result
      * @return mixed
