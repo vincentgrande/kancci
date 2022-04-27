@@ -45,6 +45,9 @@ class KanbanController extends Controller
      */
     public function Search(Request $result): ?array
     {
+        $result->validate([
+            'search' =>'required|string',
+        ]);
         $workgroups = WorkGroup::where('title','LIKE','%'.$result->search.'%')->where('created_by', Auth::user()->id)->get()->toArray();
         if($workgroups == null)
         {
@@ -199,6 +202,19 @@ class KanbanController extends Controller
             return redirect(route('index'))->with('error', $ex->getMessage());
         }
     }
+     * Function to return search results
+     * @param Request $result
+     * @return mixed
+     */
+    public function SearchView(Request $result)
+    {
+        $result->validate([
+            'search' =>'required|string',
+        ]);
+        $workgroups = WorkGroup::where('title','LIKE','%'.$result->search.'%')->get();
+        $kanbans = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->get();
+        return $workgroups;
+    }
     /**
      * Function to show workgroup page if current user logged or welcome page if not logged
      * @return Application|Factory|View
@@ -250,6 +266,11 @@ class KanbanController extends Controller
      */
     public function updateKanban(Request $request)
     {
+        $request->validate([
+            'id' =>'required|id',
+            'title' =>'required|string',
+            'background' =>'required|string',
+        ]);
         try {
             $kanban = Kanban::where('id', $request->id)->first();
             $kanban->update(['title' => $request->title, 'background' => $request->background]);
@@ -1053,8 +1074,10 @@ class KanbanController extends Controller
     public function archived($id)
     {
         if($this->allowedKanbanAccess($id) == 'True') {
+            $kanban = Kanban::where('id', $id)->first();
             return view('archive', [
                 'kanban' => $id,
+                'background' => $kanban->background,
             ]);
         }
         return back();

@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class CardUser extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['user_id', 'card_id'];
 
     /**
+     * Get the user associated with the CardUser
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
@@ -17,6 +21,7 @@ class CardUser extends Model
     }
 
     /**
+     * Get the card associated with the CardUser
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function card()

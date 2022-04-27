@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kanban extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['title', 'order', 'visibility', 'background', 'updated_at', 'created_by', 'workgroup_id'];
+    /**
+     * @var string[]
+     */
     protected $casts = [
         'updated_at' => 'datetime',
         'created_at' => 'datetime'
@@ -51,6 +57,7 @@ class Kanban extends Model
     }
 
     /**
+     * Get the user kanban_label with the Kanban
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function kanban_label()
@@ -59,6 +66,7 @@ class Kanban extends Model
     }
 
     /**
+     * Get the kanbanUser associated with the Kanban
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function kanbanUser()

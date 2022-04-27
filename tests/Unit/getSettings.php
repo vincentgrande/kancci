@@ -6,10 +6,25 @@ use App\User;
 use Str;
 use Tests\TestCase;
 
-class getWorkgroup extends TestCase
+class getSettings extends TestCase
 {
+    /**
+     * Test if unlogged user get redirected while trying to access settings page
+     *
+     * @return void
+     */
+    public function testSettingsUnlogged()
+    {
 
-    public function testGroupHome()
+        $response = $this->get('/settings/profile');
+        $response->assertStatus(302);
+    }
+    /**
+     * Test if logged user has access to settings page
+     *
+     * @return void
+     */
+    public function testSettingsLogged()
     {
         $users = new User();
         $users->id = 1;
@@ -20,10 +35,10 @@ class getWorkgroup extends TestCase
         $users->picture = "undraw_profile.svg";
         $users->remember_token = "";
         $users->created_at = "";
-        $users->updated_at ="";
-        // As a logged user, we should be able to access /
+        $users->updated_at = "";
+        // As a logged user, we should be able to access /settings/profile
         $this->actingAs($users);
-        $response = $this->get('/');
+        $response = $this->get('/settings/profile');
         $response->assertStatus(200);
     }
 }
