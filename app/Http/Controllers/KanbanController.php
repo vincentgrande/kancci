@@ -78,7 +78,6 @@ class KanbanController extends Controller
         {
             $kanbans = Array();
         }
-        $kanbans_invited = KanbanUser::where('user_id', Auth::user()->id)->with('kanban')->with('user')->get();
         if($kanbansPublics != null)
         {
             foreach ($kanbansPublics as $item) {
@@ -97,21 +96,22 @@ class KanbanController extends Controller
                 }
             }
         }
-        if($kanbans_invited != null)
-        {
-            foreach ($kanbans_invited as $item) {
-                $toPush = true;
-                if(!str_contains($item->kanban->title,$result->search)) {
-                    $toPush = false;
-                }
-                foreach ($kanbans as $kanban)
-                {
-                    if ($kanban['id'] == $item->kanban->id) {
+        foreach ($workgroups as $itemWork) {
+            $kanbans_invited = Kanban::where('workgroup_id', $itemWork->id)->with('workgroup')->with('user')->get();
+            if ($kanbans_invited != null) {
+                foreach ($kanbans_invited as $item) {
+                    $toPush = true;
+                    if (!str_contains($item->title, $result->search)) {
                         $toPush = false;
                     }
-                }
-                if($toPush) {
-                    $kanbans[] = $item->kanban;
+                    foreach ($kanbans as $kanban) {
+                        if ($kanban['id'] == $item->id) {
+                            $toPush = false;
+                        }
+                    }
+                    if ($toPush) {
+                        $kanbans[] = $item;
+                    }
                 }
             }
         }
@@ -134,62 +134,73 @@ class KanbanController extends Controller
     public function searchResult(Request $result)
     {
         try {
-            $workgroups = WorkGroup::where('title', 'LIKE', '%' . $result->searchTextField . '%')->where('created_by', Auth::user()->id)->get()->toArray();
-            if ($workgroups == null) {
-                $workgroups = array();
+            $result->validate([
+                'search' =>'required|string',
+            ]);
+            $workgroups = WorkGroup::where('title','LIKE','%'.$result->search.'%')->where('created_by', Auth::user()->id)->get()->toArray();
+            if($workgroups == null)
+            {
+                $workgroups = Array();
             }
             $workgroups_user = WorkGroupUser::where('user_id', Auth::user()->id)->with('workgroup')->with('user')->get();
-            if ($workgroups_user != null) {
+            if($workgroups_user != null)
+            {
                 foreach ($workgroups_user as $item) {
                     $toPush = true;
-                    if (!str_contains($item->workgroup->title, $result->searchTextField)) {
+                    if(!str_contains($item->workgroup->title,$result->search)) {
                         $toPush = false;
                     }
-                    foreach ($workgroups as $workgroup) {
+                    foreach ($workgroups as $workgroup)
+                    {
                         if ($workgroup['id'] == $item->workgroup->id) {
                             $toPush = false;
                         }
                     }
-                    if ($toPush) {
+                    if($toPush) {
                         $workgroups[] = $item->workgroup;
                     }
                 }
             }
-            $kanbans = Kanban::where('title', 'LIKE', '%' . $result->searchTextField . '%')->where('created_by', Auth::user()->id)->get()->toArray();
-            $kanbansPublics = Kanban::where('title', 'LIKE', '%' . $result->searchTextField . '%')->where('visibility', 'public')->get();
-            if ($kanbans == null) {
-                $kanbans = array();
+            $kanbans = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->where('created_by', Auth::user()->id)->get()->toArray();
+            $kanbansPublics = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->where('visibility', 'public')->get();
+            if($kanbans == null)
+            {
+                $kanbans = Array();
             }
-            $kanbans_invited = KanbanUser::where('user_id', Auth::user()->id)->with('kanban')->with('user')->get();
-            if ($kanbansPublics != null) {
+            if($kanbansPublics != null)
+            {
                 foreach ($kanbansPublics as $item) {
                     $toPush = true;
-                    if (!str_contains($item->title, $result->searchTextField)) {
+                    if(!str_contains($item->title,$result->search)) {
                         $toPush = false;
                     }
-                    foreach ($kanbans as $kanban) {
+                    foreach ($kanbans as $kanban)
+                    {
                         if ($kanban['id'] == $item->id) {
                             $toPush = false;
                         }
                     }
-                    if ($toPush) {
+                    if($toPush) {
                         $kanbans[] = $item;
                     }
                 }
             }
-            if ($kanbans_invited != null) {
-                foreach ($kanbans_invited as $item) {
-                    $toPush = true;
-                    if (!str_contains($item->kanban->title, $result->searchTextField)) {
-                        $toPush = false;
-                    }
-                    foreach ($kanbans as $kanban) {
-                        if ($kanban['id'] == $item->kanban->id) {
+            foreach ($workgroups as $itemWork) {
+                $kanbans_invited = Kanban::where('workgroup_id', $itemWork->id)->with('workgroup')->with('user')->get();
+                if ($kanbans_invited != null) {
+                    foreach ($kanbans_invited as $item) {
+                        $toPush = true;
+                        if (!str_contains($item->title, $result->search)) {
                             $toPush = false;
                         }
-                    }
-                    if ($toPush) {
-                        $kanbans[] = $item->kanban;
+                        foreach ($kanbans as $kanban) {
+                            if ($kanban['id'] == $item->id) {
+                                $toPush = false;
+                            }
+                        }
+                        if ($toPush) {
+                            $kanbans[] = $item;
+                        }
                     }
                 }
             }

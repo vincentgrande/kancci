@@ -36,7 +36,7 @@ class Board extends Model
      */
     public function kanban()
     {
-        return $this->belongsTo(Kanban::class,'id','kanban_id');
+        return $this->belongsTo('App\Kanban');
     }
 
     /**
@@ -46,7 +46,7 @@ class Board extends Model
      */
     public function creator()
     {
-        return $this->belongsTo(User::class,'id','created_by');
+        return $this->belongsTo('App\User');
     }
 
     /**

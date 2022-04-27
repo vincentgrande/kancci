@@ -1,7 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Board;
+use App\Card;
+use App\CardUser;
 use App\KanbanLabel;
+use App\KanbanUser;
 use App\User;
 use App\WorkGroup;
 use App\WorkgroupPendingInvitation;
@@ -142,7 +146,7 @@ class WorkgroupController extends Controller
             $user = User::where('email', $request->email)->first();
             $workgroup_pending_invitation = WorkgroupPendingInvitation::where('email', $request->email)->where('workgroup_id', $request->workgroup_id)->first();
             if ($user != null) {
-                $workgroup_user = WorkGroupUser::where('id', $user->id)->where('workgroup_id', $request->workgroup_id)->first();
+                $workgroup_user = WorkGroupUser::where('user_id', $user->id)->where('workgroup_id', $request->workgroup_id)->first();
                 if($workgroup_user != null)
                 {
                     $workgroup_user->delete();
@@ -154,7 +158,40 @@ class WorkgroupController extends Controller
                         $workgroup_pending_invitation->delete();
                     }
                 }
-            } else {
+                $kanban_user = KanbanUser::where('user_id', $user->id)->with('kanban')->get();
+                if($kanban_user != null)
+                {
+                    foreach ($kanban_user as $item)
+                    {
+                        if($item->kanban->workgroup_id == $request->workgroup_id) {
+                            $item->delete();
+                        }
+                    }
+                }
+                $kanbans = Kanban::where('workgroup_id', $request->workgroup_id)->get();
+                if($kanbans != null) {
+                    foreach ($kanbans as $kanban) {
+                        $boards = Board::where('kanban_id', $kanban->id)->get();
+                        if ($boards != null) {
+                            foreach ($boards as $board) {
+                                $cards = Card::where('board_id', $board->id)->get();
+                                if ($cards != null) {
+                                    foreach ($cards as $card) {
+                                        $cards_user = CardUser::where('user_id', $user->id)->where('card_id', $card->id)->get();
+                                        if ($cards_user != null) {
+                                            foreach ($cards_user as $card_user) {
+                                                $card_user->delete();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
                 if($workgroup_pending_invitation != null)
                 {
                     $workgroup_pending_invitation->delete();
@@ -199,7 +236,7 @@ class WorkgroupController extends Controller
             ]);
         }
         else{
-            return back();
+            return redirect(route('workgroup', ['id' => $id]));
         }
     }
 
@@ -269,7 +306,7 @@ class WorkgroupController extends Controller
         }
         else
         {
-            return back();
+            return redirect(route('workgroup', ['id' => $id]));
         }
     }
 
@@ -278,7 +315,7 @@ class WorkgroupController extends Controller
      * @param Request $request
      * @return bool
      */
-    public function changeRole(Request $request)
+    public function changeRole(Request $request) : bool
     {
         $user = User::where('email', $request->email)->first();
         if($user != null)
