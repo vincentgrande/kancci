@@ -99,7 +99,7 @@ class UserSettingController extends Controller
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
      */
-    public function changePassword(Request $request) : Redirector
+    public function changePassword(Request $request)
     {
         try {
             $request->validate([
