@@ -990,8 +990,8 @@ class KanbanController extends Controller
             foreach($card2 as $c){
                 Alert::where('card_id', $c->id)->where('user_id', Auth::user()->id)->delete();
             }
-            if($card != []) {
-                $alerte = Alert::with('card')->where('user_id', Auth::user()->id)->where('card_id', $card->id)->first();
+            foreach($card as $c) {
+                $alerte = Alert::with('card')->where('user_id', Auth::user()->id)->where('card_id', $c->id)->first();
                 if ($alerte == []) {
                     $alerte = Alert::create([
                         'card_id' => $cu->card->id,
