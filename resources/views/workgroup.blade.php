@@ -10,7 +10,7 @@
     </li>
     <!-- Divider -->
     <?php
-    if($workgroup_users[0]->isAdmin)
+    if($workgroup_user_actual->isAdmin)
     {?>
     <hr class="sidebar-divider">
     <li class="nav-item active" id="manageWorkgroup">

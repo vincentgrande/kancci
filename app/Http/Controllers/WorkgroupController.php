@@ -26,15 +26,16 @@ class WorkgroupController extends Controller
      */
     public function index($id)
     {
-        $user = Auth::user();
-        $workGroup = WorkGroup::where('created_by', $user->id)->where('id', $id)->with('creator')->first();
+        $workGroup = WorkGroup::where('id', $id)->with('creator')->first();
         $workgroupUser = WorkGroupUser::where('workgroup_id', $id)->with('user')->get();
+        $workgroupUserActual = WorkGroupUser::where('workgroup_id', $id)->where('user_id', Auth::user()->id)->with('user')->first();
         if ($workGroup == null & $workgroupUser == null) {
             return redirect()->route('index');
         }
         return view('workgroup', [
             'workgroup' => $workGroup,
             'workgroup_users' => $workgroupUser,
+            'workgroup_user_actual' => $workgroupUserActual,
         ]);
     }
 
@@ -181,19 +182,25 @@ class WorkgroupController extends Controller
     /**
      * Get Workgroup and WorkgroupUser by User id
      * @param $id
-     * @return Application|Factory|View
+     * @return Application|Factory|View | RedirectResponse
      */
     public function getWorkgroupById($id)
     {
         $user = Auth::user();
-        $workGroup = WorkGroup::where('created_by', $user->id)->where('id', $id)->with('creator')->get();
-        $invited_users = WorkGroupUser::where('workgroup_id', $id)->with('user')->with('workgroup')->get();
-        $pending_invitation = WorkgroupPendingInvitation::where('workgroup_id', $id)->with('workgroup')->get();
-        return view('workgroup-info', [
-            'workgroup' => $workGroup,
-            'invited_users' => $invited_users,
-            'pending_invitation' => $pending_invitation
-        ]);
+        $workGroup = WorkGroup::where('id', $id)->get();
+        $workGroup_User = WorkGroupUser::where('workgroup_id', $id)->where('user_id', $user->id)->where('isAdmin', true)->with('user')->with('workgroup')->first();
+        if($workGroup_User != null) {
+            $invited_users = WorkGroupUser::where('workgroup_id', $id)->with('user')->with('workgroup')->get();
+            $pending_invitation = WorkgroupPendingInvitation::where('workgroup_id', $id)->with('workgroup')->get();
+            return view('workgroup-info', [
+                'workgroup' => $workGroup,
+                'invited_users' => $invited_users,
+                'pending_invitation' => $pending_invitation
+            ]);
+        }
+        else{
+            return back();
+        }
     }
 
     /**
@@ -244,19 +251,26 @@ class WorkgroupController extends Controller
     /**
      * Function to Initialize the view to manage user's rights on Workgroup
      * @param $id
-     * @return Application|Factory|View|void
+     * @return Application|Factory|View|void | RedirectResponse
      */
     public function usersManagement($id)
     {
+        $user = Auth::user();
+        $workGroup_User = WorkGroupUser::where('workgroup_id', $id)->where('user_id', $user->id)->where('isAdmin', true)->with('user')->with('workgroup')->first();
+        if($workGroup_User != null) {
             $workgroupUser = WorkGroupUser::where('workgroup_id', $id)->with('user')->with('workgroup')->get();
             $workgroup = WorkGroup::where('id', $id)->first();
-            if($workgroupUser != null)
-            {
+            if ($workgroupUser != null) {
                 return view('workgroup-user', [
                     'workgroup_users' => $workgroupUser,
-                        'workgroup' => $workgroup,
-                        ]);
+                    'workgroup' => $workgroup,
+                ]);
             }
+        }
+        else
+        {
+            return back();
+        }
     }
 
     /**
