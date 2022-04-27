@@ -23,7 +23,7 @@ Route::get('/', 'KanbanController@index')->name("index");
 /**
  * Protected routes
  */
-Route::middleware('auth')->middleware('XssSanitizer')->group(function () {
+Route::middleware(['auth','XssSanitizer'])->group(function () {
     Route::get('/search', 'KanbanController@Search')->name("Search");
     Route::get('/searchView', 'KanbanController@SearchView')->name("SearchView");
     Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup")->where('id', '[0-9]+');

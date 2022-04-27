@@ -22,6 +22,7 @@ class CreateAlertsTable extends Migration
             $table->foreign('card_id')->references('id')->on('cards');
             $table->timestamps();
         });
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     /**

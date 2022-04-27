@@ -46,6 +46,14 @@
         <hr class="sidebar-divider">
 
         @yield('actions')
+        <div class="fixed-bottom">
+            <!-- Divider -->
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ asset('img/legal.pdf') }}" target="_blank">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Legal notice</span></a>
+            </li>
+        </div>
     </ul>
     <!-- End of Sidebar -->
 
@@ -154,6 +162,7 @@
                 </ul>
 
             </nav>
+
             <!-- End of Topbar -->
             <!-- Begin Page Content -->
             <div id="container-body" class="container-fluid">
@@ -212,6 +221,9 @@
 <script src="{{asset('js/app.js')}}"></script>
 <script src="{{asset('js/jquery.min.js')}}"></script>
 <script>
+    /**
+     * Function to fetch alerts
+     */
     let getAlert = function(){
         $.ajax({
             url: "{{ route('getAlert') }}",
@@ -241,7 +253,10 @@
             }
         })
     }
-
+    /**
+     * Function to set an alert read
+     * @param id
+     */
     let readAlert = function(id){
         $.ajax({
             url: "{{ route('readAlert') }}",

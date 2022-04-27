@@ -5,26 +5,24 @@ namespace Tests\Feature;
 use App\User;
 use Str;
 use Tests\TestCase;
-
-class getIndex extends TestCase
+class getBoards extends TestCase
 {
     /**
-     * Test if unlogged user has access to index page
+     * A basic unit test example.
      *
      * @return void
      */
-    public function testIndexUnlogged()
+    public function testGetBoardsUnlogged()
     {
-        $response = $this->get('/');
-        $response->assertStatus(200);
+        $response = $this->get('/getboards?id=1');
+        $response->assertStatus(302);
     }
-
     /**
-     * Test if logged user has access to index page
+     * A basic unit test example.
      *
      * @return void
      */
-    public function testIndexLogged()
+    public function testGetBoardsLogged()
     {
         $users = new User();
         $users->id = 1;
@@ -35,10 +33,11 @@ class getIndex extends TestCase
         $users->picture = "undraw_profile.svg";
         $users->remember_token = "";
         $users->created_at = "";
-        $users->updated_at ="";
-        // As a logged user, we should be able to access /
+        $users->updated_at = "";
+        // As a logged user, we should be able to access /settings/profile
         $this->actingAs($users);
-        $response = $this->get('/');
-        $response->assertStatus(200);
+        $response = $this->get('/getboards?id=1');
+        $response->assertSuccessful();
+        $this->assertEquals('string', gettype($response->getContent()));
     }
 }

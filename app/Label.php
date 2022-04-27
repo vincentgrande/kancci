@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Label extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['label','color', 'updated_at', 'created_by'];
+    /**
+     * @var string[]
+     */
     protected $cast = [
       'created_at' => 'datetime',
       'updated_at' => 'datetime'
@@ -31,6 +37,11 @@ class Label extends Model
     {
         return $this->belongsToMany(Card::class);
     }
+
+    /**
+     * Get the card_label associated with the Label
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function card_label()
     {
         return $this->hasMany('App\CardLabel');
@@ -46,7 +57,7 @@ class Label extends Model
     }
 
     /**
-     * Get the kanban associated with the WorkGroup
+     * Get the kanban associated with the Label
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -56,6 +67,7 @@ class Label extends Model
     }
 
     /**
+     * Get the kanban_label associated with the Label
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function kanban_label()

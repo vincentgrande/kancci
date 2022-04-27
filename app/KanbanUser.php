@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class KanbanUser extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['user_id', 'kanban_id'];
 
     /**
+     *  Get the user associated with the KanbanUser
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
@@ -17,6 +21,7 @@ class KanbanUser extends Model
     }
 
     /**
+     *  Get the kanban associated with the KanbanUser
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function kanban()

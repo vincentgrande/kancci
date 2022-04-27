@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attachement extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['original_name', 'filepath', 'uploaded_by', 'card_id'];
+    /**
+     * @var string[]
+     */
     protected $cast = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime'

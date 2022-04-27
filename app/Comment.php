@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['message','updated_at', 'card_id', 'created_by'];
+
+    /**
+     * @var string[]
+     */
     protected $cast = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime'

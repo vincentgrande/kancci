@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class CardLabel extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['card_id', 'label_id'];
 
     /**
+     * Get the card associated with the CardLabel
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function card()
@@ -17,6 +21,7 @@ class CardLabel extends Model
     }
 
     /**
+     * Get the label associated with the CardLabel
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function Label()
