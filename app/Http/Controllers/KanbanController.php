@@ -22,6 +22,7 @@ use App\User;
 use App\Board;
 use App\Kanban;
 use App\WorkGroupUser;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
@@ -193,6 +194,95 @@ class KanbanController extends Controller
                     foreach ($kanbans_invited as $item) {
                         $toPush = true;
                         if (!str_contains($item->title, $result->searchTextField)) {
+                            $toPush = false;
+                        }
+                        foreach ($kanbans as $kanban) {
+                            if ($kanban['id'] == $item->id) {
+                                $toPush = false;
+                            }
+                        }
+                        if ($toPush) {
+                            $kanbans[] = $item;
+                        }
+                    }
+                }
+            }
+            return view('searchResult', ['workgroups' => $workgroups,
+                'kanbans' => $kanbans,
+            ]);
+        }
+        catch (\Exception $ex)
+        {
+            return redirect(route('index'))->with('error', $ex->getMessage());
+        }
+    }
+
+    /**
+     * Function to search result with a Mobile
+     * @param Request $request
+     * @return Application|Factory|RedirectResponse|Redirector|View
+     */
+    public function searchResultMobile(Request $request)
+    {
+        try {
+            $request->validate([
+                'searchResultMobile' =>'required|string',
+            ]);
+            $workgroups = WorkGroup::where('title','LIKE','%'.$request->searchResultMobile.'%')->where('created_by', Auth::user()->id)->get()->toArray();
+            if($workgroups == null)
+            {
+                $workgroups = Array();
+            }
+            $workgroups_user = WorkGroupUser::where('user_id', Auth::user()->id)->with('workgroup')->with('user')->get();
+            if($workgroups_user != null)
+            {
+                foreach ($workgroups_user as $item) {
+                    $toPush = true;
+                    if(!str_contains($item->workgroup->title,$request->searchResultMobile)) {
+                        $toPush = false;
+                    }
+                    foreach ($workgroups as $workgroup)
+                    {
+                        if ($workgroup['id'] == $item->workgroup->id) {
+                            $toPush = false;
+                        }
+                    }
+                    if($toPush) {
+                        $workgroups[] = $item->workgroup;
+                    }
+                }
+            }
+            $kanbans = Kanban::where('title', 'LIKE', '%'.$request->searchResultMobile.'%')->where('created_by', Auth::user()->id)->get()->toArray();
+            $kanbansPublics = Kanban::where('title', 'LIKE', '%'.$request->searchResultMobile.'%')->where('visibility', 'public')->get();
+            if($kanbans == null)
+            {
+                $kanbans = Array();
+            }
+            if($kanbansPublics != null)
+            {
+                foreach ($kanbansPublics as $item) {
+                    $toPush = true;
+                    if(!str_contains($item->title,$request->searchResultMobile)) {
+                        $toPush = false;
+                    }
+                    foreach ($kanbans as $kanban)
+                    {
+                        if ($kanban['id'] == $item->id) {
+                            $toPush = false;
+                        }
+                    }
+                    if($toPush) {
+                        $kanbans[] = $item;
+                    }
+                }
+            }
+            $workgroups_from_User = WorkGroupUser::where('user_id', Auth::user()->id)->with('workgroup')->get();
+            foreach ($workgroups_from_User as $itemWork) {
+                $kanbans_invited = Kanban::where('workgroup_id', $itemWork->workgroup->id)->where('title', 'LIKE', '%'.$request->searchResultMobile.'%')->get();
+                if ($kanbans_invited != null) {
+                    foreach ($kanbans_invited as $item) {
+                        $toPush = true;
+                        if (!str_contains($item->title, $request->searchResultMobile)) {
                             $toPush = false;
                         }
                         foreach ($kanbans as $kanban) {
@@ -946,7 +1036,7 @@ class KanbanController extends Controller
     /**
      * Function to show an attachment
      * @param $id
-     * @return Application|RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|RedirectResponse|Redirector
      */
     public function showFile($id){
         $attachement = Attachement::where('id',$id)->first();

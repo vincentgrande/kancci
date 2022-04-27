@@ -26,6 +26,7 @@ Route::get('/', 'KanbanController@index')->name("index");
 Route::middleware(['auth','XssSanitizer'])->group(function () {
     Route::get('/search', 'KanbanController@Search')->name("Search");
     Route::post('/searchResult', 'KanbanController@searchResult')->name("SearchResult");
+    Route::post('/searchResultMobile', 'KanbanController@searchResultMobile')->name("SearchResultMobile");
     Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup")->where('id', '[0-9]+');
     Route::get('/workgroup/users/{id}', 'WorkgroupController@usersManagement')->name("usersManagement")->where('id', '[0-9]+');
     Route::get('/workgroup/users/', 'WorkgroupController@changeRole')->name('changeRole');
