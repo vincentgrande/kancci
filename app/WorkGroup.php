@@ -2,7 +2,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use \Illuminate\Database\Eloquent\Relations\HasMany;
 
 class WorkGroup extends Model
 {
@@ -13,7 +15,7 @@ class WorkGroup extends Model
     /**
      * @var string[]
      */
-    protected $fillable = ['title', 'logo', 'updated_at', 'created_by'];
+    protected $fillable = ['title', 'logo','updated_at', 'created_by'];
     /**
      * @var string[]
      */
@@ -25,7 +27,7 @@ class WorkGroup extends Model
     /**
      * Get the creator associated with the WorkGroup
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function creator()
     {
@@ -35,7 +37,7 @@ class WorkGroup extends Model
     /**
      * Get the users associated with the Workgroup
      *
-     * @return \Illuminate\Database\Eloquent\Relations\belongsToMany
+     * @return belongsToMany
      */
     public function users()
     {
@@ -45,7 +47,7 @@ class WorkGroup extends Model
     /**
      * Get the kanban associated with the WorkGroup
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function kanban()
     {
@@ -53,7 +55,7 @@ class WorkGroup extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function workgroup_user()
     {

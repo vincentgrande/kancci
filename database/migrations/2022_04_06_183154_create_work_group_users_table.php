@@ -19,6 +19,7 @@ class CreateWorkGroupUsersTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('workgroup_id');
             $table->foreign('workgroup_id')->references('id')->on('workgroups');
+            $table->boolean('isAdmin')->default(false);
             $table->timestamps();
         });
 

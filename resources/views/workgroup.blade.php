@@ -10,12 +10,11 @@
     </li>
     <!-- Divider -->
     <?php
-    use Illuminate\Support\Facades\Auth;
-    if($workgroup_users[0]->workgroup->created_by == Auth::user()->id)
+    if($workgroup_users[0]->isAdmin)
     {?>
     <hr class="sidebar-divider">
     <li class="nav-item active" id="manageWorkgroup">
-        <a class="nav-link" href="{{route('WorkgroupInfosGet', $workgroup->id)}}">
+        <a class="nav-link" href="{{route('WorkgroupInfosGet', $workgroup_users[0]->workgroup->id)}}">
             <i class="fas fa-cog"></i>
             <span>Manage workgroup</span></a>
     </li>

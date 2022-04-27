@@ -232,6 +232,7 @@ class WorkgroupController extends Controller
             WorkGroupUser::create([
                 'user_id' => Auth::user()->id,
                 'workgroup_id' => $workgroup->id,
+                'isAdmin' => true,
             ]);
             return redirect()->route('index')->with('message', 'Workgroup created successfully !');
         }
@@ -239,5 +240,57 @@ class WorkgroupController extends Controller
         {
             return redirect()->route('index')->with('error', 'Your first character must be a letter.');
         }
+    }
+
+    /**
+     * Function to Initialize the view to manage user's rights on Workgroup
+     * @param $id
+     * @return Application|Factory|View|void
+     */
+    public function usersManagement($id)
+    {
+            $workgroupUser = WorkGroupUser::where('workgroup_id', $id)->with('user')->with('workgroup')->get();
+            $workgroup = WorkGroup::where('id', $id)->first();
+            if($workgroupUser != null)
+            {
+                return view('workgroup-user', [
+                    'workgroup_users' => $workgroupUser,
+                        'workgroup' => $workgroup,
+                        ]);
+            }
+    }
+
+    /**
+     * Function to change Role from an User to a Workgroup
+     * @param Request $request
+     * @return bool
+     */
+    public function changeRole(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if($user != null)
+        {
+            $workgroup_user = WorkGroupUser::where('workgroup_id', $request->workgroup_id)->where('user_id', $user->id)->first();
+            if($workgroup_user != null)
+            {
+                if($request->value == "1")
+                {
+                    $workgroup_user->update(['isAdmin' => true]);
+                }
+                else
+                {
+                    $workgroup_user->update(['isAdmin' => false]);
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+        return true;
     }
 }

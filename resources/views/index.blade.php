@@ -166,6 +166,11 @@
                     })
                 }});
         }
+
+        /**
+         * Show Modal for leaving Workgroup
+         * @param workgroup_id
+         */
         function ShowModal(workgroup_id)
         {
                 $('#modal-container').append(`
@@ -191,6 +196,11 @@
             `);
             $('#edit').modal('show');
         }
+
+        /**
+         * Action to leave the Workgroup
+         * @param workgroup_id
+         */
         function ModalShowLeaving(workgroup_id)
         {
             $.ajax({

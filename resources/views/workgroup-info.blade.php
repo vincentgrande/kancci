@@ -16,6 +16,13 @@
     </li>
     <!-- Divider -->
     <hr class="sidebar-divider">
+    <li class="nav-item active" id="manageWorkgroup">
+        <a class="nav-link" href="{{route('usersManagement', $workgroup[0]->id)}}">
+            <i class="fas fa-user-cog"></i>
+            <span>Manage Users</span></a>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 @endsection
 @section('content')
     <div id="infos" class="justify-content-center mx-auto">

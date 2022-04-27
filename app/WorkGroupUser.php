@@ -3,17 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WorkGroupUser extends Model
 {
     /**
      * @var string[]
      */
-    protected $fillable = ['user_id', 'workgroup_id'];
+    protected $fillable = ['user_id', 'workgroup_id', 'isAdmin'];
 
     /**
      * Get the user associated with the workgroupuser
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user()
     {
@@ -22,7 +23,7 @@ class WorkGroupUser extends Model
 
     /**
      * Get the workgroup associated with the workgroupuser
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function workgroup()
     {

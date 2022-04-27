@@ -10,7 +10,6 @@ use App\WorkGroupUser;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Anhskohbo\NoCaptcha\Facades\NoCaptcha;
 
 class RegisterController extends Controller
 {
