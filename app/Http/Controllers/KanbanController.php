@@ -53,7 +53,7 @@ class KanbanController extends Controller
         {
             $workgroups = Array();
         }
-        $workgroups_user = WorkGroupUser::where('user_id', Auth::user()->id)->where('title','LIKE','%'.$result->search.'%')->with('workgroup')->with('user')->get();
+        $workgroups_user = WorkGroupUser::where('user_id', Auth::user()->id)->with('workgroup')->with('user')->get();
         if($workgroups_user != null)
         {
             foreach ($workgroups_user as $item) {
@@ -143,7 +143,7 @@ class KanbanController extends Controller
             {
                 $workgroups = Array();
             }
-            $workgroups_user = WorkGroupUser::where('user_id', Auth::user()->id)->where('title','LIKE','%'.$result->search.'%')->with('workgroup')->with('user')->get();
+            $workgroups_user = WorkGroupUser::where('user_id', Auth::user()->id)->with('workgroup')->with('user')->get();
             if($workgroups_user != null)
             {
                 foreach ($workgroups_user as $item) {
