@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CardUser extends Model
 {
@@ -13,7 +14,7 @@ class CardUser extends Model
 
     /**
      * Get the user associated with the CardUser
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user()
     {
@@ -22,7 +23,7 @@ class CardUser extends Model
 
     /**
      * Get the card associated with the CardUser
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function card()
     {

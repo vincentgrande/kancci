@@ -3,6 +3,10 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Card extends Model
 {
@@ -21,32 +25,38 @@ class Card extends Model
     /**
      * Get the board that owns the Card
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function board()
     {
-        return $this->belongsTo(Board::class,'board_id','id');
+        return $this->belongsTo('App\Board');
     }
 
     /**
      * Get the creator that owns the Card
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function creator()
     {
-        return $this->belongsTo(User::class,'id','created_by');
+        return $this->belongsTo('App\User');
     }
 
     /**
      * Get the labels owned by the Card
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function labels()
     {
-        return $this->belongsToMany(Label::class);
+        return $this->belongsToMany('App\Label');
     }
+
+    /**
+     * Get the cards labels owned by the Card
+     *
+     * @return HasMany
+     */
     public function card_label()
     {
         return $this->hasMany('App\CardLabel');
@@ -54,33 +64,38 @@ class Card extends Model
     /**
      * Get the comments owned by the Card
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany('App\Comment');
     }
 
     /**
      * Get the attachments owned by the Card
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function attachments()
     {
-        return $this->hasMany(Attachement::class);
+        return $this->hasMany('App\Attachement');
     }
 
     /**
      * Get the checklist owned by the Card
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function checklist()
     {
-        return $this->hasOne(Checklist::class, 'id','checklist_id');
+        return $this->hasOne('App\Checklist');
     }
 
+    /**
+     * Get the users belongs to a card
+     *
+     * @return HasMany
+     */
     public function card_user()
     {
         return $this->hasMany('App\CardUser');

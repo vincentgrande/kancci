@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\belongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Kanban extends Model
 {
@@ -20,45 +23,45 @@ class Kanban extends Model
 
     /**
      * Get the boards associated with the Kanban
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function boards()
     {
-        return $this->hasMany(Board::class);
+        return $this->hasMany('App\Board');
     }
 
     /**
      * Get the creator associated with the Kanban
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function creator()
     {
-        return $this->hasOne(User::class,'id','created_by');
+        return $this->hasOne('App\User');
     }
 
     /**
      * Get the workgroup associated with the Kanban
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function workgroup()
     {
-        return $this->hasOne(WorkGroup::class,'id','workgroup_id');
+        return $this->hasOne('App\WorkGroup');
     }
 
     /**
      * Get the labels associated with the Kanban
-     * @return \Illuminate\Database\Eloquent\Relations\belongsToMany
+     * @return belongsToMany
      */
     public function labels()
     {
-        return $this->belongsToMany(Label::class);
+        return $this->belongsToMany('App\Label');
     }
 
     /**
      * Get the user kanban_label with the Kanban
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function kanban_label()
     {
@@ -67,7 +70,7 @@ class Kanban extends Model
 
     /**
      * Get the kanbanUser associated with the Kanban
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function kanbanUser()
     {

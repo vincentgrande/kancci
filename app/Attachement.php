@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Attachement extends Model
 {
@@ -21,20 +22,20 @@ class Attachement extends Model
     /**
      * Get the card that owns the Attachment
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function card()
     {
-        return $this->belongsTo(Card::class,'id','card_id');
+        return $this->belongsTo('App\Card');
     }
 
     /**
      * Get the creator that owns the Attachment
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function creator()
     {
-        return $this->belongsTo(User::class, 'id','uploaded_by');
+        return $this->belongsTo('App\User');
     }
 }

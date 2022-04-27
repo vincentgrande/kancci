@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Comment extends Model
 {
@@ -22,20 +24,20 @@ class Comment extends Model
     /**
      * Get the card associated with the comment
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return BelongsTo
      */
     public function card()
     {
-        return $this->belongsTo(Card::class,'id','card_id');
+        return $this->belongsTo('App\Card');
     }
 
     /**
      * Get the creator associated with the comment
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return BelongsTo
      */
     public function creator()
     {
-        return $this->belongsTo(User::class,'id','created_by');
+        return $this->belongsTo('App\User');
     }
 }

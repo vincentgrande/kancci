@@ -14,7 +14,7 @@ class Alert extends Model
 
     /**
      * Get the user associated with the Alert
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user() : BelongsTo
     {
@@ -23,7 +23,7 @@ class Alert extends Model
 
     /**
      * Get the card associated with the Alert
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function card() : BelongsTo
     {

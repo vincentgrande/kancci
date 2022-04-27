@@ -105,7 +105,7 @@
                                            placeholder="Search for..." aria-label="Search"
                                            aria-describedby="basic-addon2">
                                     <div class="input-group-append">
-                                        <button class="btn btn-light" type="submit">
+                                        <button class="btn btn-dark" type="submit">
                                             <i class="fas fa-search fa-sm"></i>
                                         </button>
                                     </div>

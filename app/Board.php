@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Board extends Model
 {
@@ -22,17 +24,17 @@ class Board extends Model
     /**
      * Get the cards owned by the board
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function cards()
     {
-        return $this->hasMany(Card::class);
+        return $this->hasMany('App\Card');
     }
 
     /**
      * Get the kanban that owns the board
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function kanban()
     {
@@ -42,7 +44,7 @@ class Board extends Model
     /**
      * Get the creator that owns the board
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function creator()
     {
@@ -52,10 +54,10 @@ class Board extends Model
     /**
      * Get the labels that owns the board
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function labels()
     {
-        return $this->hasMany(Label::class);
+        return $this->hasMany('App\Label');
     }
 }

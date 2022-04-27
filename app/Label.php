@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Label extends Model
 {
@@ -21,26 +24,26 @@ class Label extends Model
     /**
      * Get the board associated with the Label
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function board()
     {
-        return $this->belongsTo(Board::class);
+        return $this->belongsTo('App\Board');
     }
 
     /**
      * Get the cards associated with the Label
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function cards()
     {
-        return $this->belongsToMany(Card::class);
+        return $this->belongsToMany('App\Card');
     }
 
     /**
      * Get the card_label associated with the Label
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function card_label()
     {
@@ -49,26 +52,26 @@ class Label extends Model
     /**
      * Get the creator associated with the Label
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function creator()
     {
-        return $this->belongsTo(User::class, 'id','created_by');
+        return $this->belongsTo('App\User');
     }
 
     /**
      * Get the kanban associated with the Label
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function kanban()
     {
-        return $this->hasMany(Kanban::class);
+        return $this->hasMany('App\Kanban');
     }
 
     /**
      * Get the kanban_label associated with the Label
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function kanban_label()
     {

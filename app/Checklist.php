@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Checklist extends Model
 {
@@ -22,9 +25,9 @@ class Checklist extends Model
     /**
      * Get all of the checklistitems for the Checklist
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function checklistitems(): HasMany
+    public function checklistitems()
     {
         return $this->hasMany(ChecklistItem::class);
     }
@@ -32,20 +35,20 @@ class Checklist extends Model
     /**
      * Get the card associated with the Checklist
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function card(): HasOne
+    public function card()
     {
-        return $this->hasOne(Card::class,'id','card_id');
+        return $this->hasOne('App\Card');
     }
 
     /**
      * Get the user that owns the Checklist
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class,'id','created_by');
+        return $this->belongsTo('App\User');
     }
 }

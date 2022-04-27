@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ChecklistItem extends Model
 {
@@ -25,21 +26,21 @@ class ChecklistItem extends Model
    /**
     * Get the Checklist that owns the ChecklistItem
     *
-    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    * @return BelongsTo
     */
-    public function checklist(): BelongsTo
+    public function checklist()
     {
-        return $this->belongsTo(Checklist::class,'id','checklist_id');
+        return $this->belongsTo('App\Checklist');
     }
 
     /**
      * Get the Card that owns the ChecklistItem
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function card(): BelongsTo
+    public function card()
     {
-        return $this->belongsTo(Card::class,'id','card_id');
+        return $this->belongsTo('App\Card');
     }
 
 }

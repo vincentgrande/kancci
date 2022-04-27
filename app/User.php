@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\belongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -41,25 +43,25 @@ class User extends Authenticatable
     /**
      * Get the board associated with the User
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function board()
     {
-        return $this->hasMany(Board::class);
+        return $this->hasMany('App\Board');
     }
 
     /**
      * Get the workgroup associated with the User
      *
-     * @return \Illuminate\Database\Eloquent\Relations\belongsToMany
+     * @return belongsToMany
      */
     public function workgroup()
     {
-        return $this->belongsToMany(WorkGroup::class);
+        return $this->belongsToMany('App\WorkGroup');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function workgroup_user()
     {
@@ -67,7 +69,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function card_user()
     {
@@ -75,7 +77,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function kanbanUser()
     {

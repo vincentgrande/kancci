@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KanbanLabel extends Model
 {
@@ -13,7 +14,7 @@ class KanbanLabel extends Model
 
     /**
      *  Get the kanban associated with the KanbanLabel
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function kanban()
     {
@@ -22,7 +23,7 @@ class KanbanLabel extends Model
 
     /**
      *  Get the label associated with the KanbanLabel
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function label()
     {

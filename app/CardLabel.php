@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CardLabel extends Model
 {
@@ -13,7 +14,7 @@ class CardLabel extends Model
 
     /**
      * Get the card associated with the CardLabel
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function card()
     {
@@ -22,7 +23,7 @@ class CardLabel extends Model
 
     /**
      * Get the label associated with the CardLabel
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function Label()
     {
