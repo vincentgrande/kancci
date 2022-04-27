@@ -13,7 +13,7 @@ class WorkGroupPendingInvitation extends Migration
      */
     public function up()
     {
-        Schema::create('workgroup_pending_invitation', function (Blueprint $table) {
+        Schema::create('workgroup_pending_invitations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('email');
             $table->unsignedBigInteger('workgroup_id');
