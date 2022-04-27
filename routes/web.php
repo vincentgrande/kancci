@@ -28,6 +28,9 @@ Route::middleware('auth')->middleware('XssSanitizer')->group(function () {
     Route::post('/searchResult', 'KanbanController@searchResult')->name("SearchResult");
     Route::get('/workgroup/{id}', 'WorkgroupController@index')->name("workgroup")->where('id', '[0-9]+');
     Route::get('/kanban/{id}', 'KanbanController@kanban')->name("kanban")->where('id', '[0-9]+');
+    Route::get('/workgroup/', 'WorkgroupController@inviteUser')->name('inviteUser');
+    Route::get('/workgroup/delete', 'WorkgroupController@deleteInvitedUser')->name('deleteInvitedUser');
+    Route::get('/index/leave', 'WorkgroupController@leaveWorkgroup')->name('leaveWorkgroup');
     Route::get('getboards', 'KanbanController@getBoards')->name("getBoards");
     Route::get('getcard', 'KanbanController@getCard')->name("getcard");
     Route::get('getboard', 'KanbanController@getBoard')->name("getboard");

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use App\WorkgroupPendingInvitation;
+use App\WorkGroupUser;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -62,16 +64,29 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return User
      */
     protected function create(array $data)
     {
-        return User::create([
+        $workgroup_pending_invitation = WorkgroupPendingInvitation::where('email', $data['email'])->get();
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'reset_token' => Hash::make($data['email']."".$data['name']),
             'picture' => 'undraw_profile.svg'
         ]);
+        if($workgroup_pending_invitation != null)
+        {
+            foreach ($workgroup_pending_invitation as $item)
+            {
+                WorkGroupUser::create([
+                    'workgroup_id' => $item->workgroup_id,
+                    'user_id' => $user->id
+                ]);
+                $item->delete();
+            }
+        }
+        return $user;
     }
 }

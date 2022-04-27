@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\KanbanLabel;
+use App\User;
 use App\WorkGroup;
+use App\WorkgroupPendingInvitation;
 use App\WorkGroupUser;
 use App\Kanban;
 
@@ -79,6 +81,93 @@ class WorkgroupController extends Controller
     }
 
     /**
+     * Function to let a User leave a Workgroup
+     * @param Request $request
+     * @return string
+     */
+    public function leaveWorkgroup(Request $request): string
+    {
+        try
+        {
+            $workgroup_user = WorkGroupUser::where('workgroup_id', $request->workgroup_id)->where('user_id', Auth::user()->id)->first();
+            if($workgroup_user != null)
+            {
+                $workgroup_user->delete();
+            }
+            return "true";
+        }catch (Exception $ex)
+        {
+            return $ex->getMessage();
+        }
+    }
+
+    /**
+     * Trying to invite a User to a Workgroup
+     * @param Request $request
+     * @return String
+     */
+    public function inviteUser(Request $request) : String
+    {
+        try
+        {
+            $user = User::where('email', $request->email)->first();
+            if ($user != null) {
+                WorkGroupUser::create([
+                    'user_id' => $user->id,
+                    'workgroup_id' => $request->workgroup_id
+                ]);
+            } else {
+                WorkgroupPendingInvitation::create([
+                    'email' => $request->email,
+                    'workgroup_id' => $request->workgroup_id
+                ]);
+            }
+            return "true";
+        }
+        catch (Exception $ex)
+        {
+            return $ex->getMessage();
+        }
+    }
+
+    /**
+     * Delete the invited User from a Workgroup
+     * @param Request $request
+     * @return string
+     */
+    public function deleteInvitedUser(Request $request): string
+    {
+        try {
+            $user = User::where('email', $request->email)->first();
+            $workgroup_pending_invitation = WorkgroupPendingInvitation::where('email', $request->email)->where('workgroup_id', $request->workgroup_id)->first();
+            if ($user != null) {
+                $workgroup_user = WorkGroupUser::where('id', $user->id)->where('workgroup_id', $request->workgroup_id)->first();
+                if($workgroup_user != null)
+                {
+                    $workgroup_user->delete();
+                }
+                else
+                {
+                    if($workgroup_pending_invitation != null)
+                    {
+                        $workgroup_pending_invitation->delete();
+                    }
+                }
+            } else {
+                if($workgroup_pending_invitation != null)
+                {
+                    $workgroup_pending_invitation->delete();
+                }
+            }
+            return "true";
+        }
+        catch (Exception $ex)
+        {
+            return $ex->getMessage();
+        }
+    }
+
+    /**
      * Get WorkGroupUser by User id
      * @return WorkGroupUser | null
      */
@@ -99,9 +188,11 @@ class WorkgroupController extends Controller
         $user = Auth::user();
         $workGroup = WorkGroup::where('created_by', $user->id)->where('id', $id)->with('creator')->get();
         $invited_users = WorkGroupUser::where('workgroup_id', $id)->with('user')->with('workgroup')->get();
+        $pending_invitation = WorkgroupPendingInvitation::where('workgroup_id', $id)->with('workgroup')->get();
         return view('workgroup-info', [
             'workgroup' => $workGroup,
-            'invited_users' => $invited_users
+            'invited_users' => $invited_users,
+            'pending_invitation' => $pending_invitation
         ]);
     }
 
