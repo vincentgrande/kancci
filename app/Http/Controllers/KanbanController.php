@@ -135,7 +135,7 @@ class KanbanController extends Controller
     {
         try {
             $result->validate([
-                'search' =>'required|string',
+                'searchTextField' =>'required|string',
             ]);
             $workgroups = WorkGroup::where('title','LIKE','%'.$result->search.'%')->where('created_by', Auth::user()->id)->get()->toArray();
             if($workgroups == null)
@@ -186,7 +186,7 @@ class KanbanController extends Controller
                 }
             }
             foreach ($workgroups as $itemWork) {
-                $kanbans_invited = Kanban::where('workgroup_id', $itemWork['id'])->get();
+                $kanbans_invited = Kanban::where('workgroup_id', $itemWork['id'])->where('title', 'LIKE', '%'.$result->search.'%')->get();
                 if ($kanbans_invited != null) {
                     foreach ($kanbans_invited as $item) {
                         $toPush = true;
@@ -210,7 +210,8 @@ class KanbanController extends Controller
         }
         catch (\Exception $ex)
         {
-            return redirect(route('index'))->with('error', $ex->getMessage());
+            return $ex->getTrace();
+            //return redirect(route('index'))->with('error', $ex->getMessage().'<br>'.$ex->getTrace()->toString());
         }
     }
     /**
