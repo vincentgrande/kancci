@@ -133,7 +133,7 @@ class UserSettingController extends Controller
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
      */
-    public function changePicture(Request $request) : Redirector
+    public function changePicture(Request $request)
     {
         try {
             // Validation de la photo
