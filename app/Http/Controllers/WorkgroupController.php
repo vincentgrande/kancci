@@ -16,7 +16,6 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,6 +32,9 @@ class WorkgroupController extends Controller
         $workGroup = WorkGroup::where('id', $id)->with('creator')->first();
         $workgroupUser = WorkGroupUser::where('workgroup_id', $id)->with('user')->get();
         $workgroupUserActual = WorkGroupUser::where('workgroup_id', $id)->where('user_id', Auth::user()->id)->with('user')->first();
+        if ($workgroupUserActual == null) {
+            return redirect(route('index'));
+        }
         if ($workGroup == null & $workgroupUser == null) {
             return redirect()->route('index');
         }
