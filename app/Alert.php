@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Alert extends Model
 {
@@ -15,7 +16,7 @@ class Alert extends Model
      * Get the user associated with the Alert
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user() : BelongsTo
     {
         return $this->belongsTo('App\User');
     }
@@ -24,7 +25,7 @@ class Alert extends Model
      * Get the card associated with the Alert
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function card()
+    public function card() : BelongsTo
     {
         return $this->belongsTo('App\Card');
     }

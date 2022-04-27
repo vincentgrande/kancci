@@ -41,9 +41,9 @@ class KanbanController extends Controller
     /**
      * Search result matches for Workgroups and Kanbans
      * @param Request $result
-     * @return array
+     * @return array | null
      */
-    public function Search(Request $result): array
+    public function Search(Request $result): ?array
     {
         $result->validate([
             'search' =>'required|string',
@@ -58,11 +58,11 @@ class KanbanController extends Controller
         {
             foreach ($workgroups_user as $item) {
                 $toPush = true;
+                if(!str_contains($item->workgroup->title,$result->search)) {
+                    $toPush = false;
+                }
                 foreach ($workgroups as $workgroup)
                 {
-                    if(!str_contains($workgroup['title'],$result->search)) {
-                        $toPush = false;
-                    }
                     if ($workgroup['id'] == $item->workgroup->id) {
                             $toPush = false;
                     }
@@ -83,11 +83,11 @@ class KanbanController extends Controller
         {
             foreach ($kanbansPublics as $item) {
                 $toPush = true;
+                if(!str_contains($item->title,$result->search)) {
+                    $toPush = false;
+                }
                 foreach ($kanbans as $kanban)
                 {
-                    if(!str_contains($kanban['title'],$result->search)) {
-                        $toPush = false;
-                    }
                     if ($kanban['id'] == $item->id) {
                         $toPush = false;
                     }
@@ -101,11 +101,11 @@ class KanbanController extends Controller
         {
             foreach ($kanbans_invited as $item) {
                 $toPush = true;
+                if(!str_contains($item->kanban->title,$result->search)) {
+                    $toPush = false;
+                }
                 foreach ($kanbans as $kanban)
                 {
-                    if(!str_contains($kanban['title'],$result->search)) {
-                        $toPush = false;
-                    }
                     if ($kanban['id'] == $item->kanban->id) {
                         $toPush = false;
                     }
@@ -115,12 +115,93 @@ class KanbanController extends Controller
                 }
             }
         }
-        return ['workgroups' => $workgroups,
+        if(count($workgroups) == 0 & count($kanbans) == 0)
+        {
+            return null;
+        }
+        else {
+            return ['workgroups' => $workgroups,
                 'kanbans' => $kanbans
-        ];
+            ];
+        }
     }
 
     /**
+     * Search result matches for Workgroups and Kanbans in the searchResultView
+     * @param Request $result
+     * @return Application|Factory|View
+     */
+    public function searchResult(Request $result)
+    {
+        try {
+            $workgroups = WorkGroup::where('title', 'LIKE', '%' . $result->searchTextField . '%')->where('created_by', Auth::user()->id)->get()->toArray();
+            if ($workgroups == null) {
+                $workgroups = array();
+            }
+            $workgroups_user = WorkGroupUser::where('user_id', Auth::user()->id)->with('workgroup')->with('user')->get();
+            if ($workgroups_user != null) {
+                foreach ($workgroups_user as $item) {
+                    $toPush = true;
+                    if (!str_contains($item->workgroup->title, $result->searchTextField)) {
+                        $toPush = false;
+                    }
+                    foreach ($workgroups as $workgroup) {
+                        if ($workgroup['id'] == $item->workgroup->id) {
+                            $toPush = false;
+                        }
+                    }
+                    if ($toPush) {
+                        $workgroups[] = $item->workgroup;
+                    }
+                }
+            }
+            $kanbans = Kanban::where('title', 'LIKE', '%' . $result->searchTextField . '%')->where('created_by', Auth::user()->id)->get()->toArray();
+            $kanbansPublics = Kanban::where('title', 'LIKE', '%' . $result->searchTextField . '%')->where('visibility', 'public')->get();
+            if ($kanbans == null) {
+                $kanbans = array();
+            }
+            $kanbans_invited = KanbanUser::where('user_id', Auth::user()->id)->with('kanban')->with('user')->get();
+            if ($kanbansPublics != null) {
+                foreach ($kanbansPublics as $item) {
+                    $toPush = true;
+                    if (!str_contains($item->title, $result->searchTextField)) {
+                        $toPush = false;
+                    }
+                    foreach ($kanbans as $kanban) {
+                        if ($kanban['id'] == $item->id) {
+                            $toPush = false;
+                        }
+                    }
+                    if ($toPush) {
+                        $kanbans[] = $item;
+                    }
+                }
+            }
+            if ($kanbans_invited != null) {
+                foreach ($kanbans_invited as $item) {
+                    $toPush = true;
+                    if (!str_contains($item->kanban->title, $result->searchTextField)) {
+                        $toPush = false;
+                    }
+                    foreach ($kanbans as $kanban) {
+                        if ($kanban['id'] == $item->kanban->id) {
+                            $toPush = false;
+                        }
+                    }
+                    if ($toPush) {
+                        $kanbans[] = $item->kanban;
+                    }
+                }
+            }
+            return view('searchResult', ['workgroups' => $workgroups,
+                'kanbans' => $kanbans,
+            ]);
+        }
+        catch (\Exception $ex)
+        {
+            return redirect(route('index'))->with('error', $ex->getMessage());
+        }
+    }
      * Function to return search results
      * @param Request $result
      * @return mixed
@@ -134,7 +215,6 @@ class KanbanController extends Controller
         $kanbans = Kanban::where('title', 'LIKE', '%'.$result->search.'%')->get();
         return $workgroups;
     }
-
     /**
      * Function to show workgroup page if current user logged or welcome page if not logged
      * @return Application|Factory|View
