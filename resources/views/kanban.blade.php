@@ -4,6 +4,13 @@
 
 @section('actions')
     <li class="nav-item active">
+        <a class="nav-link" href="javascript:history.back(1);">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back</span></a>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <li class="nav-item active">
         <a class="nav-link" id="addBoard" href="#">
             <i class="fas fa-plus-square"></i>
             <span>Add board</span></a>
