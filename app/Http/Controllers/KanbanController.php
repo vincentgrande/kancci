@@ -212,7 +212,7 @@ class KanbanController extends Controller
         }
         catch (\Exception $ex)
         {
-            return redirect(route('index'))->with('error', $ex->getMessage().'<br>'.$ex->getTrace()->toString());
+            return redirect(route('index'))->with('error', $ex->getMessage());
         }
     }
     /**
