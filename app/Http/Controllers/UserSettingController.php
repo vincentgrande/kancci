@@ -171,7 +171,7 @@ class UserSettingController extends Controller
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
      */
-    public function changeEmail(Request $request) : Redirector
+    public function changeEmail(Request $request)
     {
         try {
             $request->validate([
