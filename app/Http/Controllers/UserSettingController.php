@@ -169,7 +169,7 @@ class UserSettingController extends Controller
     /**
      * Function to change the Email adresse from the User
      * @param Request $request
-     * @return Application|RedirectResponse|Redirector
+     * @return Application|RedirectResponse
      */
     public function changeEmail(Request $request)
     {
