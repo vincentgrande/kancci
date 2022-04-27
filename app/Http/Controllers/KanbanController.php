@@ -186,7 +186,7 @@ class KanbanController extends Controller
                 }
             }
             foreach ($workgroups as $itemWork) {
-                $kanbans_invited = Kanban::where('workgroup_id', $itemWork->id)->with('workgroup')->with('user')->get();
+                $kanbans_invited = Kanban::where('workgroup_id', $itemWork['id'])->get();
                 if ($kanbans_invited != null) {
                     foreach ($kanbans_invited as $item) {
                         $toPush = true;
